@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
-  "passTypeIdentifier": "pass.com.example.aiyara",
-  "teamIdentifier": "ABCDE12345",
+  "passTypeIdentifier": "pass.com.ubcthaiaiyara.membership",
+  "teamIdentifier": "7FTB9XAFSW",
   "organizationName": "UBC Thai Aiyara",
   "description": "UBC Thai Aiyara membership card",
   "serialNumber": "PLACEHOLDER",
   "foregroundColor": "rgb(255, 255, 255)",
-  "backgroundColor": "rgb(185, 28, 28)",
+  "backgroundColor": "rgb(79, 84, 141)",
   "labelColor": "rgb(255, 255, 255)",
   "generic": {
     "primaryFields": [],
