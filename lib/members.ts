@@ -1,5 +1,6 @@
 import { randomUUID, randomBytes } from "crypto";
 import { getSupabase } from "./supabase";
+import { hashPassword, verifyPassword } from "./password";
 
 /**
  * Server-only data access for club members.
@@ -21,7 +22,13 @@ export interface Member {
   email: string;
   serial_number: string;
   auth_token: string;
+  password_hash: string;
   created_at: string; // ISO 8601 timestamp
+}
+
+/** Normalize an email for storage and lookup (trim + lowercase). */
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
 }
 
 // ---------------------------------------------------------------------------
@@ -44,26 +51,56 @@ if (!globalStore.__aiyaraMembers) {
 }
 
 /**
- * Create a member, generating a unique serial number and a random auth token.
+ * Raised by createMember when the email is already registered. Callers map this
+ * to a 409 so the client can show a friendly "account exists" message.
+ */
+export class DuplicateEmailError extends Error {
+  constructor() {
+    super("An account with this email already exists.");
+    this.name = "DuplicateEmailError";
+  }
+}
+
+/**
+ * Create a member, generating a unique serial number and a random auth token and
+ * hashing the chosen password. Rejects a duplicate email with DuplicateEmailError.
  * Returns the stored member row.
  */
 export async function createMember(
   name: string,
-  email: string
+  email: string,
+  password: string
 ): Promise<Member> {
+  const normalizedEmail = normalizeEmail(email);
   const serial_number = randomUUID();
   const auth_token = randomBytes(20).toString("hex");
+  const password_hash = hashPassword(password);
+
+  // Reject duplicates up front (also enforced by the unique index in Supabase).
+  if (await getMemberByEmail(normalizedEmail)) {
+    throw new DuplicateEmailError();
+  }
 
   const supabase = getSupabase();
   if (supabase) {
     // Let the DB fill id (gen_random_uuid) and created_at (now()) defaults.
     const { data, error } = await supabase
       .from("members")
-      .insert({ name, email, serial_number, auth_token })
+      .insert({
+        name,
+        email: normalizedEmail,
+        serial_number,
+        auth_token,
+        password_hash,
+      })
       .select()
       .single();
 
     if (error) {
+      // 23505 = unique_violation (race between the check above and insert).
+      if (error.code === "23505") {
+        throw new DuplicateEmailError();
+      }
       throw new Error(`Failed to create member: ${error.message}`);
     }
 
@@ -74,13 +111,61 @@ export async function createMember(
   const member: Member = {
     id: randomUUID(),
     name,
-    email,
+    email: normalizedEmail,
     serial_number,
     auth_token,
+    password_hash,
     created_at: new Date().toISOString(),
   };
   membersBySerial.set(member.serial_number, member);
   return member;
+}
+
+/**
+ * Look up a member by email. Returns null if not found. Email comparison is
+ * case-insensitive (emails are stored normalized).
+ */
+export async function getMemberByEmail(email: string): Promise<Member | null> {
+  const normalizedEmail = normalizeEmail(email);
+
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("members")
+      .select("*")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to look up member: ${error.message}`);
+    }
+
+    return (data as Member) ?? null;
+  }
+
+  // In-memory fallback: scan the serial-keyed map by email.
+  for (const member of membersBySerial.values()) {
+    if (member.email === normalizedEmail) {
+      return member;
+    }
+  }
+  return null;
+}
+
+/**
+ * Verify email + password. Returns the member on success, or null on either an
+ * unknown email or a wrong password (callers should not distinguish the two, to
+ * avoid leaking which emails are registered).
+ */
+export async function verifyCredentials(
+  email: string,
+  password: string
+): Promise<Member | null> {
+  const member = await getMemberByEmail(email);
+  if (!member) {
+    return null;
+  }
+  return verifyPassword(password, member.password_hash) ? member : null;
 }
 
 /**
