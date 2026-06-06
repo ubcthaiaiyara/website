@@ -1,33 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-// Client component. Note: this never imports lib/members — it talks to the
-// server only through fetch(). That boundary is deliberate: stage 2 will put a
-// private cert/key behind the issue endpoint, which a client must never touch.
-
-interface IssueResponse {
-  downloadUrl: string;
-}
+// Client component. Talks to the server only through fetch(). On success the
+// server has already set the session cookie, so we send the member to their
+// dashboard where they can download their pass.
 
 export default function JoinForm() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
-    setDownloadUrl(null);
 
     try {
-      const res = await fetch("/api/passes/issue", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       if (!res.ok) {
@@ -35,26 +32,13 @@ export default function JoinForm() {
         throw new Error(data.error ?? "Something went wrong. Please try again.");
       }
 
-      const data: IssueResponse = await res.json();
-      setDownloadUrl(data.downloadUrl);
+      // Session cookie is set; go to the member area.
+      router.push("/dashboard");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
-    } finally {
       setSubmitting(false);
     }
-  }
-
-  if (downloadUrl) {
-    return (
-      <div className="success">
-        <p style={{ color: "var(--fg)", fontWeight: 600 }}>
-          You&apos;re in! Your membership pass is ready.
-        </p>
-        <a className="button" href={downloadUrl}>
-          Add to Apple Wallet
-        </a>
-      </div>
-    );
   }
 
   return (
@@ -81,10 +65,26 @@ export default function JoinForm() {
           autoComplete="email"
         />
       </div>
+      <div className="field">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          required
+          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="new-password"
+        />
+        <span className="hint">At least 8 characters.</span>
+      </div>
       {error && <p className="error">{error}</p>}
       <button className="button" type="submit" disabled={submitting}>
-        {submitting ? "Issuing…" : "Get my pass"}
+        {submitting ? "Creating account…" : "Join the family"}
       </button>
+      <p className="form-alt">
+        Already a member? <a href="/login">Log in</a>
+      </p>
     </form>
   );
 }
