@@ -51,17 +51,41 @@ p {
   background: var(--accent);
   color: #fff;
   text-decoration: none;
-  padding: 0.6rem 1.1rem;
-  border-radius: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 0.6rem;
   border: none;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.button:hover {
+  background: var(--accent-dark);
+}
+
+.button:active {
+  transform: translateY(1px);
 }
 
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.button-ghost {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.button-ghost:hover {
+  background: rgba(79, 84, 141, 0.08);
+}
+
+.button-sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
 }
 
 .card {
