@@ -2,9 +2,12 @@
   --bg: #fafaf9;
   --fg: #1c1917;
   --muted: #78716c;
-  --accent: #b91c1c;
+  --accent: #4f548d;
+  --accent-dark: #3c4070;
+  --danger: #b91c1c;
   --border: #e7e5e4;
   --card: #ffffff;
+  --max: 60rem;
 }
 
 * {
