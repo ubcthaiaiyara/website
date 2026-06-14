@@ -208,6 +208,128 @@ p {
   background: rgba(255, 255, 255, 0.12);
 }
 
+/* ---------- Sections ---------- */
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.section-alt {
+  background: #fff;
+  max-width: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.section-alt > * {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+.lead {
+  font-size: 1.1rem;
+  max-width: 42rem;
+}
+
+/* Quote */
+.quote-section {
+  text-align: center;
+}
+
+.quote {
+  margin: 0 auto;
+  max-width: 40rem;
+  border: none;
+}
+
+.quote p {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--fg);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.quote cite {
+  color: var(--muted);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Sponsors */
+.sponsor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.sponsor-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.75rem;
+  text-align: center;
+}
+
+.sponsor-logo {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.sponsor-card h3 {
+  margin: 0 0 0.35rem;
+}
+
+.sponsor-card p {
+  margin: 0;
+}
+
+/* Events */
+.events-empty {
+  border: 1px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 2.5rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.events-empty p {
+  margin: 0;
+}
+
+/* Contact */
+.contact-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.contact-links a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-links a:hover {
+  text-decoration: underline;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
