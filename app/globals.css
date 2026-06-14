@@ -330,6 +330,31 @@ p {
   text-decoration: underline;
 }
 
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: #fff;
+}
+
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.footer-inner .social {
+  margin: 0 0.6rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
