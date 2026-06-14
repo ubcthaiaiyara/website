@@ -355,11 +355,25 @@ p {
   margin: 0.5rem 0 0;
 }
 
+/* ---------- Auth / dashboard pages ---------- */
+.auth-main {
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem;
+}
+
+.auth-main h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .field {
@@ -375,7 +389,7 @@ p {
 }
 
 .field input {
-  padding: 0.55rem 0.7rem;
+  padding: 0.6rem 0.7rem;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -383,15 +397,67 @@ p {
   color: var(--fg);
 }
 
-.error {
-  color: var(--accent);
-  font-size: 0.875rem;
+.field input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
 }
 
-.success {
+.hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+.form-alt {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+}
+
+/* Dashboard pass card */
+.pass-card {
+  text-align: center;
+}
+
+.pass-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: linear-gradient(150deg, var(--accent), #6a70b8);
+  color: #fff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.pass-org {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.pass-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.pass-status {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.pass-card .hint {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.auth-main > .button-ghost {
   margin-top: 1.5rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  background: #f0fdf4;
 }
