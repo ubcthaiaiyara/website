@@ -220,12 +220,10 @@ p {
   max-width: none;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-}
-
-.section-alt > * {
-  max-width: var(--max);
-  margin-left: auto;
-  margin-right: auto;
+  /* Full-bleed background, but content aligned to the same centered column
+     as a regular .section (which is a 60rem box with 1.5rem inner padding). */
+  padding-left: max(1.5rem, calc(50% - var(--max) / 2 + 1.5rem));
+  padding-right: max(1.5rem, calc(50% - var(--max) / 2 + 1.5rem));
 }
 
 .section h2 {
