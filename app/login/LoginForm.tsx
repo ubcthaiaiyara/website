@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 // Client component. On success the server sets the session cookie; we then send
 // the member to their dashboard.
 export default function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -29,8 +27,10 @@ export default function LoginForm() {
         throw new Error(data.error ?? "Something went wrong. Please try again.");
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      // Full navigation (not router.push) so the request to the session-gated
+      // dashboard carries the just-set cookie and the whole shell re-renders
+      // signed-in, rather than reusing the Router Cache's signed-out render.
+      window.location.assign("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
       setSubmitting(false);

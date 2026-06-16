@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 // Client component. Talks to the server only through fetch(). On success the
 // server has already set the session cookie, so we send the member to their
 // dashboard where they can download their pass.
 
 export default function JoinForm() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,9 +30,11 @@ export default function JoinForm() {
         throw new Error(data.error ?? "Something went wrong. Please try again.");
       }
 
-      // Session cookie is set; go to the member area.
-      router.push("/dashboard");
-      router.refresh();
+      // Session cookie is set. Use a full navigation (not router.push) so the
+      // request to the session-gated dashboard carries the new cookie and the
+      // server re-renders the whole shell — including the signed-in header —
+      // instead of reusing the Router Cache's signed-out render.
+      window.location.assign("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
       setSubmitting(false);
