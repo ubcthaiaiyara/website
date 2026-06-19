@@ -83,8 +83,8 @@ export default function HomePage() {
                     anytime.
                 </p>
                 <p className="contact-links">
-                    <a href="mailto:president@ubcthaiaiyara.com">
-                        president@ubcthaiaiyara.com
+                    <a href="mailto:contact@ubcthaiaiyara.com">
+                        contact@ubcthaiaiyara.com
                     </a>
                     <a href="https://www.instagram.com/ubcthaiaiyara">
                         Instagram

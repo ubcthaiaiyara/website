@@ -31,7 +31,7 @@ export default function RootLayout({
                                 Facebook
                             </a>
                             <a
-                                href="mailto:president@ubcthaiaiyara.com"
+                                href="mailto:contact@ubcthaiaiyara.com"
                                 className="social"
                             >
                                 Email
