@@ -24,7 +24,7 @@ export default async function SiteHeader() {
         <div className="nav-actions">
           {signedIn ? (
             <Link className="button button-sm" href="/dashboard">
-              My Pass
+              Account
             </Link>
           ) : (
             <>

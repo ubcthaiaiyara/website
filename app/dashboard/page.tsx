@@ -3,9 +3,10 @@ import { readSession } from "@/lib/session";
 import { getMemberBySerial } from "@/lib/members";
 import LogoutButton from "./LogoutButton";
 
-// Server Component, session-gated. Not signed in → /login. The member's pass is
-// downloaded from /api/passes/<serial>, which independently verifies the session
-// matches this serial.
+// Server Component, session-gated account page. Not signed in → /login. Shows
+// the member's account details and lets them download their Apple Wallet pass
+// from /api/passes/<serial>, which independently verifies the session matches
+// this serial.
 export default async function DashboardPage() {
   const serial = await readSession();
   if (!serial) {
