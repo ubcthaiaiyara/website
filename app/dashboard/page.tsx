@@ -20,6 +20,12 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const memberSince = new Date(member.created_at).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <main className="auth-main">
       <h1>Hi, {member.name.split(" ")[0]} 👋</h1>
@@ -49,6 +55,14 @@ export default async function DashboardPage() {
           <div className="detail-row">
             <dt>Email</dt>
             <dd>{member.email}</dd>
+          </div>
+          <div className="detail-row">
+            <dt>Member since</dt>
+            <dd>{memberSince}</dd>
+          </div>
+          <div className="detail-row">
+            <dt>Status</dt>
+            <dd>Active</dd>
           </div>
         </dl>
       </div>
