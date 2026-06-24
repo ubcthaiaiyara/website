@@ -39,6 +39,20 @@ export default async function DashboardPage() {
         </p>
       </div>
 
+      <div className="card">
+        <h2 className="card-title">Account details</h2>
+        <dl className="detail-list">
+          <div className="detail-row">
+            <dt>Name</dt>
+            <dd>{member.name}</dd>
+          </div>
+          <div className="detail-row">
+            <dt>Email</dt>
+            <dd>{member.email}</dd>
+          </div>
+        </dl>
+      </div>
+
       <LogoutButton />
     </main>
   );
