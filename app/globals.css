@@ -111,14 +111,51 @@ p {
 }
 
 /* ---------- Header / nav ---------- */
+/* Blends into whatever sits behind it at the top of the page; fades to a
+   frosted translucent bar (via .is-scrolled, toggled by HeaderChrome) once the
+   page is scrolled so the links stay readable over content. */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.site-header.is-scrolled {
   background: rgba(247, 243, 240, 0.72);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-bottom: 1px solid var(--border);
+  border-bottom-color: var(--border);
+}
+
+/* Over the dark hero (home page top), flip the nav to light so it reads
+   against the espresso gradient. Auth pages have no .hero, so they keep the
+   default dark text on the paper background. */
+body:has(.hero) .site-header:not(.is-scrolled) .brand,
+body:has(.hero) .site-header:not(.is-scrolled) .nav-login {
+  color: #fff;
+}
+
+body:has(.hero) .site-header:not(.is-scrolled) .nav-links a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+body:has(.hero) .site-header:not(.is-scrolled) .nav-links a:hover {
+  color: #fff;
+}
+
+body:has(.hero) .site-header:not(.is-scrolled) .nav-actions::before {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+body:has(.hero) .site-header:not(.is-scrolled) .button {
+  background: #fff;
+  color: var(--fg);
+  border-color: #fff;
 }
 
 .nav-inner {
@@ -192,7 +229,7 @@ p {
 .hero {
   background: var(--sunrise);
   color: #fff;
-  min-height: calc(100vh - 4rem);
+  min-height: 100vh;
   display: flex;
 }
 
@@ -200,12 +237,13 @@ p {
   max-width: var(--max);
   width: 100%;
   margin: 0 auto;
-  padding: 11.5rem 1.75rem 3.5rem;
+  /* The fixed header overlaps the hero, so the top padding includes its
+     ~4.5rem height: the visible space below the nav matches the 11.5rem gap
+     between the headline and the intro copy. */
+  padding: 16rem 1.75rem 3.5rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  /* Match the space above the headline with the space between the headline and
-     the intro copy for even vertical rhythm. */
   gap: 11.5rem;
 }
 
@@ -457,7 +495,8 @@ p {
 .auth-main {
   max-width: 27rem;
   margin: 0 auto;
-  padding: 5rem 1.75rem;
+  /* Extra top clearance for the fixed header. */
+  padding: 7.5rem 1.75rem 5rem;
 }
 
 .auth-main h1 {

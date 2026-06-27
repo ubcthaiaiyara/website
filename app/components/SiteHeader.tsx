@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { readSession } from "@/lib/session";
+import HeaderChrome from "./HeaderChrome";
 
 // Server component: reads the session so the header can show either the
 // signed-out (Log in / Join) or signed-in (My Pass) actions. Rendered globally
-// from app/layout.tsx.
+// from app/layout.tsx. HeaderChrome (client) handles the scroll-driven
+// transparent → frosted transition.
 export default async function SiteHeader() {
   const signedIn = Boolean(await readSession());
 
   return (
-    <header className="site-header">
+    <HeaderChrome>
       <div className="nav-inner">
         <Link href="/" className="brand">
           <span className="brand-text">UBC Thai Aiyara</span>
@@ -37,6 +39,6 @@ export default async function SiteHeader() {
           )}
         </div>
       </div>
-    </header>
+    </HeaderChrome>
   );
 }
