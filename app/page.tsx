@@ -1,32 +1,33 @@
 import Link from "next/link";
 
-// Server Component. Static landing page — a modern redesign of the club's Wix
-// site (hero, president quote, sponsors, events, contact). All CTAs route into
-// the membership module (/join, /login).
+// Server Component. Static landing page — an editorial redesign of the club's
+// site (hero, president quote, about, sponsors, events, contact). All CTAs
+// route into the membership module (/join, /login).
 export default function HomePage() {
     return (
         <>
             {/* Hero */}
             <section className="hero">
                 <div className="hero-inner">
-                    <p className="eyebrow">UBC Thai Aiyara</p>
-                    <h1>
-                        Welcome to the
-                        <br />
-                        Aiyara Family
-                    </h1>
-                    <p className="hero-sub">
-                        The home for Thai students and friends at UBC. Join the
-                        family and carry your digital membership pass in Apple
-                        Wallet.
-                    </p>
-                    <div className="hero-cta">
-                        <Link className="button" href="/join">
-                            Join Now
-                        </Link>
-                        <Link className="button button-ghost" href="/login">
-                            Member Login
-                        </Link>
+                    <div className="hero-top">
+                        <h1>A home away from home for Thai students &amp; friends at UBC.</h1>
+                    </div>
+                    <div className="hero-bottom">
+                        <p className="hero-sub">
+                            Join the family and carry your digital membership
+                            pass in Apple Wallet.
+                        </p>
+                        <div className="hero-cta">
+                            <Link className="button" href="/join">
+                                Join the family
+                            </Link>
+                            <Link
+                                className="button button-ghost"
+                                href="/login"
+                            >
+                                Member login
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -45,7 +46,8 @@ export default function HomePage() {
 
             {/* About */}
             <section id="about" className="section">
-                <h2>About Aiyara</h2>
+                <span className="section-label">01 — About</span>
+                <h2>More than a club.</h2>
                 <p className="lead">
                     UBC Thai Aiyara brings together Thai students and anyone who
                     loves Thai culture at the University of British Columbia.
@@ -57,7 +59,8 @@ export default function HomePage() {
 
             {/* Sponsors */}
             <section id="sponsors" className="section section-alt">
-                <h2>Our Sponsors</h2>
+                <span className="section-label">02 — Sponsors</span>
+                <h2>Our trusted partners.</h2>
                 <div className="sponsor-grid">
                     <div className="sponsor-card">
                         <div className="sponsor-logo">OSO</div>
@@ -69,7 +72,8 @@ export default function HomePage() {
 
             {/* Events */}
             <section id="events" className="section">
-                <h2>Events</h2>
+                <span className="section-label">03 — Events</span>
+                <h2>What&apos;s happening.</h2>
                 <div className="events-empty">
                     <p>No events at the moment — check back soon!</p>
                 </div>
@@ -77,7 +81,8 @@ export default function HomePage() {
 
             {/* Contact */}
             <section id="contact" className="section section-alt">
-                <h2>Get in Touch</h2>
+                <span className="section-label">04 — Contact</span>
+                <h2>Get in touch.</h2>
                 <p className="lead">
                     Questions about membership or want to collaborate? Reach out
                     anytime.
