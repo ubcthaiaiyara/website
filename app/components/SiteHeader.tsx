@@ -11,7 +11,6 @@ export default async function SiteHeader() {
     <header className="site-header">
       <div className="nav-inner">
         <Link href="/" className="brand">
-          <span className="brand-mark">อ</span>
           <span className="brand-text">UBC Thai Aiyara</span>
         </Link>
 
