@@ -1,13 +1,26 @@
 :root {
-  --bg: #fafaf9;
-  --fg: #1c1917;
-  --muted: #78716c;
-  --accent: #4f548d;
-  --accent-dark: #3c4070;
-  --danger: #b91c1c;
-  --border: #e7e5e4;
+  --paper: #f7f3f0;
+  --bg: #f7f3f0;
+  --fg: #16130f;
+  --muted: #6f6a63;
+  --accent: #1c2644;
+  --accent-dark: #101830;
+  --danger: #b3261e;
+  --border: #e6e0d7;
   --card: #ffffff;
-  --max: 60rem;
+  --max: 72rem;
+  /* Signature "sunrise" gradient: espresso night at the top easing down through
+     navy and dusty blue into a warm cream dawn. */
+  --sunrise: linear-gradient(
+    180deg,
+    #280e01 0%,
+    #17253f 15%,
+    #5a769f 30%,
+    #87a1c4 43%,
+    #c1d3e6 59%,
+    #fef9e1 80%,
+    var(--paper) 100%
+  );
 }
 
 * {
@@ -23,17 +36,20 @@ body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2,
 h3 {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-weight: 400;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.06;
 }
 
 a {
@@ -47,21 +63,26 @@ p {
 
 /* ---------- Buttons ---------- */
 .button {
-  display: inline-block;
-  background: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fg);
   color: #fff;
   text-decoration: none;
-  padding: 0.7rem 1.3rem;
-  border-radius: 0.6rem;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--fg);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.06s ease,
+    border-color 0.2s ease;
 }
 
 .button:hover {
-  background: var(--accent-dark);
+  background: #000;
+  border-color: #000;
 }
 
 .button:active {
@@ -69,75 +90,81 @@ p {
 }
 
 .button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .button-ghost {
   background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
+  color: var(--fg);
+  border: 1px solid rgba(22, 19, 15, 0.25);
 }
 
 .button-ghost:hover {
-  background: rgba(79, 84, 141, 0.08);
+  background: rgba(22, 19, 15, 0.06);
+  border-color: rgba(22, 19, 15, 0.4);
 }
 
 .button-sm {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
 }
 
 /* ---------- Header / nav ---------- */
+/* Floating frosted "island": a detached pill that hovers over the content with
+   margin on all sides, a translucent blurred fill and a soft shadow. */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
-  background: rgba(250, 250, 249, 0.85);
-  backdrop-filter: saturate(180%) blur(12px);
-  border-bottom: 1px solid var(--border);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 1rem 1.25rem;
+  background: transparent;
 }
 
 .nav-inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 0.85rem 0.65rem 1.35rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  background: rgba(247, 243, 240, 0.6);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 34px rgba(22, 19, 15, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
   text-decoration: none;
   color: var(--fg);
-  font-weight: 700;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.5rem;
-  background: var(--accent);
-  color: #fff;
-  font-size: 1.1rem;
+.brand-text {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 1rem;
 }
 
 .nav-links {
   display: flex;
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-left: auto;
 }
 
 .nav-links a {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  transition: color 0.15s ease;
 }
 
 .nav-links a:hover {
@@ -147,72 +174,88 @@ p {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 1.1rem;
+}
+
+/* Thin rule that separates the section links from the account actions, echoing
+   the reference nav's dash divider. */
+.nav-actions::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: rgba(22, 19, 15, 0.3);
 }
 
 .nav-login {
   color: var(--fg);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
+}
+
+.nav-login:hover {
+  opacity: 0.7;
 }
 
 /* ---------- Hero ---------- */
 .hero {
-  background: linear-gradient(160deg, #4f548d 0%, #6a70b8 55%, #8f94d6 100%);
+  background: var(--sunrise);
   color: #fff;
+  min-height: 100vh;
+  display: flex;
 }
 
 .hero-inner {
   max-width: var(--max);
+  width: 100%;
   margin: 0 auto;
-  padding: 5.5rem 1.5rem 6rem;
-  text-align: center;
+  padding: 11.5rem 1.75rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* Match the space above the headline with the space between the headline and
+     the intro copy for even vertical rhythm. */
+  gap: 11.5rem;
 }
 
 .eyebrow {
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 1.5rem;
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 800;
-  margin: 0 0 1.25rem;
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  max-width: 16ch;
+  margin: 0;
+  color: #fff;
+}
+
+.hero-bottom {
+  max-width: 34rem;
+  color: var(--fg);
 }
 
 .hero-sub {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(22, 19, 15, 0.82);
   font-size: 1.15rem;
-  max-width: 34rem;
-  margin: 0 auto 2rem;
+  margin: 0 0 1.75rem;
 }
 
 .hero-cta {
   display: flex;
   gap: 0.9rem;
-  justify-content: center;
   flex-wrap: wrap;
-}
-
-.hero .button-ghost {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.7);
-}
-
-.hero .button-ghost:hover {
-  background: rgba(255, 255, 255, 0.12);
 }
 
 /* ---------- Sections ---------- */
 .section {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 6rem 1.75rem;
 }
 
 .section-alt {
@@ -221,20 +264,32 @@ p {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   /* Full-bleed background, but content aligned to the same centered column
-     as a regular .section (which is a 60rem box with 1.5rem inner padding). */
-  padding-left: max(1.5rem, calc(50% - var(--max) / 2 + 1.5rem));
-  padding-right: max(1.5rem, calc(50% - var(--max) / 2 + 1.5rem));
+     as a regular .section. */
+  padding-left: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
+  padding-right: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
+}
+
+.section-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
 }
 
 .section h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  margin: 0 0 1.5rem;
+  max-width: 20ch;
 }
 
 .lead {
-  font-size: 1.1rem;
-  max-width: 42rem;
+  font-size: 1.2rem;
+  line-height: 1.65;
+  max-width: 44rem;
+  color: var(--fg);
 }
 
 /* Quote */
@@ -244,153 +299,207 @@ p {
 
 .quote {
   margin: 0 auto;
-  max-width: 40rem;
+  max-width: 46rem;
   border: none;
 }
 
 .quote p {
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+  line-height: 1.28;
+  font-weight: 400;
   color: var(--fg);
   font-style: italic;
-  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
 }
 
 .quote cite {
   color: var(--muted);
   font-style: normal;
   font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }
 
 /* Sponsors */
 .sponsor-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 1.25rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .sponsor-card {
-  background: var(--bg);
+  background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1.75rem;
-  text-align: center;
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(22, 19, 15, 0.08);
 }
 
 .sponsor-logo {
   display: grid;
   place-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  margin: 0 auto 1rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 0 1.25rem;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .sponsor-card h3 {
-  margin: 0 0 0.35rem;
+  font-size: 1.3rem;
+  margin: 0 0 0.4rem;
 }
 
 .sponsor-card p {
   margin: 0;
+  font-size: 0.95rem;
 }
 
 /* Events */
 .events-empty {
-  border: 1px dashed var(--border);
-  border-radius: 0.75rem;
-  padding: 2.5rem;
+  border: 1px dashed rgba(22, 19, 15, 0.22);
+  border-radius: 1rem;
+  padding: 3.5rem;
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .events-empty p {
   margin: 0;
+  font-size: 1.05rem;
 }
 
 /* Contact */
 .contact-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.75rem;
   flex-wrap: wrap;
-  margin-bottom: 1.75rem;
+  margin: 2rem 0;
 }
 
 .contact-links a {
   font-weight: 600;
   text-decoration: none;
+  font-size: 1.05rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
 }
 
 .contact-links a:hover {
-  text-decoration: underline;
+  border-bottom-color: currentColor;
 }
 
 /* ---------- Footer ---------- */
 .site-footer {
   border-top: 1px solid var(--border);
-  background: #fff;
+  background: var(--fg);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .footer-inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-  text-align: center;
+  padding: 4rem 1.75rem 2.5rem;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.footer-wordmark {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  line-height: 1;
+  margin: 0;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.5rem;
 }
 
 .footer-inner .social {
-  margin: 0 0.6rem;
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.15s ease;
+}
+
+.footer-inner .social:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: space-between;
+  padding-top: 1.75rem;
 }
 
 .copyright {
   font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0.5rem 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
 }
 
 /* ---------- Auth / dashboard pages ---------- */
 .auth-main {
-  max-width: 26rem;
+  max-width: 27rem;
   margin: 0 auto;
-  padding: 3.5rem 1.5rem;
+  padding: 7.5rem 1.75rem 5rem;
 }
 
 .auth-main h1 {
-  font-size: 1.9rem;
-  font-weight: 700;
+  font-size: 2.4rem;
   margin: 0 0 0.5rem;
 }
 
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-top: 1.5rem;
+  border-radius: 1rem;
+  padding: 1.75rem;
+  margin-top: 1.75rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  margin-bottom: 1rem;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
 }
 
 .field label {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
 .field input {
-  padding: 0.6rem 0.7rem;
+  padding: 0.7rem 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
   font-size: 1rem;
+  font-family: inherit;
   background: #fff;
   color: var(--fg);
 }
@@ -413,7 +522,7 @@ p {
 }
 
 .form-alt {
-  margin: 1rem 0 0;
+  margin: 1.25rem 0 0;
   font-size: 0.9rem;
 }
 
@@ -426,41 +535,44 @@ p {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  background: linear-gradient(150deg, var(--accent), #6a70b8);
+  background: var(--sunrise);
   color: #fff;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: 1rem;
+  padding: 1.75rem;
   margin-bottom: 1.5rem;
   text-align: left;
+  min-height: 9rem;
+  justify-content: flex-end;
 }
 
 .pass-org {
   font-size: 0.8rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .pass-name {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
 }
 
 .pass-status {
-  font-size: 0.85rem;
-  opacity: 0.9;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
 }
 
 .pass-card .hint {
   display: block;
-  margin-top: 0.75rem;
+  margin-top: 0.85rem;
 }
 
 /* Account details */
 .card-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
 }
 
 .detail-list {
@@ -472,7 +584,7 @@ p {
   justify-content: space-between;
   align-items: baseline;
   gap: 1rem;
-  padding: 0.65rem 0;
+  padding: 0.75rem 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -494,5 +606,16 @@ p {
 }
 
 .auth-main > .button-ghost {
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
+}
+
+@media (max-width: 640px) {
+  .hero-inner {
+    padding: 5.5rem 1.5rem 3rem;
+    gap: 3rem;
+  }
+
+  .section {
+    padding: 4.5rem 1.5rem;
+  }
 }
