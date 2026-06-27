@@ -111,32 +111,23 @@ p {
 }
 
 /* ---------- Header / nav ---------- */
-/* Floating frosted "island": a detached pill that hovers over the content with
-   margin on all sides, a translucent blurred fill and a soft shadow. */
 .site-header {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: 30;
-  padding: 1rem 1.25rem;
-  background: transparent;
+  z-index: 20;
+  background: rgba(247, 243, 240, 0.72);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--border);
 }
 
 .nav-inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0.65rem 0.85rem 0.65rem 1.35rem;
+  padding: 1rem 1.75rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  background: rgba(247, 243, 240, 0.6);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 1.15rem;
-  box-shadow: 0 10px 34px rgba(22, 19, 15, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .brand {
@@ -201,7 +192,7 @@ p {
 .hero {
   background: var(--sunrise);
   color: #fff;
-  min-height: 100vh;
+  min-height: calc(100vh - 4rem);
   display: flex;
 }
 
@@ -466,7 +457,7 @@ p {
 .auth-main {
   max-width: 27rem;
   margin: 0 auto;
-  padding: 7.5rem 1.75rem 5rem;
+  padding: 5rem 1.75rem;
 }
 
 .auth-main h1 {
