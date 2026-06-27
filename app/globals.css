@@ -481,6 +481,18 @@ p {
   padding-bottom: 0;
 }
 
+.detail-row dt {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.detail-row dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
 .auth-main > .button-ghost {
   margin-top: 1.5rem;
 }
