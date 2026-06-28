@@ -125,7 +125,8 @@ p {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.site-header.is-scrolled {
+.site-header.is-scrolled,
+.site-header.is-open {
   background: rgba(247, 243, 240, 0.72);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
@@ -134,25 +135,29 @@ p {
 
 /* Over the dark hero (home page top), flip the nav to light so it reads
    against the espresso gradient. Auth pages have no .hero, so they keep the
-   default dark text on the paper background. */
-body:has(.hero) .site-header:not(.is-scrolled) .brand,
-body:has(.hero) .site-header:not(.is-scrolled) .nav-login {
+   default dark text on the paper background. The open mobile menu always sits
+   on the frosted bar, so it keeps dark text too. */
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand,
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-login,
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
   color: #fff;
 }
 
-body:has(.hero) .site-header:not(.is-scrolled) .nav-links a {
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
   color: rgba(255, 255, 255, 0.75);
 }
 
-body:has(.hero) .site-header:not(.is-scrolled) .nav-links a:hover {
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a:hover {
   color: #fff;
 }
 
-body:has(.hero) .site-header:not(.is-scrolled) .nav-actions::before {
+body:has(.hero)
+  .site-header:not(.is-scrolled):not(.is-open)
+  .nav-actions::before {
   background: rgba(255, 255, 255, 0.4);
 }
 
-body:has(.hero) .site-header:not(.is-scrolled) .button {
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
   background: #fff;
   color: var(--fg);
   border-color: #fff;
@@ -223,6 +228,95 @@ body:has(.hero) .site-header:not(.is-scrolled) .button {
 
 .nav-login:hover {
   opacity: 0.7;
+}
+
+/* Hamburger — hidden on desktop, shown by the mobile media query below. The
+   three bars draw with currentColor so the over-hero light/dark flip applies. */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.32rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.55rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--fg);
+}
+
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.site-header.is-open .nav-toggle span:nth-child(1) {
+  transform: translateY(0.42rem) rotate(45deg);
+}
+
+.site-header.is-open .nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header.is-open .nav-toggle span:nth-child(3) {
+  transform: translateY(-0.42rem) rotate(-45deg);
+}
+
+/* Mobile nav: collapse the links and actions behind the hamburger. */
+@media (max-width: 768px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    padding: 0.75rem 1.25rem;
+    row-gap: 0;
+  }
+
+  .nav-links,
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: flex;
+    order: 2;
+    margin-left: auto;
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .site-header.is-open .nav-links {
+    display: flex;
+    order: 3;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    margin: 0.5rem 0 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .site-header.is-open .nav-links a {
+    padding: 0.9rem 0;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .site-header.is-open .nav-actions {
+    display: flex;
+    order: 4;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1rem 0 0.75rem;
+  }
+
+  .site-header.is-open .nav-actions::before {
+    display: none;
+  }
 }
 
 /* ---------- Hero ---------- */
@@ -639,13 +733,62 @@ body:has(.hero) .site-header:not(.is-scrolled) .button {
   margin-top: 1.75rem;
 }
 
+/* Mobile whitespace and type: the desktop rhythm (16rem/11.5rem) is far too
+   airy on a phone, so scale it down while keeping the top/middle gaps even. */
 @media (max-width: 640px) {
   .hero-inner {
-    padding: 5.5rem 1.5rem 3rem;
-    gap: 3rem;
+    padding: 9rem 1.25rem 2.5rem;
+    gap: 5.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.35rem, 10.5vw, 2.75rem);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    margin-bottom: 1.4rem;
   }
 
   .section {
-    padding: 4.5rem 1.5rem;
+    padding: 4rem 1.25rem;
+  }
+
+  .section-alt {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .section h2 {
+    margin-bottom: 1.1rem;
+  }
+
+  .lead {
+    font-size: 1.05rem;
+  }
+
+  .events-empty {
+    padding: 2.25rem 1.5rem;
+  }
+
+  .footer-inner {
+    padding: 3rem 1.25rem 2rem;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .auth-main {
+    padding: 6.5rem 1.25rem 3.5rem;
   }
 }
