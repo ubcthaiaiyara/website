@@ -67,7 +67,9 @@ export default function RootLayout({
               </div>
             </div>
             <div className="footer-bottom">
-              <p className="copyright">©2021 by UBC Thai Aiyara.</p>
+              <p className="copyright">
+                ©{new Date().getFullYear()} by UBC Thai Aiyara.
+              </p>
               <p className="copyright">Vancouver, BC · University of British Columbia</p>
             </div>
           </div>
