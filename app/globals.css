@@ -9,17 +9,15 @@
   --border: #e6e0d7;
   --card: #ffffff;
   --max: 72rem;
-  /* Signature "sunrise" gradient: espresso night at the top easing down through
-     navy and dusty blue into a warm cream dawn. */
+  /* Signature "sunrise" gradient in the club's brand colors: midnight indigo
+     easing through Aiyara purple into warm cream, which holds to the bottom. */
   --sunrise: linear-gradient(
     180deg,
-    #280e01 0%,
-    #17253f 15%,
-    #5a769f 30%,
-    #87a1c4 43%,
-    #c1d3e6 59%,
-    #fef9e1 80%,
-    var(--paper) 100%
+    #050115 0%,
+    #2d315d 25%,
+    #4f548c 50%,
+    #fffbec 78%,
+    #fffbec 100%
   );
 }
 
