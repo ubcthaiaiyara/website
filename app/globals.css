@@ -111,9 +111,10 @@ p {
 }
 
 /* ---------- Header / nav ---------- */
-/* Blends into whatever sits behind it at the top of the page; fades to a
-   frosted translucent bar (via .is-scrolled, toggled by HeaderChrome) once the
-   page is scrolled so the links stay readable over content. */
+/* Blends into whatever sits behind it at the top of the page; once scrolled
+   (via .is-scrolled, toggled by HeaderChrome) a progressive-blur layer fades
+   in: the frost is strongest behind the links and dissolves downward into the
+   page — no hard edge, it diffuses with the background. */
 .site-header {
   position: fixed;
   top: 0;
@@ -125,12 +126,52 @@ p {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.site-header.is-scrolled,
+.site-header::before {
+  content: "";
+  position: absolute;
+  /* Extend past the bar so the blur has room to fade out underneath it. */
+  inset: 0 0 -2.75rem 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(247, 243, 240, 0.7) 0%,
+    rgba(247, 243, 240, 0.4) 55%,
+    rgba(247, 243, 240, 0) 100%
+  );
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  /* The mask is what makes the blur itself dissolve instead of cutting off. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.site-header.is-scrolled::before {
+  opacity: 1;
+}
+
+/* Keep the nav content above the frost layer. */
+.site-header .nav-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* The open mobile menu needs solid legibility rather than diffusion. */
 .site-header.is-open {
-  background: rgba(247, 243, 240, 0.72);
+  background: rgba(247, 243, 240, 0.88);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   border-bottom-color: var(--border);
+}
+
+.site-header.is-open::before {
+  opacity: 0;
 }
 
 /* Over the dark hero (home page top), flip the nav to light so it reads
