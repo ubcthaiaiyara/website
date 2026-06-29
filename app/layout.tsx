@@ -70,10 +70,8 @@ export default function RootLayout({
                         </div>
                         <div className="footer-bottom">
                             <p className="copyright">
-                                © {new Date().getFullYear()} by UBC Thai Aiyara.
-                            </p>
-                            <p className="copyright">
-                                Vancouver, BC · University of British Columbia
+                                Copyright © {new Date().getFullYear()} UBC Thai
+                                Aiyara. All rights reserved.
                             </p>
                         </div>
                     </div>
