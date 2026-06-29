@@ -94,8 +94,8 @@ export default function HomePage() {
                     <a href="https://www.instagram.com/ubcthaiaiyara">
                         Instagram
                     </a>
-                    <a href="https://www.facebook.com/ubcthaiaiyara">
-                        Facebook
+                    <a href="https://www.linkedin.com/company/ubc-thaiaiyara">
+                        LinkedIn
                     </a>
                 </p>
                 <Link className="button" href="/join">

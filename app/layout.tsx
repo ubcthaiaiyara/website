@@ -55,10 +55,10 @@ export default function RootLayout({
                                     Instagram
                                 </a>
                                 <a
-                                    href="https://www.facebook.com/ubcthaiaiyara"
+                                    href="https://www.linkedin.com/company/ubc-thaiaiyara"
                                     className="social"
                                 >
-                                    Facebook
+                                    LinkedIn
                                 </a>
                                 <a
                                     href="mailto:contact@ubcthaiaiyara.com"
