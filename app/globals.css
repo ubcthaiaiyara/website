@@ -238,12 +238,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
   color: #fff;
 }
 
-body:has(.hero)
-  .site-header:not(.is-scrolled):not(.is-open)
-  .nav-actions::before {
-  background: rgba(255, 255, 255, 0.4);
-}
-
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
   background: #fff;
   color: var(--fg);
@@ -295,15 +289,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
   display: flex;
   align-items: center;
   gap: 1.1rem;
-}
-
-/* Thin rule that separates the section links from the account actions, echoing
-   the reference nav's dash divider. */
-.nav-actions::before {
-  content: "";
-  width: 1.5rem;
-  height: 1px;
-  background: rgba(22, 19, 15, 0.3);
+  /* Preserves the whitespace the old dash divider used to occupy
+     (1.5rem rule + 1.1rem gap). */
+  margin-left: 2.6rem;
 }
 
 .nav-login {
@@ -399,10 +387,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
     width: 100%;
     justify-content: space-between;
     padding: 1rem 0 0.75rem;
-  }
-
-  .site-header.is-open .nav-actions::before {
-    display: none;
+    margin-left: 0;
   }
 }
 
