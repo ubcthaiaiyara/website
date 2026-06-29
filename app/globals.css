@@ -80,7 +80,9 @@ p {
   background: var(--fg);
   color: #fff;
   text-decoration: none;
-  padding: 0.85rem 1.6rem;
+  /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
+     above true center, so skew the vertical padding to optically center it. */
+  padding: calc(0.85rem + 0.11em) 1.6rem calc(0.85rem - 0.11em);
   border-radius: 999px;
   border: 1px solid var(--fg);
   font-family: inherit; /* <button> elements don't inherit by default */
@@ -118,7 +120,7 @@ p {
 }
 
 .button-sm {
-  padding: 0.55rem 1.1rem;
+  padding: calc(0.55rem + 0.11em) 1.1rem calc(0.55rem - 0.11em);
   font-size: 0.875rem;
 }
 
