@@ -579,7 +579,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 /* ---------- Footer ---------- */
 .site-footer {
   border-top: 1px solid var(--border);
-  background: var(--fg);
+  background: #050115;
   color: rgba(255, 255, 255, 0.75);
 }
 
