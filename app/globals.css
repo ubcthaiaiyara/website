@@ -94,9 +94,10 @@ p {
     border-color 0.2s ease;
 }
 
+/* Solid buttons invert on hover: the fill drains out, leaving the outline. */
 .button:hover {
-  background: #000;
-  border-color: #000;
+  background: transparent;
+  color: var(--fg);
 }
 
 .button:active {
@@ -242,6 +243,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
   background: #fff;
   color: var(--fg);
   border-color: #fff;
+}
+
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
+  background: transparent;
+  color: #fff;
 }
 
 .nav-inner {
