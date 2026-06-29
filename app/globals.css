@@ -41,13 +41,21 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1,
-h2,
-h3 {
+h1 {
   font-family: var(--font-serif), Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.06;
+}
+
+/* Secondary titles use the sans — the serif is reserved for the primary
+   display statements (hero, quote, footer wordmark). */
+h2,
+h3 {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
 }
 
 a {
@@ -70,6 +78,7 @@ p {
   padding: 0.85rem 1.6rem;
   border-radius: 999px;
   border: 1px solid var(--fg);
+  font-family: inherit; /* <button> elements don't inherit by default */
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.01em;

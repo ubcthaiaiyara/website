@@ -4,9 +4,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
 
-// Editorial serif for display headlines (primary), TeX Gyre Heros — a Helvetica-
-// class grotesque — for body copy and descriptions (secondary). Both exposed as
-// CSS variables consumed by globals.css.
+// Editorial serif for display headlines (primary), Cotham Sans — a quirky
+// grotesk by Sébastien Sanfilippo (OFL) — for descriptions and secondary
+// titles. Both exposed as CSS variables consumed by globals.css.
 const libreBaskerville = Libre_Baskerville({
     subsets: ["latin"],
     variable: "--font-serif",
@@ -15,32 +15,12 @@ const libreBaskerville = Libre_Baskerville({
     style: ["normal", "italic"],
 });
 
-// Self-hosted: TeX Gyre Heros isn't on Google Fonts (GUST Font License).
-const texGyreHeros = localFont({
+// Self-hosted: Cotham Sans isn't on Google Fonts. Single weight — heavier
+// weights render as browser-synthesized bold.
+const cothamSans = localFont({
     variable: "--font-sans",
     display: "swap",
-    src: [
-        {
-            path: "./fonts/TeXGyreHeros-Regular.otf",
-            weight: "400",
-            style: "normal",
-        },
-        {
-            path: "./fonts/TeXGyreHeros-Italic.otf",
-            weight: "400",
-            style: "italic",
-        },
-        {
-            path: "./fonts/TeXGyreHeros-Bold.otf",
-            weight: "700",
-            style: "normal",
-        },
-        {
-            path: "./fonts/TeXGyreHeros-BoldItalic.otf",
-            weight: "700",
-            style: "italic",
-        },
-    ],
+    src: [{ path: "./fonts/CothamSans.otf", weight: "400", style: "normal" }],
 });
 
 export const metadata: Metadata = {
@@ -54,7 +34,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${libreBaskerville.variable} ${texGyreHeros.variable}`}
+            className={`${libreBaskerville.variable} ${cothamSans.variable}`}
         >
             <body>
                 <SiteHeader />
