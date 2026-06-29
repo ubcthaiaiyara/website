@@ -199,10 +199,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a:hover {
   color: #fff;
 }
 
@@ -248,15 +244,15 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 }
 
 .nav-links a {
-  color: var(--muted);
+  color: var(--fg);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .nav-links a:hover {
-  color: var(--fg);
+  opacity: 0.7;
 }
 
 .nav-actions {
