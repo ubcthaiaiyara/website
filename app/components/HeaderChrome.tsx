@@ -31,6 +31,18 @@ export default function HeaderChrome({
         if ((e.target as HTMLElement).closest("a")) setOpen(false);
       }}
     >
+      {/* Progressive blur stack: eight bands with doubling blur strength,
+          masked so the diffusion ramps from nothing to full at the top edge. */}
+      <div className="nav-blur" aria-hidden="true">
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+      </div>
       <div className="nav-inner">
         {children}
         <button
