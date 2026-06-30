@@ -433,7 +433,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
   max-width: 16ch;
   margin: 0;
   color: #fff;
-  animation: hero-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: hero-rise 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 /* Entrance: the title rises and diffuses into focus, echoing the site's
@@ -442,7 +442,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
   from {
     opacity: 0;
     transform: translateY(1.75rem);
-    filter: blur(10px);
+    filter: blur(24px);
   }
   to {
     opacity: 1;
@@ -452,7 +452,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .hero-bottom {
-  animation: hero-rise 1.1s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: hero-rise 2.2s 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
