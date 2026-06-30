@@ -15,10 +15,27 @@ export default function HeaderChrome({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    // The nav text flips from light to dark when the background behind it
+    // actually turns light — i.e. once the cream lower band of the hero
+    // gradient (~62% of its height) reaches the top of the viewport. On
+    // pages without a hero the text is dark from the start anyway.
+    let threshold = 24;
+
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+
+    const measure = () => {
+      const hero = document.querySelector<HTMLElement>(".hero");
+      threshold = hero ? hero.offsetHeight * 0.62 : 24;
+      onScroll();
+    };
+
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
   return (
