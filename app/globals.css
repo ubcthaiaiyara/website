@@ -1,75 +1,90 @@
 :root {
-  --paper: #f7f3f0;
-  --bg: #f7f3f0;
-  --fg: #16130f;
-  --muted: #6f6a63;
-  --accent: #1c2644;
-  --accent-dark: #101830;
-  --danger: #b3261e;
-  --border: #e6e0d7;
-  --card: #ffffff;
-  --max: 72rem;
-  /* Signature "sunrise" gradient in the club's brand colors: midnight indigo
+    --paper: #f7f3f0;
+    --bg: #f7f3f0;
+    --fg: #16130f;
+    --muted: #6f6a63;
+    --accent: #1c2644;
+    --accent-dark: #101830;
+    --danger: #b3261e;
+    --border: #e6e0d7;
+    --card: #ffffff;
+    --max: 72rem;
+    /* Signature "sunrise" gradient in the club's brand colors: midnight indigo
      easing through Aiyara purple into warm cream, which holds to the bottom. */
-  --sunrise: linear-gradient(
-    180deg,
-    #050115 0%,
-    #2d315d 25%,
-    #4f548c 50%,
-    #fffbec 78%,
-    #fffbec 100%
-  );
+    --sunrise: linear-gradient(
+        180deg,
+        #050115 0%,
+        #2d315d 25%,
+        #4f548c 50%,
+        #fffbec 78%,
+        #fffbec 100%
+    );
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* Matches the top of the hero gradient so overscroll bounce stays dark. */
 html {
-  background: #050115;
+    background: #050115;
 }
 
 body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+    background: var(--bg);
+    color: var(--fg);
+    font-family:
+        var(--font-sans),
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 h1 {
-  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.06;
+    font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
 }
 
 /* Secondary titles use the sans — the serif is reserved for the primary
    display statements (hero, quote, footer wordmark). */
 h2,
 h3 {
-  font-family: var(--font-sans), sans-serif;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.12;
+    font-family: var(--font-sans), sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
 }
 
 a {
-  color: var(--accent);
+    color: var(--accent);
+}
+
+/* Open Runde carries all reading text — paragraphs and descriptions; Cotham
+   Sans stays on titles, nav, and UI. */
+p,
+.lead,
+.hero-sub {
+    font-family: var(--font-body), var(--font-sans), sans-serif;
 }
 
 p {
-  color: var(--muted);
-  margin: 0 0 1rem;
+    color: var(--muted);
+    margin: 0 0 1rem;
 }
 
 /* ---------- Buttons ---------- */
@@ -77,88 +92,98 @@ p {
    brand purple): radial shine from the top, a glowing lavender rim at the
    bottom, and a glass highlight cap. Hover swells, press compresses. */
 .button {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--accent);
-  background-image: radial-gradient(75% 50% at 50% 0%, #f4f5ff, transparent),
-    radial-gradient(75% 35% at 50% 85%, #aab4f0, transparent);
-  color: #fff;
-  text-decoration: none;
-  /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent);
+    background-image:
+        radial-gradient(75% 50% at 50% 0%, #f4f5ff, transparent),
+        radial-gradient(75% 35% at 50% 85%, #aab4f0, transparent);
+    color: #fff;
+    text-decoration: none;
+    /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
      above true center, so skew the vertical padding to optically center it. */
-  padding: calc(0.7rem + 0.11em) 1.35rem calc(0.7rem - 0.11em);
-  border-radius: 999px;
-  border: 1px solid var(--accent);
-  font-family: inherit; /* <button> elements don't inherit by default */
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  text-shadow: 0 1px 1px var(--accent-dark);
-  box-shadow: inset 0 -2px 4px 1px rgba(60, 64, 112, 0.6),
-    inset 0 -4px 4px 1px #aab4f0, inset 0 0 2px 1px rgba(255, 255, 255, 0.2),
-    0 1px 4px 1px rgba(60, 64, 112, 0.2), 0 1px 4px 1px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s ease, transform 0.2s ease,
-    background-color 0.2s ease, color 0.2s ease;
+    padding: calc(0.7rem + 0.11em) 1.35rem calc(0.7rem - 0.11em);
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    font-family: inherit; /* <button> elements don't inherit by default */
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    text-shadow: 0 1px 1px var(--accent-dark);
+    box-shadow:
+        inset 0 -2px 4px 1px rgba(60, 64, 112, 0.6),
+        inset 0 -4px 4px 1px #aab4f0,
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.2),
+        0 1px 4px 1px rgba(60, 64, 112, 0.2),
+        0 1px 4px 1px rgba(0, 0, 0, 0.1);
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 /* Glass highlight cap across the top of the pill. */
 .button::after {
-  content: "";
-  position: absolute;
-  top: 1px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  width: 80%;
-  height: 40%;
-  background-image: linear-gradient(to bottom, #f4f5ff, transparent);
-  opacity: 0.75;
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    width: 80%;
+    height: 40%;
+    background-image: linear-gradient(to bottom, #f4f5ff, transparent);
+    opacity: 0.75;
 }
 
 .button:hover {
-  transform: scale(1.04);
+    transform: scale(1.04);
 }
 
 .button:active {
-  border-color: var(--accent-dark);
-  transform: scale(0.96);
-  background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+    transform: scale(0.96);
+    background-color: var(--accent-dark);
 }
 
 .button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 /* Ghost variant: the same jelly in white glass. */
 .button-ghost {
-  background-color: #fff;
-  background-image: radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
-    radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
-  color: var(--fg);
-  border: 1px solid rgba(22, 19, 15, 0.2);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
-    inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
-    inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
-    0 1px 4px 1px rgba(22, 19, 15, 0.12), 0 1px 4px 1px rgba(0, 0, 0, 0.06);
+    background-color: #fff;
+    background-image:
+        radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
+        radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
+    color: var(--fg);
+    border: 1px solid rgba(22, 19, 15, 0.2);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow:
+        inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
+        inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
+        0 1px 4px 1px rgba(22, 19, 15, 0.12),
+        0 1px 4px 1px rgba(0, 0, 0, 0.06);
 }
 
 .button-ghost::after {
-  background-image: linear-gradient(to bottom, #ffffff, transparent);
+    background-image: linear-gradient(to bottom, #ffffff, transparent);
 }
 
 .button-ghost:active {
-  border-color: rgba(22, 19, 15, 0.3);
-  background-color: #efe9dd;
+    border-color: rgba(22, 19, 15, 0.3);
+    background-color: #efe9dd;
 }
 
 .button-sm {
-  padding: calc(0.45rem + 0.11em) 0.95rem calc(0.45rem - 0.11em);
-  font-size: 0.85rem;
+    padding: calc(0.45rem + 0.11em) 0.95rem calc(0.45rem - 0.11em);
+    font-size: 0.85rem;
 }
 
 /* ---------- Header / nav ---------- */
@@ -168,97 +193,174 @@ p {
    step by step (0.078px → 10px), each masked to a 12.5% band so the ramp is
    continuous. No tint, no border, no scroll toggle. */
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: transparent;
-  transition: background-color 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: transparent;
+    transition: background-color 0.3s ease;
 }
 
 .nav-blur {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    pointer-events: none;
 }
 
 .nav-blur > div {
-  position: absolute;
-  inset: 0;
+    position: absolute;
+    inset: 0;
 }
 
 .nav-blur > div:nth-child(1) {
-  backdrop-filter: blur(0.078125px);
-  -webkit-backdrop-filter: blur(0.078125px);
-  mask-image: linear-gradient(to top, transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
+    backdrop-filter: blur(0.078125px);
+    -webkit-backdrop-filter: blur(0.078125px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 0%,
+        #000 12.5%,
+        #000 25%,
+        transparent 37.5%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 0%,
+        #000 12.5%,
+        #000 25%,
+        transparent 37.5%
+    );
 }
 
 .nav-blur > div:nth-child(2) {
-  backdrop-filter: blur(0.15625px);
-  -webkit-backdrop-filter: blur(0.15625px);
-  mask-image: linear-gradient(to top, transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
-  -webkit-mask-image: linear-gradient(to top, transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
+    backdrop-filter: blur(0.15625px);
+    -webkit-backdrop-filter: blur(0.15625px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 12.5%,
+        #000 25%,
+        #000 37.5%,
+        transparent 50%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 12.5%,
+        #000 25%,
+        #000 37.5%,
+        transparent 50%
+    );
 }
 
 .nav-blur > div:nth-child(3) {
-  backdrop-filter: blur(0.3125px);
-  -webkit-backdrop-filter: blur(0.3125px);
-  mask-image: linear-gradient(to top, transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
-  -webkit-mask-image: linear-gradient(to top, transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
+    backdrop-filter: blur(0.3125px);
+    -webkit-backdrop-filter: blur(0.3125px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 25%,
+        #000 37.5%,
+        #000 50%,
+        transparent 62.5%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 25%,
+        #000 37.5%,
+        #000 50%,
+        transparent 62.5%
+    );
 }
 
 .nav-blur > div:nth-child(4) {
-  backdrop-filter: blur(0.625px);
-  -webkit-backdrop-filter: blur(0.625px);
-  mask-image: linear-gradient(to top, transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
-  -webkit-mask-image: linear-gradient(to top, transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
+    backdrop-filter: blur(0.625px);
+    -webkit-backdrop-filter: blur(0.625px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 37.5%,
+        #000 50%,
+        #000 62.5%,
+        transparent 75%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 37.5%,
+        #000 50%,
+        #000 62.5%,
+        transparent 75%
+    );
 }
 
 .nav-blur > div:nth-child(5) {
-  backdrop-filter: blur(1.25px);
-  -webkit-backdrop-filter: blur(1.25px);
-  mask-image: linear-gradient(to top, transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
-  -webkit-mask-image: linear-gradient(to top, transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
+    backdrop-filter: blur(1.25px);
+    -webkit-backdrop-filter: blur(1.25px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 50%,
+        #000 62.5%,
+        #000 75%,
+        transparent 87.5%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 50%,
+        #000 62.5%,
+        #000 75%,
+        transparent 87.5%
+    );
 }
 
 .nav-blur > div:nth-child(6) {
-  backdrop-filter: blur(2.5px);
-  -webkit-backdrop-filter: blur(2.5px);
-  mask-image: linear-gradient(to top, transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(2.5px);
+    mask-image: linear-gradient(
+        to top,
+        transparent 62.5%,
+        #000 75%,
+        #000 87.5%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 62.5%,
+        #000 75%,
+        #000 87.5%,
+        transparent 100%
+    );
 }
 
 .nav-blur > div:nth-child(7) {
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  mask-image: linear-gradient(to top, transparent 75%, #000 87.5%, #000 100%);
-  -webkit-mask-image: linear-gradient(to top, transparent 75%, #000 87.5%, #000 100%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    mask-image: linear-gradient(to top, transparent 75%, #000 87.5%, #000 100%);
+    -webkit-mask-image: linear-gradient(
+        to top,
+        transparent 75%,
+        #000 87.5%,
+        #000 100%
+    );
 }
 
 .nav-blur > div:nth-child(8) {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
-  -webkit-mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
+    -webkit-mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
 }
 
 /* Keep the nav content above the blur stack. */
 .site-header .nav-inner {
-  position: relative;
-  z-index: 1;
+    position: relative;
+    z-index: 1;
 }
 
 /* The open mobile menu needs solid legibility rather than diffusion. */
 .site-header.is-open {
-  background: rgba(247, 243, 240, 0.88);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-bottom: 1px solid var(--border);
+    background: rgba(247, 243, 240, 0.88);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
 }
 
 /* Over the dark hero (home page top), flip the nav to light so it reads
@@ -268,687 +370,694 @@ p {
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand,
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-login,
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
-  color: #fff;
+    color: #fff;
 }
 
 /* The artwork is already white — show it as-is over the dark hero. */
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand-logo {
-  filter: none;
+    filter: none;
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
-  color: #fff;
+    color: #fff;
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
-  background-color: #fff;
-  background-image: radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
-    radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
-  color: var(--fg);
-  border-color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
-    inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
-    inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
-    0 1px 4px 1px rgba(5, 1, 21, 0.4), 0 2px 6px 1px rgba(5, 1, 21, 0.25);
+    background-color: #fff;
+    background-image:
+        radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
+        radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
+    color: var(--fg);
+    border-color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow:
+        inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
+        inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
+        0 1px 4px 1px rgba(5, 1, 21, 0.4),
+        0 2px 6px 1px rgba(5, 1, 21, 0.25);
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button::after {
-  background-image: linear-gradient(to bottom, #ffffff, transparent);
+    background-image: linear-gradient(to bottom, #ffffff, transparent);
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:active {
-  border-color: rgba(22, 19, 15, 0.3);
-  background-color: #efe9dd;
+    border-color: rgba(22, 19, 15, 0.3);
+    background-color: #efe9dd;
 }
 
 .nav-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 1rem 1.75rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1rem 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--fg);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--fg);
 }
 
 .brand-logo {
-  height: 2rem;
-  width: auto;
-  display: block;
-  /* The artwork is white-on-transparent; invert it to dark for light
+    height: 1.5rem;
+    width: auto;
+    display: block;
+    /* The artwork is white-on-transparent; invert it to dark for light
      backgrounds (the over-hero state removes the filter). */
-  filter: invert(1);
-  transition: filter 0.3s ease;
+    filter: invert(1);
+    transition: filter 0.3s ease;
 }
 
 .nav-links {
-  display: flex;
-  gap: 1.5rem;
-  margin-left: auto;
+    display: flex;
+    gap: 1.5rem;
+    margin-left: auto;
 }
 
 .nav-links a {
-  color: var(--fg);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: opacity 0.15s ease;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.15s ease;
 }
 
 .nav-links a:hover {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 
 .nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  /* Preserves the whitespace the old dash divider used to occupy
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    /* Preserves the whitespace the old dash divider used to occupy
      (1.5rem rule + 1.1rem gap). */
-  margin-left: 2.6rem;
+    margin-left: 2.6rem;
 }
 
 .nav-login {
-  color: var(--fg);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .nav-login:hover {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 
 /* Hamburger — hidden on desktop, shown by the mobile media query below. The
    three bars draw with currentColor so the over-hero light/dark flip applies. */
 .nav-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.32rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0.55rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--fg);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.32rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.55rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--fg);
 }
 
 .nav-toggle span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  border-radius: 1px;
-  background: currentColor;
-  transition: transform 0.25s ease, opacity 0.2s ease;
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transition:
+        transform 0.25s ease,
+        opacity 0.2s ease;
 }
 
 .site-header.is-open .nav-toggle span:nth-child(1) {
-  transform: translateY(0.42rem) rotate(45deg);
+    transform: translateY(0.42rem) rotate(45deg);
 }
 
 .site-header.is-open .nav-toggle span:nth-child(2) {
-  opacity: 0;
+    opacity: 0;
 }
 
 .site-header.is-open .nav-toggle span:nth-child(3) {
-  transform: translateY(-0.42rem) rotate(-45deg);
+    transform: translateY(-0.42rem) rotate(-45deg);
 }
 
 /* Mobile nav: collapse the links and actions behind the hamburger. */
 @media (max-width: 768px) {
-  .nav-inner {
-    flex-wrap: wrap;
-    padding: 0.75rem 1.25rem;
-    row-gap: 0;
-  }
+    .nav-inner {
+        flex-wrap: wrap;
+        padding: 0.75rem 1.25rem;
+        row-gap: 0;
+    }
 
-  .nav-links,
-  .nav-actions {
-    display: none;
-  }
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
 
-  .nav-toggle {
-    display: flex;
-    order: 2;
-    margin-left: auto;
-  }
+    .nav-toggle {
+        display: flex;
+        order: 2;
+        margin-left: auto;
+    }
 
-  .brand {
-    order: 1;
-  }
+    .brand {
+        order: 1;
+    }
 
-  .site-header.is-open .nav-links {
-    display: flex;
-    order: 3;
-    flex-direction: column;
-    width: 100%;
-    gap: 0;
-    margin: 0.5rem 0 0;
-    border-top: 1px solid var(--border);
-  }
+    .site-header.is-open .nav-links {
+        display: flex;
+        order: 3;
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+        margin: 0.5rem 0 0;
+        border-top: 1px solid var(--border);
+    }
 
-  .site-header.is-open .nav-links a {
-    padding: 0.9rem 0;
-    font-size: 1.05rem;
-    border-bottom: 1px solid var(--border);
-  }
+    .site-header.is-open .nav-links a {
+        padding: 0.9rem 0;
+        font-size: 1.05rem;
+        border-bottom: 1px solid var(--border);
+    }
 
-  .site-header.is-open .nav-actions {
-    display: flex;
-    order: 4;
-    width: 100%;
-    justify-content: space-between;
-    padding: 1rem 0 0.75rem;
-    margin-left: 0;
-  }
+    .site-header.is-open .nav-actions {
+        display: flex;
+        order: 4;
+        width: 100%;
+        justify-content: space-between;
+        padding: 1rem 0 0.75rem;
+        margin-left: 0;
+    }
 }
 
 /* ---------- Hero ---------- */
 .hero {
-  background: var(--sunrise);
-  color: #fff;
-  min-height: 100vh;
-  display: flex;
+    background: var(--sunrise);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
 }
 
 .hero-inner {
-  max-width: var(--max);
-  width: 100%;
-  margin: 0 auto;
-  /* The fixed header overlaps the hero, so the top padding includes its
+    max-width: var(--max);
+    width: 100%;
+    margin: 0 auto;
+    /* The fixed header overlaps the hero, so the top padding includes its
      ~4.5rem height: the visible space below the nav matches the 11.5rem gap
      between the headline and the intro copy. */
-  padding: 16rem 1.75rem 3.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 11.5rem;
+    padding: 16rem 1.75rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 11.5rem;
 }
 
 .eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
-  margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 1.5rem;
 }
 
 .hero h1 {
-  font-size: clamp(2.75rem, 7vw, 5.5rem);
-  max-width: 16ch;
-  margin: 0;
-  color: #fff;
-  animation: hero-rise 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    max-width: 16ch;
+    margin: 0;
+    color: #fff;
+    animation: hero-rise 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 /* Entrance: the title rises and diffuses into focus, echoing the site's
    progressive-blur motif; the intro copy follows a beat later. */
 @keyframes hero-rise {
-  from {
-    opacity: 0;
-    transform: translateY(1.75rem);
-    filter: blur(24px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(1.75rem);
+        filter: blur(24px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+    }
 }
 
 .hero-bottom {
-  animation: hero-rise 2.2s 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: hero-rise 2.2s 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero h1,
-  .hero-bottom {
-    animation: none;
-  }
+    .hero h1,
+    .hero-bottom {
+        animation: none;
+    }
 }
 
 .hero-bottom {
-  max-width: 34rem;
-  color: var(--fg);
+    max-width: 34rem;
+    color: var(--fg);
 }
 
 .hero-sub {
-  color: rgba(22, 19, 15, 0.82);
-  font-size: 1.15rem;
-  margin: 0 0 1.75rem;
+    color: rgba(22, 19, 15, 0.82);
+    font-size: 1.15rem;
+    margin: 0 0 1.75rem;
 }
 
 .hero-cta {
-  display: flex;
-  gap: 0.9rem;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
 }
 
 /* ---------- Sections ---------- */
 .section {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 6rem 1.75rem;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 6rem 1.75rem;
 }
 
 .section-alt {
-  background: #fff;
-  max-width: none;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  /* Full-bleed background, but content aligned to the same centered column
+    background: #fff;
+    max-width: none;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    /* Full-bleed background, but content aligned to the same centered column
      as a regular .section. */
-  padding-left: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
-  padding-right: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
+    padding-left: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
+    padding-right: max(1.75rem, calc(50% - var(--max) / 2 + 1.75rem));
 }
 
 .section-label {
-  display: block;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 1.25rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
 }
 
 .section h2 {
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  margin: 0 0 1.5rem;
-  max-width: 20ch;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    margin: 0 0 1.5rem;
+    max-width: 20ch;
 }
 
 .lead {
-  font-size: 1.2rem;
-  line-height: 1.65;
-  max-width: 44rem;
-  color: var(--fg);
+    font-size: 1.2rem;
+    line-height: 1.65;
+    max-width: 44rem;
+    color: var(--fg);
 }
 
 /* Quote */
 .quote-section {
-  text-align: center;
+    text-align: center;
 }
 
 .quote {
-  margin: 0 auto;
-  max-width: 46rem;
-  border: none;
+    margin: 0 auto;
+    max-width: 46rem;
+    border: none;
 }
 
 .quote p {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
-  line-height: 1.28;
-  font-weight: 400;
-  color: var(--fg);
-  font-style: italic;
-  letter-spacing: -0.01em;
-  margin-bottom: 1.5rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+    line-height: 1.28;
+    font-weight: 400;
+    color: var(--fg);
+    font-style: italic;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
 }
 
 .quote cite {
-  color: var(--muted);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
+    color: var(--muted);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
 }
 
 /* Sponsors */
 .sponsor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 1.25rem;
-  margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
 }
 
 .sponsor-card {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 2rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 2rem;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .sponsor-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(22, 19, 15, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(22, 19, 15, 0.08);
 }
 
 .sponsor-logo {
-  display: grid;
-  place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  margin: 0 0 1.25rem;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin: 0 0 1.25rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 .sponsor-card h3 {
-  font-size: 1.3rem;
-  margin: 0 0 0.4rem;
+    font-size: 1.3rem;
+    margin: 0 0 0.4rem;
 }
 
 .sponsor-card p {
-  margin: 0;
-  font-size: 0.95rem;
+    margin: 0;
+    font-size: 0.95rem;
 }
 
 /* Events */
 .events-empty {
-  border: 1px dashed rgba(22, 19, 15, 0.22);
-  border-radius: 1rem;
-  padding: 3.5rem;
-  text-align: center;
-  margin-top: 2rem;
+    border: 1px dashed rgba(22, 19, 15, 0.22);
+    border-radius: 1rem;
+    padding: 3.5rem;
+    text-align: center;
+    margin-top: 2rem;
 }
 
 .events-empty p {
-  margin: 0;
-  font-size: 1.05rem;
+    margin: 0;
+    font-size: 1.05rem;
 }
 
 /* Contact */
 .contact-links {
-  display: flex;
-  gap: 1.75rem;
-  flex-wrap: wrap;
-  margin: 2rem 0;
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
 }
 
 .contact-links a {
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1.05rem;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.15s ease;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.05rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
 }
 
 .contact-links a:hover {
-  border-bottom-color: currentColor;
+    border-bottom-color: currentColor;
 }
 
 /* ---------- Footer ---------- */
 .site-footer {
-  border-top: 1px solid var(--border);
-  background: #050115;
-  color: rgba(255, 255, 255, 0.75);
+    border-top: 1px solid var(--border);
+    background: #050115;
+    color: rgba(255, 255, 255, 0.75);
 }
 
 .footer-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 4rem 1.75rem 2.5rem;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 4rem 1.75rem 2.5rem;
 }
 
 .footer-top {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding-bottom: 3rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .footer-wordmark {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  color: #fff;
-  line-height: 1;
-  margin: 0;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: #fff;
+    line-height: 1;
+    margin: 0;
 }
 
 .footer-socials {
-  display: flex;
-  gap: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
 }
 
 .footer-inner .social {
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: color 0.15s ease;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
 }
 
 .footer-inner .social:hover {
-  color: #fff;
+    color: #fff;
 }
 
 .footer-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  justify-content: space-between;
-  padding-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    padding-top: 1.75rem;
 }
 
 .copyright {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
 }
 
 /* ---------- Auth / dashboard pages ---------- */
 .auth-main {
-  max-width: 27rem;
-  margin: 0 auto;
-  /* Extra top clearance for the fixed header. */
-  padding: 7.5rem 1.75rem 5rem;
+    max-width: 27rem;
+    margin: 0 auto;
+    /* Extra top clearance for the fixed header. */
+    padding: 7.5rem 1.75rem 5rem;
 }
 
 .auth-main h1 {
-  font-size: 2.4rem;
-  margin: 0 0 0.5rem;
+    font-size: 2.4rem;
+    margin: 0 0 0.5rem;
 }
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1.75rem;
-  margin-top: 1.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    margin-top: 1.75rem;
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.1rem;
 }
 
 .field label {
-  font-size: 0.85rem;
-  font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .field input {
-  padding: 0.7rem 0.85rem;
-  border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  font-family: inherit;
-  background: #fff;
-  color: var(--fg);
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fff;
+    color: var(--fg);
 }
 
 .field input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-  border-color: transparent;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: transparent;
 }
 
 .hint {
-  font-size: 0.8rem;
-  color: var(--muted);
+    font-size: 0.8rem;
+    color: var(--muted);
 }
 
 .error {
-  color: var(--danger);
-  font-size: 0.875rem;
-  margin: 0 0 1rem;
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin: 0 0 1rem;
 }
 
 .form-alt {
-  margin: 1.25rem 0 0;
-  font-size: 0.9rem;
+    margin: 1.25rem 0 0;
+    font-size: 0.9rem;
 }
 
 /* Dashboard pass card */
 .pass-card {
-  text-align: center;
+    text-align: center;
 }
 
 .pass-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  background: var(--sunrise);
-  color: #fff;
-  border-radius: 1rem;
-  padding: 1.75rem;
-  margin-bottom: 1.5rem;
-  text-align: left;
-  min-height: 9rem;
-  justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: var(--sunrise);
+    color: #fff;
+    border-radius: 1rem;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    min-height: 9rem;
+    justify-content: flex-end;
 }
 
 .pass-org {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.9;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.9;
 }
 
 .pass-name {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 1.6rem;
-  letter-spacing: -0.01em;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
 }
 
 .pass-status {
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
 }
 
 .pass-card .hint {
-  display: block;
-  margin-top: 0.85rem;
+    display: block;
+    margin-top: 0.85rem;
 }
 
 /* Account details */
 .card-title {
-  font-size: 1.25rem;
-  margin: 0 0 1rem;
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
 }
 
 .detail-list {
-  margin: 0;
+    margin: 0;
 }
 
 .detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
 }
 
 .detail-row:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .detail-row dt {
-  color: var(--muted);
-  font-size: 0.9rem;
+    color: var(--muted);
+    font-size: 0.9rem;
 }
 
 .detail-row dd {
-  margin: 0;
-  font-weight: 600;
-  text-align: right;
-  word-break: break-word;
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+    word-break: break-word;
 }
 
 .auth-main > .button-ghost {
-  margin-top: 1.75rem;
+    margin-top: 1.75rem;
 }
 
 /* Mobile whitespace and type: the desktop rhythm (16rem/11.5rem) is far too
    airy on a phone, so scale it down while keeping the top/middle gaps even. */
 @media (max-width: 640px) {
-  .hero-inner {
-    padding: 9rem 1.25rem 2.5rem;
-    gap: 5.5rem;
-  }
+    .hero-inner {
+        padding: 9rem 1.25rem 2.5rem;
+        gap: 5.5rem;
+    }
 
-  .hero h1 {
-    font-size: clamp(2.35rem, 10.5vw, 2.75rem);
-  }
+    .hero h1 {
+        font-size: clamp(2.35rem, 10.5vw, 2.75rem);
+    }
 
-  .hero-sub {
-    font-size: 1.05rem;
-    margin-bottom: 1.4rem;
-  }
+    .hero-sub {
+        font-size: 1.05rem;
+        margin-bottom: 1.4rem;
+    }
 
-  .section {
-    padding: 4rem 1.25rem;
-  }
+    .section {
+        padding: 4rem 1.25rem;
+    }
 
-  .section-alt {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
+    .section-alt {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
 
-  .section h2 {
-    margin-bottom: 1.1rem;
-  }
+    .section h2 {
+        margin-bottom: 1.1rem;
+    }
 
-  .lead {
-    font-size: 1.05rem;
-  }
+    .lead {
+        font-size: 1.05rem;
+    }
 
-  .events-empty {
-    padding: 2.25rem 1.5rem;
-  }
+    .events-empty {
+        padding: 2.25rem 1.5rem;
+    }
 
-  .footer-inner {
-    padding: 3rem 1.25rem 2rem;
-  }
+    .footer-inner {
+        padding: 3rem 1.25rem 2rem;
+    }
 
-  .footer-top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.75rem;
-    padding-bottom: 2.25rem;
-  }
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.75rem;
+        padding-bottom: 2.25rem;
+    }
 
-  .footer-bottom {
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-top: 1.5rem;
-  }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 0.25rem;
+        padding-top: 1.5rem;
+    }
 
-  .auth-main {
-    padding: 6.5rem 1.25rem 3.5rem;
-  }
+    .auth-main {
+        padding: 6.5rem 1.25rem 3.5rem;
+    }
 }
