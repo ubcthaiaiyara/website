@@ -319,7 +319,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:active {
 }
 
 .brand-logo {
-  height: 2.4rem;
+  height: 2rem;
   width: auto;
   display: block;
   /* The artwork is white-on-transparent; invert it to dark for light
