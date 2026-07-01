@@ -74,14 +74,6 @@ a {
     color: var(--accent);
 }
 
-/* Open Runde carries all reading text — paragraphs and descriptions; Cotham
-   Sans stays on titles, nav, and UI. */
-p,
-.lead,
-.hero-sub {
-    font-family: var(--font-body), var(--font-sans), sans-serif;
-}
-
 p {
     color: var(--muted);
     margin: 0 0 1rem;
@@ -102,9 +94,7 @@ p {
         radial-gradient(75% 35% at 50% 85%, #aab4f0, transparent);
     color: #fff;
     text-decoration: none;
-    /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
-     above true center, so skew the vertical padding to optically center it. */
-    padding: calc(0.7rem + 0.11em) 1.35rem calc(0.7rem - 0.11em);
+    padding: 0.7rem 1.35rem;
     border-radius: 999px;
     border: 1px solid var(--accent);
     font-family: inherit; /* <button> elements don't inherit by default */
@@ -182,7 +172,7 @@ p {
 }
 
 .button-sm {
-    padding: calc(0.45rem + 0.11em) 0.95rem calc(0.45rem - 0.11em);
+    padding: 0.45rem 0.95rem;
     font-size: 0.85rem;
 }
 

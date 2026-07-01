@@ -4,10 +4,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
 
-// Type system: Libre Baskerville (serif) for primary display statements,
-// Cotham Sans for secondary titles and UI, and Open Runde — a rounded sans by
-// Laurids Kern (OFL) — for descriptions and paragraphs. All exposed as CSS
-// variables consumed by globals.css.
+// Type system: Libre Baskerville (serif) for primary display statements, and
+// Open Runde — a rounded sans by Laurids Kern (OFL) — for everything else
+// (titles, UI, descriptions, paragraphs). Exposed as CSS variables consumed by
+// globals.css.
 const libreBaskerville = Libre_Baskerville({
     subsets: ["latin"],
     variable: "--font-serif",
@@ -16,17 +16,9 @@ const libreBaskerville = Libre_Baskerville({
     style: ["normal", "italic"],
 });
 
-// Self-hosted: Cotham Sans isn't on Google Fonts. Single weight — heavier
-// weights render as browser-synthesized bold.
-const cothamSans = localFont({
-    variable: "--font-sans",
-    display: "swap",
-    src: [{ path: "./fonts/CothamSans.otf", weight: "400", style: "normal" }],
-});
-
 // Self-hosted: Open Runde isn't on Google Fonts.
 const openRunde = localFont({
-    variable: "--font-body",
+    variable: "--font-sans",
     display: "swap",
     src: [
         { path: "./fonts/OpenRunde-Regular.woff2", weight: "400", style: "normal" },
@@ -47,7 +39,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${libreBaskerville.variable} ${cothamSans.variable} ${openRunde.variable}`}
+            className={`${libreBaskerville.variable} ${openRunde.variable}`}
         >
             <body>
                 <SiteHeader />
