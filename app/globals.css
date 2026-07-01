@@ -73,46 +73,59 @@ p {
 }
 
 /* ---------- Buttons ---------- */
-/* Skeuomorphic pills: lit from above (top-lighter gradient), beveled with
-   inset highlights/shades, lifted off the page by soft shadows, and
-   physically depressed on :active. */
+/* Aqua-gloss jelly pills (after buttons.cool/button/abXZRvG, adapted to the
+   brand purple): radial shine from the top, a glowing lavender rim at the
+   bottom, and a glass highlight cap. Hover swells, press compresses. */
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #3d372e 0%, var(--fg) 55%, #0a0806 100%);
+  background-color: var(--accent);
+  background-image: radial-gradient(75% 50% at 50% 0%, #f4f5ff, transparent),
+    radial-gradient(75% 35% at 50% 85%, #aab4f0, transparent);
   color: #fff;
   text-decoration: none;
   /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
      above true center, so skew the vertical padding to optically center it. */
   padding: calc(0.7rem + 0.11em) 1.35rem calc(0.7rem - 0.11em);
   border-radius: 999px;
-  border: 1px solid rgba(10, 8, 6, 0.9);
+  border: 1px solid var(--accent);
   font-family: inherit; /* <button> elements don't inherit by default */
   font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   cursor: pointer;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.45); /* engraved label */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45), 0 1px 2px rgba(22, 19, 15, 0.35),
-    0 3px 7px rgba(22, 19, 15, 0.2);
-  transition: background 0.2s ease, color 0.2s ease, transform 0.06s ease,
-    border-color 0.2s ease, box-shadow 0.15s ease;
+  text-shadow: 0 1px 1px var(--accent-dark);
+  box-shadow: inset 0 -2px 4px 1px rgba(60, 64, 112, 0.6),
+    inset 0 -4px 4px 1px #aab4f0, inset 0 0 2px 1px rgba(255, 255, 255, 0.2),
+    0 1px 4px 1px rgba(60, 64, 112, 0.2), 0 1px 4px 1px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease, transform 0.2s ease,
+    background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Glass highlight cap across the top of the pill. */
+.button::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  width: 80%;
+  height: 40%;
+  background-image: linear-gradient(to bottom, #f4f5ff, transparent);
+  opacity: 0.75;
 }
 
 .button:hover {
-  background: linear-gradient(to bottom, #524b40 0%, #2c2620 55%, #151009 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45), 0 2px 3px rgba(22, 19, 15, 0.35),
-    0 5px 10px rgba(22, 19, 15, 0.22);
+  transform: scale(1.04);
 }
 
 .button:active {
-  transform: translateY(1px);
-  background: linear-gradient(to bottom, #0c0a07 0%, #221d17 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.55),
-    inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(22, 19, 15, 0.15);
+  border-color: var(--accent-dark);
+  transform: scale(0.96);
+  background-color: var(--accent-dark);
 }
 
 .button:disabled {
@@ -120,27 +133,27 @@ p {
   cursor: not-allowed;
 }
 
-/* Ghost variant: a pale physical key with a letterpress label. */
+/* Ghost variant: the same jelly in white glass. */
 .button-ghost {
-  background: linear-gradient(to bottom, #ffffff 0%, #f0eae0 100%);
+  background-color: #fff;
+  background-image: radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
+    radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
   color: var(--fg);
-  border: 1px solid rgba(22, 19, 15, 0.25);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.08),
-    0 1px 2px rgba(22, 19, 15, 0.18), 0 3px 6px rgba(22, 19, 15, 0.1);
+  border: 1px solid rgba(22, 19, 15, 0.2);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
+    inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
+    0 1px 4px 1px rgba(22, 19, 15, 0.12), 0 1px 4px 1px rgba(0, 0, 0, 0.06);
 }
 
-.button-ghost:hover {
-  background: linear-gradient(to bottom, #ffffff 0%, #f8f4ec 100%);
-  border-color: rgba(22, 19, 15, 0.35);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.08),
-    0 2px 3px rgba(22, 19, 15, 0.18), 0 5px 9px rgba(22, 19, 15, 0.12);
+.button-ghost::after {
+  background-image: linear-gradient(to bottom, #ffffff, transparent);
 }
 
 .button-ghost:active {
-  background: linear-gradient(to bottom, #e9e2d6 0%, #f3eee5 100%);
-  box-shadow: inset 0 2px 4px rgba(22, 19, 15, 0.18),
-    inset 0 1px 2px rgba(22, 19, 15, 0.15), 0 1px 1px rgba(22, 19, 15, 0.08);
+  border-color: rgba(22, 19, 15, 0.3);
+  background-color: #efe9dd;
 }
 
 .button-sm {
@@ -263,19 +276,25 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
-  background: linear-gradient(to bottom, #ffffff 0%, #ece5d8 100%);
+  background-color: #fff;
+  background-image: radial-gradient(75% 50% at 50% 0%, #ffffff, transparent),
+    radial-gradient(75% 35% at 50% 85%, #e6dfd0, transparent);
   color: var(--fg);
-  border-color: rgba(255, 255, 255, 0.65);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.12),
-    0 1px 2px rgba(5, 1, 21, 0.45), 0 3px 8px rgba(5, 1, 21, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 -2px 4px 1px rgba(22, 19, 15, 0.08),
+    inset 0 -4px 4px 1px rgba(255, 251, 236, 0.9),
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.6),
+    0 1px 4px 1px rgba(5, 1, 21, 0.4), 0 2px 6px 1px rgba(5, 1, 21, 0.25);
 }
 
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
-  background: linear-gradient(to bottom, #ffffff 0%, #f6f1e7 100%);
-  border-color: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.12),
-    0 2px 4px rgba(5, 1, 21, 0.45), 0 5px 12px rgba(5, 1, 21, 0.35);
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button::after {
+  background-image: linear-gradient(to bottom, #ffffff, transparent);
+}
+
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:active {
+  border-color: rgba(22, 19, 15, 0.3);
+  background-color: #efe9dd;
 }
 
 .nav-inner {
