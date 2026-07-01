@@ -73,35 +73,46 @@ p {
 }
 
 /* ---------- Buttons ---------- */
+/* Skeuomorphic pills: lit from above (top-lighter gradient), beveled with
+   inset highlights/shades, lifted off the page by soft shadows, and
+   physically depressed on :active. */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--fg);
+  background: linear-gradient(to bottom, #3d372e 0%, var(--fg) 55%, #0a0806 100%);
   color: #fff;
   text-decoration: none;
   /* Cotham Sans's lopsided ascent/descent metrics float the label ~0.11em
      above true center, so skew the vertical padding to optically center it. */
   padding: calc(0.7rem + 0.11em) 1.35rem calc(0.7rem - 0.11em);
   border-radius: 999px;
-  border: 1px solid var(--fg);
+  border: 1px solid rgba(10, 8, 6, 0.9);
   font-family: inherit; /* <button> elements don't inherit by default */
   font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   cursor: pointer;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.45); /* engraved label */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45), 0 1px 2px rgba(22, 19, 15, 0.35),
+    0 3px 7px rgba(22, 19, 15, 0.2);
   transition: background 0.2s ease, color 0.2s ease, transform 0.06s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease, box-shadow 0.15s ease;
 }
 
-/* Solid buttons soften to a muted tone on hover. */
 .button:hover {
-  background: var(--muted);
-  border-color: var(--muted);
+  background: linear-gradient(to bottom, #524b40 0%, #2c2620 55%, #151009 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45), 0 2px 3px rgba(22, 19, 15, 0.35),
+    0 5px 10px rgba(22, 19, 15, 0.22);
 }
 
 .button:active {
   transform: translateY(1px);
+  background: linear-gradient(to bottom, #0c0a07 0%, #221d17 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(22, 19, 15, 0.15);
 }
 
 .button:disabled {
@@ -109,15 +120,27 @@ p {
   cursor: not-allowed;
 }
 
+/* Ghost variant: a pale physical key with a letterpress label. */
 .button-ghost {
-  background: transparent;
+  background: linear-gradient(to bottom, #ffffff 0%, #f0eae0 100%);
   color: var(--fg);
   border: 1px solid rgba(22, 19, 15, 0.25);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.08),
+    0 1px 2px rgba(22, 19, 15, 0.18), 0 3px 6px rgba(22, 19, 15, 0.1);
 }
 
 .button-ghost:hover {
-  background: rgba(22, 19, 15, 0.06);
-  border-color: rgba(22, 19, 15, 0.4);
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f4ec 100%);
+  border-color: rgba(22, 19, 15, 0.35);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.08),
+    0 2px 3px rgba(22, 19, 15, 0.18), 0 5px 9px rgba(22, 19, 15, 0.12);
+}
+
+.button-ghost:active {
+  background: linear-gradient(to bottom, #e9e2d6 0%, #f3eee5 100%);
+  box-shadow: inset 0 2px 4px rgba(22, 19, 15, 0.18),
+    inset 0 1px 2px rgba(22, 19, 15, 0.15), 0 1px 1px rgba(22, 19, 15, 0.08);
 }
 
 .button-sm {
@@ -240,14 +263,19 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
-  background: #fff;
+  background: linear-gradient(to bottom, #ffffff 0%, #ece5d8 100%);
   color: var(--fg);
-  border-color: #fff;
+  border-color: rgba(255, 255, 255, 0.65);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.12),
+    0 1px 2px rgba(5, 1, 21, 0.45), 0 3px 8px rgba(5, 1, 21, 0.3);
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: transparent;
+  background: linear-gradient(to bottom, #ffffff 0%, #f6f1e7 100%);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(22, 19, 15, 0.12),
+    0 2px 4px rgba(5, 1, 21, 0.45), 0 5px 12px rgba(5, 1, 21, 0.35);
 }
 
 .nav-inner {
