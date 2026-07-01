@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { readSession } from "@/lib/session";
 import HeaderChrome from "./HeaderChrome";
 
@@ -12,7 +13,14 @@ export default async function SiteHeader() {
   return (
     <HeaderChrome>
       <Link href="/" className="brand">
-        <span className="brand-text">UBC Thai Aiyara</span>
+        <Image
+          src="/elephant.png"
+          alt="UBC Thai Aiyara"
+          width={81}
+          height={109}
+          className="brand-logo"
+          priority
+        />
       </Link>
 
       <nav className="nav-links">

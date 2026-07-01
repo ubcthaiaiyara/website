@@ -271,6 +271,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
   color: #fff;
 }
 
+/* The artwork is already white — show it as-is over the dark hero. */
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand-logo {
+  filter: none;
+}
+
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
   color: #fff;
 }
@@ -313,11 +318,14 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:active {
   color: var(--fg);
 }
 
-.brand-text {
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 1rem;
+.brand-logo {
+  height: 2.4rem;
+  width: auto;
+  display: block;
+  /* The artwork is white-on-transparent; invert it to dark for light
+     backgrounds (the over-hero state removes the filter). */
+  filter: invert(1);
+  transition: filter 0.3s ease;
 }
 
 .nav-links {
