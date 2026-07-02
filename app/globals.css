@@ -993,7 +993,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     }
 
     .hero h1 {
-        font-size: clamp(1.85rem, 8vw, 2.2rem);
+        font-size: clamp(2.3rem, 9.5vw, 2.8rem);
     }
 
     .hero-sub {
