@@ -145,6 +145,9 @@ p {
 }
 
 .button-ghost:hover {
+    /* Keep the white fill — override the primary .button:hover gradient. */
+    background-image: none;
+    background-color: #fff;
     transform: translateY(-1px);
     box-shadow:
         inset 0 0 0 1px rgba(22, 19, 15, 0.08),
