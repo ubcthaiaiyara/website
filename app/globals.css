@@ -542,7 +542,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 .hero {
     background: var(--sunrise);
     color: #fff;
+    /* Fill exactly one window, on any device. dvh tracks the dynamic viewport
+       so mobile browser chrome (address bar) doesn't leave a gap or overflow;
+       vh is the fallback for older engines. */
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
 }
 
@@ -550,14 +554,14 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     max-width: var(--max);
     width: 100%;
     margin: 0 auto;
-    /* The fixed header overlaps the hero, so the top padding includes its
-     ~4.5rem height: the visible space below the nav matches the 11.5rem gap
-     between the headline and the intro copy. */
-    padding: 16rem 1.75rem 3.5rem;
+    /* Top padding clears the fixed header (~4.5rem). space-between anchors the
+       headline up top and the intro + CTAs at the bottom, so the pair always
+       fills the viewport height cleanly whatever the screen size. */
+    padding: 8rem 1.75rem 4rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 11.5rem;
+    justify-content: space-between;
+    gap: 3rem;
 }
 
 .eyebrow {
@@ -984,15 +988,8 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 /* Mobile whitespace and type: the desktop rhythm (16rem/11.5rem) is far too
    airy on a phone, so scale it down while keeping the top/middle gaps even. */
 @media (max-width: 640px) {
-    /* Size the hero to its content instead of a full 100vh — otherwise the
-       short mobile content leaves a large empty cream void below the CTAs. */
-    .hero {
-        min-height: auto;
-    }
-
     .hero-inner {
-        padding: 7rem 1.5rem 3.5rem;
-        gap: 2.75rem;
+        padding: 6.5rem 1.5rem 3rem;
     }
 
     .hero h1 {
