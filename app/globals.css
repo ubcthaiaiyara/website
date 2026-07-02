@@ -989,7 +989,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
    airy on a phone, so scale it down while keeping the top/middle gaps even. */
 @media (max-width: 640px) {
     .hero-inner {
-        padding: 6.5rem 1.5rem 3rem;
+        padding: 9rem 1.5rem 3rem;
     }
 
     .hero h1 {
