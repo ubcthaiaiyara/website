@@ -31,13 +31,25 @@ body {
     padding: 0;
 }
 
-/* Matches the top of the hero gradient so overscroll bounce stays dark. */
+/* Matches the top of the hero gradient so overscroll bounce stays dark. Also
+   backs the bottom bounce now that body is transparent (see below). */
 html {
     background: #050115;
 }
 
-body {
+/* Holds the cream page background for the actual content. Kept off <body> so
+   it doesn't propagate into the overscroll area. Everything between the header
+   and the (dark) footer sits on this. */
+.page-body {
     background: var(--bg);
+}
+
+body {
+    /* Transparent so the dark html canvas (#050115) backs BOTH the top and
+       bottom overscroll bounce. The cream page background lives on .page-body
+       below, which ends before the bounce area — so the bottom rubber-band
+       reads midnight like the footer instead of cream. */
+    background: transparent;
     color: var(--fg);
     font-family:
         var(--font-sans),

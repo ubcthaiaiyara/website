@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -33,6 +33,13 @@ export const metadata: Metadata = {
     description: "Club membership for the UBC Thai Aiyara club.",
 };
 
+// Tints the iOS Safari toolbars. Safari samples this meta tag (or the <body>
+// background as a fallback) — never the <html> background — so the midnight
+// html color alone can't reach the chrome. Match the top of the hero gradient.
+export const viewport: Viewport = {
+    themeColor: "#050115",
+};
+
 export default function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -43,7 +50,7 @@ export default function RootLayout({
         >
             <body>
                 <SiteHeader />
-                {children}
+                <div className="page-body">{children}</div>
                 <footer className="site-footer">
                     <div className="footer-inner">
                         <div className="footer-top">
