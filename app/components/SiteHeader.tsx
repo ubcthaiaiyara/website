@@ -28,9 +28,9 @@ export default async function SiteHeader() {
           it becomes a real flex box that centers the label groups. */}
       <div className="nav-menu">
         <nav className="nav-links">
-          <a href="/#about">About</a>
-          <a href="/#sponsors">Sponsors</a>
-          <a href="/#contact">Contact</a>
+          <Link href="/about">About</Link>
+          <Link href="/sponsors">Sponsors</Link>
+          <Link href="/contact">Contact</Link>
         </nav>
 
         <div className="nav-actions">

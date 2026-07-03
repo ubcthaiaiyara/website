@@ -830,6 +830,15 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     padding: 6rem 1.75rem;
 }
 
+/* Standalone content pages (About / Sponsors / Contact) have no hero, so add
+   clearance for the fixed header and keep short pages tall enough that the
+   footer stays low. */
+.subpage {
+    display: block;
+    padding-top: 4.5rem;
+    min-height: 68vh;
+}
+
 .section-alt {
     background: #fff;
     max-width: none;
