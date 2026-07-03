@@ -574,7 +574,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .hero h1 {
-    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    font-size: clamp(2.5rem, 5.5vw, 4.25rem);
     max-width: 16ch;
     margin: 0;
     color: #fff;
