@@ -858,6 +858,136 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     margin-top: 1.75rem;
 }
 
+/* ---------- Split-screen login ---------- */
+/* Left: white form column with the brand mark top-left. Right: a rounded, inset
+   panel with the brand gradient and a product mockup. The global site header
+   and footer are hidden so the page reads as a standalone auth screen. */
+body:has(.auth-split) .site-header,
+body:has(.auth-split) .site-footer {
+    display: none;
+}
+
+.auth-split {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #fff;
+}
+
+/* Left column: the form, vertically centered, with the mark pinned top-left. */
+.auth-form-col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem clamp(1.75rem, 6vw, 5rem);
+}
+
+.auth-brand {
+    position: absolute;
+    top: 2.25rem;
+    left: clamp(1.75rem, 6vw, 5rem);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.auth-brand img {
+    height: 1.85rem;
+    width: auto;
+    /* The elephant art is white; darken it for the light column. */
+    filter: invert(1);
+}
+
+.auth-form-inner {
+    width: 100%;
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+.auth-form-col h1 {
+    font-size: clamp(2.3rem, 3.4vw, 3.1rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 2rem;
+}
+
+/* The form is a bare stack here (no bordered card) — matches the reference. */
+.auth-split .card {
+    margin-top: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+/* Inputs and the submit button share identical dimensions (full width, same
+   padding / font-size / line-height) so all the pills line up. */
+.auth-split .field input,
+.auth-split .card .button {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 999px;
+}
+
+.auth-split .card .button {
+    margin-top: 1rem;
+}
+
+.auth-split .form-alt {
+    color: var(--muted);
+}
+
+/* Right column: inset rounded panel with the brand gradient + a pass mockup. */
+.auth-visual {
+    padding: 2rem;
+}
+
+.auth-visual-inner {
+    height: 100%;
+    border-radius: 1.15rem;
+    /* Traditional Thai floral motif in a diagonal (half-drop) repeat over the
+       brand gradient. */
+    background-image: url("/thai-motif.png"),
+        linear-gradient(
+            180deg,
+            #050115 0%,
+            #2b2f57 35%,
+            #4a4f82 60%,
+            #ddd2b2 100%
+        );
+    background-repeat: repeat, no-repeat;
+    background-size: 108px 108px, cover;
+    /* Center the tiling both ways so the pattern is symmetrical across the
+       panel's width and height (all four edges mirror). */
+    background-position: center center, center;
+    overflow: hidden;
+}
+
+/* Single column on smaller screens — drop the visual panel entirely. */
+@media (max-width: 860px) {
+    .auth-split {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-visual {
+        display: none;
+    }
+
+    .auth-form-col {
+        padding-top: 7rem;
+    }
+}
+
 .field {
     display: flex;
     flex-direction: column;

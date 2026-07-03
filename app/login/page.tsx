@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { readSession } from "@/lib/session";
 import LoginForm from "./LoginForm";
 
@@ -9,10 +11,30 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="auth-main">
-      <h1>Member Login</h1>
-      <p>Sign in to download your membership pass.</p>
-      <LoginForm />
+    <main className="auth-split">
+      {/* Left: form column */}
+      <div className="auth-form-col">
+        <Link href="/" className="auth-brand">
+          <Image
+            src="/elephant.png"
+            alt="UBC Thai Aiyara"
+            width={81}
+            height={109}
+            priority
+          />
+          <span>Aiyara</span>
+        </Link>
+
+        <div className="auth-form-inner">
+          <h1>Welcome back</h1>
+          <LoginForm />
+        </div>
+      </div>
+
+      {/* Right: brand visual panel with a minimalist Thai floral pattern */}
+      <div className="auth-visual" aria-hidden="true">
+        <div className="auth-visual-inner" />
+      </div>
     </main>
   );
 }
