@@ -193,7 +193,9 @@ p {
     right: 0;
     z-index: 20;
     background: transparent;
-    transition: background-color 0.3s ease, transform 0.4s ease,
+    transition:
+        background-color 0.3s ease,
+        transform 0.4s ease,
         opacity 0.4s ease;
 }
 
@@ -715,7 +717,10 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     .site-header.is-open .nav-login {
         display: inline-flex;
         padding: 0.4rem 0;
-        font-family: var(--font-sans), -apple-system, sans-serif;
+        font-family:
+            var(--font-sans),
+            -apple-system,
+            sans-serif;
         font-size: 2rem;
         font-weight: 400;
         letter-spacing: 0;
@@ -1080,12 +1085,13 @@ body:has(.auth-split) .site-footer {
 
 .auth-brand {
     position: absolute;
-    top: 2.25rem;
-    left: clamp(1.75rem, 6vw, 5rem);
+    /* Match the right panel's 2rem outer margin (.auth-visual padding). */
+    top: 2rem;
+    left: 2rem;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 1.15rem;
     letter-spacing: -0.01em;
     color: var(--fg);
@@ -1093,7 +1099,7 @@ body:has(.auth-split) .site-footer {
 }
 
 .auth-brand img {
-    height: 1.85rem;
+    height: 2rem;
     width: auto;
     /* The elephant art is white; darken it for the light column. */
     filter: invert(1);
@@ -1106,11 +1112,97 @@ body:has(.auth-split) .site-footer {
 }
 
 .auth-form-col h1 {
-    font-size: clamp(2.3rem, 3.4vw, 3.1rem);
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.05;
     margin: 0 0 2rem;
+    white-space: nowrap;
+}
+
+/* Sub-heading under the step title (e.g. the OTP instructions). Tucked up
+   under the h1's bottom margin. */
+.auth-subtext {
+    margin: -1.5rem 0 1.75rem;
+    color: var(--muted);
+    font-size: 0.98rem;
+    white-space: normal;
+}
+
+/* Plain text button used for inline secondary actions (Resend email, switch
+   between code/password). */
+.link-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15em;
+    width: 100%;
+    margin: 1rem 0 0;
+    padding: 0.25rem;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.link-button:hover {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: rgba(22, 19, 15, 0.35);
+    text-underline-offset: 2px;
+}
+
+.chevron {
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
+}
+
+/* Legal footer pinned to the bottom of the form column. */
+.auth-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 4rem);
+    margin: 0;
+    text-align: center;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.auth-footer a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: rgba(111, 106, 99, 0.4);
+    text-underline-offset: 2px;
+}
+
+.auth-footer a:hover {
+    color: var(--fg);
+}
+
+/* On mobile the disclaimer can wrap rather than overflow the narrow screen. */
+@media (max-width: 860px) {
+    .auth-footer {
+        white-space: normal;
+    }
+}
+
+/* Two side-by-side fields (first / last name). */
+.name-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.name-row .field {
+    flex: 1;
+    min-width: 0;
 }
 
 /* The form is a bare stack here (no bordered card) — matches the reference. */
@@ -1133,38 +1225,192 @@ body:has(.auth-split) .site-footer {
     border-radius: 999px;
 }
 
+.auth-split .field input {
+    border-color: #c9cbcf;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 2px 6px -1px rgba(16, 24, 48, 0.05);
+}
+
+.auth-split .field input:focus {
+    outline: none;
+    border-color: var(--fg);
+}
+
 .auth-split .card .button {
-    margin-top: 1rem;
+    margin-top: 0.25rem;
 }
 
 .auth-split .form-alt {
     color: var(--muted);
+    text-align: center;
+    margin-top: 2.25rem;
+}
+
+.auth-split .form-alt a {
+    font-weight: 600;
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.auth-split .form-alt a:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(59, 130, 246, 0.4);
+    text-underline-offset: 2px;
+}
+
+/* Google OAuth button (presentation only for now). */
+.oauth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid #c9cbcf;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 2px 6px -1px rgba(16, 24, 48, 0.05);
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.oauth-button:hover {
+    background: #f6f6f7;
+    border-color: #b4b7bd;
+}
+
+.oauth-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+}
+
+/* "or" divider between the OAuth button and the email/password fields. */
+.oauth-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 1.35rem 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #c9cbcf;
 }
 
 /* Right column: inset rounded panel with the brand gradient + a pass mockup. */
 .auth-visual {
+    position: relative;
     padding: 2rem;
 }
 
+/* Film-grain overlay on top of the panel — an SVG fractal-noise texture blended
+   over the gradient/pattern for a subtle tactile finish. */
+.auth-visual::after {
+    content: "";
+    position: absolute;
+    inset: 2rem;
+    border-radius: 1.15rem;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='200'%20height='200'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    opacity: 0.8;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
 .auth-visual-inner {
+    position: relative;
     height: 100%;
     border-radius: 1.15rem;
-    /* Traditional Thai floral motif in a diagonal (half-drop) repeat over the
-       brand gradient. */
-    background-image: url("/thai-motif.png"),
-        linear-gradient(
-            180deg,
-            #050115 0%,
-            #2b2f57 35%,
-            #4a4f82 60%,
-            #ddd2b2 100%
-        );
-    background-repeat: repeat, no-repeat;
-    background-size: 108px 108px, cover;
-    /* Center the tiling both ways so the pattern is symmetrical across the
-       panel's width and height (all four edges mirror). */
-    background-position: center center, center;
+    /* Base brand gradient; the liquid blobs (::before) drift over it and the
+       Thai motif (::after) sits on top. */
+    background: linear-gradient(
+        180deg,
+        #050115 0%,
+        #2b2f57 35%,
+        #4a4f82 60%,
+        #ddd2b2 100%
+    );
+    /* Inner rim + soft inset shadow for depth around the panel edge. */
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+        inset 0 2px 28px rgba(5, 1, 21, 0.5);
     overflow: hidden;
+}
+
+/* Liquid layer: soft blurred colour blobs that slowly drift and morph over the
+   gradient for a flowing, lava-lamp feel. */
+.auth-visual-inner::before {
+    content: "";
+    position: absolute;
+    inset: -35%;
+    background:
+        radial-gradient(
+            38% 38% at 28% 26%,
+            rgba(128, 135, 220, 0.85),
+            transparent 66%
+        ),
+        radial-gradient(
+            44% 44% at 74% 40%,
+            rgba(92, 98, 176, 0.8),
+            transparent 68%
+        ),
+        radial-gradient(
+            50% 50% at 46% 80%,
+            rgba(234, 222, 188, 0.55),
+            transparent 70%
+        );
+    filter: blur(38px);
+    animation: liquid-drift 5s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes liquid-drift {
+    0% {
+        transform: translate(-7%, -5%) rotate(-8deg) scale(1.05);
+    }
+    50% {
+        transform: translate(8%, 6%) rotate(12deg) scale(1.4);
+    }
+    100% {
+        transform: translate(-5%, 7%) rotate(-5deg) scale(1.14);
+    }
+}
+
+/* Traditional Thai floral motif in a diagonal (half-drop) repeat, centered both
+   ways so it's symmetrical across the panel, layered above the liquid blobs. */
+.auth-visual-inner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("/thai-motif.png");
+    background-repeat: repeat;
+    background-size: 108px 108px;
+    background-position: center center;
+    /* Soft drop shadow behind each motif for a subtle raised look. */
+    filter: drop-shadow(0 2px 3px rgba(5, 1, 21, 0.6));
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-visual-inner::before {
+        animation: none;
+    }
 }
 
 /* Single column on smaller screens — drop the visual panel entirely. */

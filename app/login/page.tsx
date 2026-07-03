@@ -22,13 +22,16 @@ export default async function LoginPage() {
             height={109}
             priority
           />
-          <span>Aiyara</span>
         </Link>
 
         <div className="auth-form-inner">
-          <h1>Welcome back</h1>
           <LoginForm />
         </div>
+
+        <p className="auth-footer">
+          <a href="/terms">Terms of Service</a> and{" "}
+          <a href="/privacy">Privacy Policy</a>
+        </p>
       </div>
 
       {/* Right: brand visual panel with a minimalist Thai floral pattern */}
