@@ -19,7 +19,7 @@ export default function HomePage() {
                         </p>
                         <div className="hero-cta">
                             <Link className="button" href="/join">
-                                Join the family
+                                Join us
                             </Link>
                             <Link
                                 className="button button-ghost"
