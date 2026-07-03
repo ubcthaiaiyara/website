@@ -193,7 +193,56 @@ p {
     right: 0;
     z-index: 20;
     background: transparent;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.4s ease,
+        opacity 0.4s ease;
+}
+
+/* Near the bottom of the page the dark footer scrolls up behind the bar. Give
+   it the same midnight fill + light content as the hero top so it blends with
+   the footer instead of showing the light frosted treatment against it. */
+.site-header.over-footer {
+    background: #050115;
+}
+
+.site-header.over-footer .brand,
+.site-header.over-footer .nav-login,
+.site-header.over-footer .nav-toggle,
+.site-header.over-footer .nav-links a {
+    color: #fff;
+}
+
+.site-header.over-footer .brand-logo {
+    filter: none;
+}
+
+.site-header.over-footer .button {
+    background-image: none;
+    background-color: #fff;
+    color: var(--accent);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 1px 3px -1px rgba(5, 1, 21, 0.4),
+        0 4px 14px -2px rgba(5, 1, 21, 0.3),
+        0 12px 40px -3px rgba(5, 1, 21, 0.22);
+}
+
+/* Scrolling down slides the bar up out of view and fades it; scrolling up (or
+   opening the mobile menu) removes .is-hidden, sliding it back in. */
+.site-header.is-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header {
+        transition: background-color 0.3s ease;
+    }
+    .site-header.is-hidden {
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 
 .nav-blur {
@@ -414,6 +463,12 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
 }
 
+/* Transparent to layout by default — nav-links and nav-actions behave as direct
+   children of .nav-inner. Becomes a real box only in the mobile overlay. */
+.nav-menu {
+    display: contents;
+}
+
 .brand-logo {
     height: 1.5rem;
     width: auto;
@@ -489,8 +544,10 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         opacity 0.2s ease;
 }
 
+/* Offset = bar gap (0.32rem) + bar height (2px ≈ 0.125rem) so the two diagonals
+   cross exactly at the middle bar's center for a symmetrical X. */
 .site-header.is-open .nav-toggle span:nth-child(1) {
-    transform: translateY(0.42rem) rotate(45deg);
+    transform: translateY(0.445rem) rotate(45deg);
 }
 
 .site-header.is-open .nav-toggle span:nth-child(2) {
@@ -498,14 +555,16 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .site-header.is-open .nav-toggle span:nth-child(3) {
-    transform: translateY(-0.42rem) rotate(-45deg);
+    transform: translateY(-0.445rem) rotate(-45deg);
 }
 
 /* Mobile nav: collapse the links and actions behind the hamburger. */
 @media (max-width: 768px) {
     .nav-inner {
         flex-wrap: wrap;
-        padding: 0.75rem 1.25rem;
+        /* Horizontal padding matches the hero/section gutter (1.75rem) so the
+           logo and menu button line up with the paragraph text. */
+        padding: 0.75rem 1.75rem;
         row-gap: 0;
     }
 
@@ -518,35 +577,156 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         display: flex;
         order: 2;
         margin-left: auto;
+        /* Drop the right inset so the icon lines up flush with the gutter. */
+        padding-right: 0;
+        /* Narrower icon bars. */
+        width: 2rem;
     }
 
     .brand {
         order: 1;
     }
 
+    /* Full-screen overlay menu: the bar expands to cover the whole viewport in
+       solid midnight, with the brand/close pinned to the top corners and the
+       nav + auth labels centered, split by a horizontal rule. */
+    .site-header.is-open {
+        position: fixed;
+        /* inset:0 stretches the overlay across the full screen — including the
+           strip behind Safari's floating tab bar — so the bar samples midnight
+           and reads dark instead of the cream page underneath. No explicit
+           height (which would cap it at the tab bar's top edge). */
+        inset: 0;
+        background: #050115;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-bottom: none;
+    }
+
+    /* The progressive-blur stack is meaningless over the solid overlay. */
+    .site-header.is-open .nav-blur {
+        display: none;
+    }
+
+    /* Exit: the whole overlay fades out while it's closing (the menu stays
+       mounted for the animation, driven by the .is-closing class). */
+    .site-header.is-open.is-closing {
+        animation: overlay-fade-out 0.3s ease both;
+    }
+
+    @keyframes overlay-fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .site-header.is-open.is-closing {
+            animation: none;
+        }
+    }
+
+    .site-header.is-open .nav-inner {
+        /* Column: brand stays in flow on the top row exactly as the closed bar
+           (so the logo doesn't shift), the close button is pinned top-right out
+           of flow, and .nav-menu grows to fill and centers its label groups. */
+        height: 100%;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        padding-bottom: calc(1.75rem + env(safe-area-inset-bottom));
+    }
+
+    /* Match the closed bar's top row height (the 2rem toggle) so the vertically
+       centered logo lands at the exact same spot — no jump on open. */
+    .site-header.is-open .brand {
+        min-height: 2rem;
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+    }
+
+    /* White artwork/text against the midnight overlay. */
+    .site-header.is-open .brand-logo {
+        filter: none;
+    }
+
+    .site-header.is-open .nav-toggle {
+        position: absolute;
+        top: 0.75rem;
+        right: 1.75rem;
+        color: #fff;
+    }
+
+    /* The wrapper turns into a flex box that fills the space under the brand and
+       centers the two label groups. Fades in when the menu opens. */
+    .site-header.is-open .nav-menu {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.75rem;
+        animation: menu-fade-in 0.3s ease both;
+    }
+
+    @keyframes menu-fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .site-header.is-open .nav-menu {
+            animation: none;
+        }
+    }
+
     .site-header.is-open .nav-links {
         display: flex;
-        order: 3;
         flex-direction: column;
         width: 100%;
-        gap: 0;
-        margin: 0.5rem 0 0;
-        border-top: 1px solid var(--border);
+        gap: 0.15rem;
+        margin: 0;
+        border-top: none;
     }
 
-    .site-header.is-open .nav-links a {
-        padding: 0.9rem 0;
-        font-size: 1.05rem;
-        border-bottom: 1px solid var(--border);
-    }
-
+    /* Auth items become plain text labels styled exactly like the nav links,
+       stacked and separated from them by a horizontal rule. */
     .site-header.is-open .nav-actions {
         display: flex;
-        order: 4;
+        order: 5;
+        flex-direction: column;
+        align-items: flex-start;
         width: 100%;
-        justify-content: space-between;
-        padding: 1rem 0 0.75rem;
+        gap: 0.15rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.16);
+        padding: 1.75rem 0 0;
         margin-left: 0;
+    }
+
+    .site-header.is-open .nav-links a,
+    .site-header.is-open .nav-actions .button,
+    .site-header.is-open .nav-login {
+        display: inline-flex;
+        padding: 0.4rem 0;
+        font-family: var(--font-sans), -apple-system, sans-serif;
+        font-size: 2rem;
+        font-weight: 400;
+        letter-spacing: 0;
+        color: #fff;
+        border: none;
+        border-radius: 0;
+        background: none;
+        background-image: none;
+        box-shadow: none;
+        width: auto;
+        flex: none;
     }
 }
 
@@ -554,11 +734,13 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 .hero {
     background: var(--sunrise);
     color: #fff;
-    /* Fill exactly one window, on any device. dvh tracks the dynamic viewport
-       so mobile browser chrome (address bar) doesn't leave a gap or overflow;
-       vh is the fallback for older engines. */
+    /* Fill the whole screen immersively. lvh is the *large* viewport height —
+       the full screen behind Safari's floating tab bar (which overlays content
+       rather than taking layout space in iOS 26), so the hero never leaves a
+       gap that reveals the next section. The CTAs get safe-area bottom padding
+       below so they still clear the floating bar. vh is the older fallback. */
     min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100lvh;
     display: flex;
 }
 

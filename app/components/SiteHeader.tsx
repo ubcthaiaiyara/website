@@ -23,27 +23,32 @@ export default async function SiteHeader() {
         />
       </Link>
 
-      <nav className="nav-links">
-        <a href="/#about">About</a>
-        <a href="/#sponsors">Sponsors</a>
-        <a href="/#contact">Contact</a>
-      </nav>
+      {/* Wrapper is display:contents normally (so the desktop bar lays the nav
+          links and actions out as direct flex children); on the mobile overlay
+          it becomes a real flex box that centers the label groups. */}
+      <div className="nav-menu">
+        <nav className="nav-links">
+          <a href="/#about">About</a>
+          <a href="/#sponsors">Sponsors</a>
+          <a href="/#contact">Contact</a>
+        </nav>
 
-      <div className="nav-actions">
-        {signedIn ? (
-          <Link className="button button-sm" href="/dashboard">
-            Account
-          </Link>
-        ) : (
-          <>
-            <Link className="nav-login" href="/login">
-              Log in
+        <div className="nav-actions">
+          {signedIn ? (
+            <Link className="button button-sm" href="/dashboard">
+              Account
             </Link>
-            <Link className="button button-sm" href="/join">
-              Join Now
-            </Link>
-          </>
-        )}
+          ) : (
+            <>
+              <Link className="nav-login" href="/login">
+                Log in
+              </Link>
+              <Link className="button button-sm" href="/join">
+                Join Now
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </HeaderChrome>
   );
