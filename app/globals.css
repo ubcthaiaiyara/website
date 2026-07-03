@@ -996,38 +996,92 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     padding: 4rem 1.75rem 2.5rem;
 }
 
-.footer-top {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    align-items: flex-end;
-    justify-content: space-between;
+/* Multi-column footer: brand + description on the left, link columns beside it,
+   a rule, and copyright at the bottom. */
+.footer-grid {
+    display: grid;
+    /* Brand takes the leftover space so the link columns cluster on the right,
+       while their text stays left-aligned. */
+    grid-template-columns: 1fr auto auto auto;
+    gap: 3.5rem;
     padding-bottom: 3rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.footer-wordmark {
-    font-family: var(--font-serif), Georgia, serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
+.footer-brand {
+    max-width: 22rem;
+}
+
+.footer-mark {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
     color: #fff;
-    line-height: 1;
-    margin: 0;
+}
+
+.footer-logo {
+    height: 1.6rem;
+    width: auto;
+    display: block;
+}
+
+.footer-desc {
+    margin: 1.1rem 0 1.35rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .footer-socials {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .footer-inner .social {
-    color: rgba(255, 255, 255, 0.75);
+    display: inline-flex;
+    color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
     transition: color 0.15s ease;
 }
 
 .footer-inner .social:hover {
+    color: #fff;
+}
+
+.social-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    display: block;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.footer-col h4 {
+    margin: 0 0 0.3rem;
+    font-family: var(--font-sans), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.footer-col a {
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: color 0.15s ease;
+}
+
+.footer-col a:hover {
     color: #fff;
 }
 
@@ -1037,6 +1091,21 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     gap: 0.5rem 1.5rem;
     justify-content: space-between;
     padding-top: 1.75rem;
+}
+
+.footer-location {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.footer-pin {
+    width: 0.95em;
+    height: 0.95em;
+    flex-shrink: 0;
 }
 
 .copyright {
@@ -1626,11 +1695,15 @@ body:has(.auth-split) .site-footer {
         padding: 3rem 1.75rem 2rem;
     }
 
-    .footer-top {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.75rem;
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem 1.5rem;
         padding-bottom: 2.25rem;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+        max-width: none;
     }
 
     .footer-bottom {
