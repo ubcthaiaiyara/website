@@ -751,7 +751,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     /* Top padding clears the fixed header (~4.5rem). space-between anchors the
        headline up top and the intro + CTAs at the bottom, so the pair always
        fills the viewport height cleanly whatever the screen size. */
-    padding: 8rem 1.75rem 4rem;
+    padding: 9.5rem 1.75rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1312,17 +1312,38 @@ body:has(.auth-split) .site-footer {
 /* Mobile whitespace and type: the desktop rhythm (16rem/11.5rem) is far too
    airy on a phone, so scale it down while keeping the top/middle gaps even. */
 @media (max-width: 640px) {
+    .hero {
+        /* 100lvh stops at the top edge of Safari's floating tab bar in iOS 26,
+           leaving the next section visible below it. Overshoot the viewport so
+           the gradient bleeds past the bar to the real screen bottom. The extra
+           height sits under the bar; the CTAs are lifted clear by the padding
+           below, so nothing important is hidden. */
+        min-height: calc(100lvh + 6rem);
+    }
+
     .hero-inner {
-        padding: 11rem 1.75rem 3rem;
+        /* Big bottom padding keeps the CTAs above Safari's floating tab bar and
+           the home indicator, now that the hero overshoots the screen bottom. */
+        padding: 8.5rem 1.75rem calc(9rem + env(safe-area-inset-bottom));
     }
 
     .hero h1 {
         font-size: clamp(2.7rem, 11vw, 3.4rem);
+        max-width: 8ch;
     }
 
     .hero-sub {
         font-size: 1.05rem;
         margin-bottom: 1.4rem;
+    }
+
+    /* Keep the CTAs on one line, each taking an equal half of the width. */
+    .hero-cta {
+        flex-wrap: nowrap;
+    }
+
+    .hero-cta .button {
+        flex: 1;
     }
 
     .section {
