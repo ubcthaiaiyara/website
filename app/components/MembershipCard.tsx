@@ -63,54 +63,23 @@ function drawCardFace(
   ctx.closePath();
   ctx.clip();
 
-  // Brushed-silver base gradient (diagonal).
+  // Dark brushed steel base gradient (diagonal).
   const g = ctx.createLinearGradient(0, 0, w, h);
-  g.addColorStop(0, "#f4f4f6");
-  g.addColorStop(0.35, "#dcdce0");
-  g.addColorStop(0.6, "#c9c9cf");
-  g.addColorStop(0.85, "#e6e6ea");
-  g.addColorStop(1, "#d2d2d8");
+  g.addColorStop(0, "#3a3a40");
+  g.addColorStop(0.35, "#2a2a30");
+  g.addColorStop(0.6, "#222228");
+  g.addColorStop(0.85, "#323238");
+  g.addColorStop(1, "#28282e");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
 
-  // Soft diagonal sheen band.
+  // Soft diagonal sheen band for a subtle metallic reflection.
   const sheen = ctx.createLinearGradient(w * 0.1, 0, w * 0.7, h);
   sheen.addColorStop(0, "rgba(255,255,255,0)");
-  sheen.addColorStop(0.5, "rgba(255,255,255,0.35)");
+  sheen.addColorStop(0.5, "rgba(255,255,255,0.08)");
   sheen.addColorStop(1, "rgba(255,255,255,0)");
   ctx.fillStyle = sheen;
   ctx.fillRect(0, 0, w, h);
-
-  // Film grain over the brushed metal. Drawn here — before the ripples and
-  // text — so the decorative pattern and printed letters stay clean/smooth.
-  const grain = document.createElement("canvas");
-  grain.width = w;
-  grain.height = h;
-  const gctx = grain.getContext("2d")!;
-  const noise = gctx.createImageData(w, h);
-  const data = noise.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const v = 128 + (Math.random() - 0.5) * 255;
-    data[i] = data[i + 1] = data[i + 2] = v;
-    data[i + 3] = 255;
-  }
-  gctx.putImageData(noise, 0, 0);
-  ctx.save();
-  ctx.globalAlpha = 0.22;
-  ctx.globalCompositeOperation = "overlay";
-  ctx.drawImage(grain, 0, 0);
-  ctx.restore();
-
-  // Concentric ripples in the lower-right (like the reference fingerprint).
-  const cx = w * 1.02;
-  const cy = h * 0.98;
-  ctx.lineWidth = h * 0.006;
-  ctx.strokeStyle = "rgba(120,120,128,0.26)";
-  for (let i = 1; i <= 14; i++) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, i * (h * 0.085), Math.PI, Math.PI * 1.5);
-    ctx.stroke();
-  }
 
   const padX = w * 0.055;
   const padY = h * 0.13;
@@ -120,30 +89,30 @@ function drawCardFace(
   ctx.font = `600 ${h * 0.052}px system-ui, -apple-system, Segoe UI, sans-serif`;
   ctx.letterSpacing = `${h * 0.012}px`;
   ctx.textAlign = "left";
-  ctx.fillStyle = "#6c6c74";
+  ctx.fillStyle = "#a8aab0";
   ctx.fillText(label.toUpperCase(), padX, padY);
 
   // Top-right "SINCE YYYY".
   ctx.textAlign = "right";
-  ctx.fillStyle = "#6c6c74";
+  ctx.fillStyle = "#a8aab0";
   ctx.fillText(`SINCE ${since}`, w - padX, padY);
 
   // Member name, large.
   ctx.letterSpacing = "0px";
   ctx.textAlign = "left";
   ctx.font = `500 ${h * 0.14}px system-ui, -apple-system, Segoe UI, sans-serif`;
-  ctx.fillStyle = "#3a3a40";
+  ctx.fillStyle = "#e8e8ec";
   ctx.fillText(name, padX, padY + h * 0.2);
 
   // Bottom-left wordmark: a filled dot + AIYARA.
   const markY = h - padY * 0.7;
   ctx.beginPath();
   ctx.arc(padX + h * 0.045, markY - h * 0.02, h * 0.045, 0, Math.PI * 2);
-  ctx.fillStyle = "#3a3a40";
+  ctx.fillStyle = "#e8e8ec";
   ctx.fill();
   ctx.font = `700 ${h * 0.07}px system-ui, -apple-system, Segoe UI, sans-serif`;
   ctx.letterSpacing = `${h * 0.004}px`;
-  ctx.fillStyle = "#3a3a40";
+  ctx.fillStyle = "#e8e8ec";
   ctx.fillText("AIYARA", padX + h * 0.12, markY + h * 0.005);
   ctx.letterSpacing = "0px";
 
@@ -197,9 +166,9 @@ export default function MembershipCard({
     envCanvas.height = 256;
     const envCtx = envCanvas.getContext("2d")!;
     const envGrad = envCtx.createLinearGradient(0, 0, 0, 256);
-    envGrad.addColorStop(0, "#ffffff");
-    envGrad.addColorStop(0.5, "#c4c8d0");
-    envGrad.addColorStop(1, "#6b7080");
+    envGrad.addColorStop(0, "#c8c8d0");
+    envGrad.addColorStop(0.5, "#7a7a84");
+    envGrad.addColorStop(1, "#2a2a30");
     envCtx.fillStyle = envGrad;
     envCtx.fillRect(0, 0, 16, 256);
     const envTex = new THREE.CanvasTexture(envCanvas);
@@ -224,9 +193,9 @@ export default function MembershipCard({
     const material = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,
-      metalness: 0.55,
-      roughness: 0.32,
-      envMapIntensity: 1.1,
+      metalness: 0.7,
+      roughness: 0.25,
+      envMapIntensity: 1.3,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.z = CARD_DEPTH / 2 + 0.001;
@@ -240,10 +209,10 @@ export default function MembershipCard({
     );
     bodyGeometry.center(); // center the extrusion depth on z = 0
     const bodyMaterial = new THREE.MeshStandardMaterial({
-      color: 0xd7d7dc,
-      metalness: 0.6,
-      roughness: 0.34,
-      envMapIntensity: 1.1,
+      color: 0x28282e,
+      metalness: 0.7,
+      roughness: 0.28,
+      envMapIntensity: 1.3,
     });
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     card.add(body);
