@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import EyeIcon from "../components/EyeIcon";
 
 type Step = "details" | "otp" | "password";
 
@@ -16,6 +17,7 @@ export default function JoinForm() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -162,17 +164,28 @@ export default function JoinForm() {
         <p className="auth-subtext">Creating your account as {email}</p>
         <form className="card" onSubmit={handlePassword}>
           <div className="field">
-            <input
-              id="password"
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              placeholder="Create a password (8+ characters)"
-              aria-label="Password"
-            />
+            <div className="password-field">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                placeholder="Create a password (8+ characters)"
+                aria-label="Password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+              >
+                <EyeIcon open={showPassword} />
+              </button>
+            </div>
           </div>
           {error && <p className="error">{error}</p>}
           <button className="button" type="submit" disabled={submitting}>
