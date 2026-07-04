@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import LogoutButton from "./LogoutButton";
+import MembershipCard from "../components/MembershipCard";
 
 type Props = {
     name: string;
@@ -255,20 +256,23 @@ export default function AccountView(props: Props) {
 
                 {tab === "membership" && (
                     <div className="card pass-card">
-                        <div className="pass-preview">
-                            <span className="pass-org">UBC Thai Aiyara</span>
-                            <span className="pass-name">
-                                {[firstName, lastName]
-                                    .filter(Boolean)
-                                    .join(" ")}
-                            </span>
-                            <span className="pass-status">MEMBER · Active</span>
-                        </div>
+                        <MembershipCard
+                            name={firstName || "Member"}
+                            since={
+                                props.memberSince.match(/\d{4}/)?.[0] ?? "2025"
+                            }
+                            label="Aiyara Member"
+                        />
                         <a
-                            className="button"
+                            className="wallet-badge"
                             href={`/api/passes/${props.serial}`}
+                            aria-label="Add to Apple Wallet"
                         >
-                            Add to Apple Wallet
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/add-to-apple-wallet.svg"
+                                alt="Add to Apple Wallet"
+                            />
                         </a>
                         <p className="hint">
                             Opens your <code>.pkpass</code> — add it to Apple
