@@ -19,10 +19,22 @@ export default function JoinForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Step 1 → request a verification code, then advance to the OTP step.
+  // Step 1 → validate the details, then advance to the OTP step. Names are
+  // trimmed so whitespace-only input is rejected here (the signup endpoint also
+  // requires a non-empty name).
   function handleDetails(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (firstName.trim().length === 0) {
+      setError("Please enter your first name.");
+      return;
+    }
+    if (lastName.trim().length === 0) {
+      setError("Please enter your last name.");
+      return;
+    }
+
     // TODO: POST { firstName, lastName, email } to start account creation and
     // send a verification code before advancing.
     setStep("otp");
@@ -219,7 +231,7 @@ export default function JoinForm() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               autoComplete="given-name"
-              placeholder="First name"
+              placeholder="First name *"
               aria-label="First name"
             />
           </div>
@@ -231,7 +243,7 @@ export default function JoinForm() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               autoComplete="family-name"
-              placeholder="Last name"
+              placeholder="Last name *"
               aria-label="Last name"
             />
           </div>
@@ -244,7 +256,7 @@ export default function JoinForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            placeholder="Enter your email address"
+            placeholder="Enter your email address *"
             aria-label="Email"
           />
         </div>
