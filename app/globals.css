@@ -1093,6 +1093,29 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     padding-top: 1.75rem;
 }
 
+.footer-bottom-left {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-legal a {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-legal a:hover {
+    color: #fff;
+}
+
 .footer-location {
     display: flex;
     align-items: center;

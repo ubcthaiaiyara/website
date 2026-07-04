@@ -32,18 +32,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Quote */}
-            <section className="section quote-section">
-                <blockquote className="quote">
-                    <p>
-                        “With my Roon Pees, Roon Norngs and friends there for
-                        me, I feel right at home. Aiyara is more than a club —
-                        it&apos;s a family.”
-                    </p>
-                    <cite>— Minnie Tanglertsampan, President 2021–2022</cite>
-                </blockquote>
-            </section>
-
             {/* Events */}
             <section id="events" className="section">
                 <span className="section-label">Events</span>
