@@ -9,7 +9,11 @@ create table if not exists members (
   serial_number text        not null unique,
   auth_token    text        not null,
   password_hash text        not null,
-  created_at    timestamptz not null default now()
+  created_at    timestamptz not null default now(),
+  -- Editable personal details (set from the member's account page).
+  faculty       text,
+  program       text,
+  year          text
 );
 
 -- serial_number is looked up on every pass download.
@@ -24,6 +28,12 @@ create index if not exists members_serial_number_idx on members (serial_number);
 -- re-register). The unique email index enables login-by-email.
 --   alter table members add column if not exists password_hash text;
 --   create unique index if not exists members_email_key on members (lower(email));
+
+-- MIGRATION for an ALREADY-DEPLOYED table: add the editable profile columns.
+-- Nullable so existing rows are unaffected; the account page writes them.
+--   alter table members add column if not exists faculty text;
+--   alter table members add column if not exists program text;
+--   alter table members add column if not exists year    text;
 
 -- FUTURE (do not add yet — these are additive and won't break existing rows or
 -- the current insert/select, which name their columns explicitly):

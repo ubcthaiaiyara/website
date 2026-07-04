@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { readSession } from "@/lib/session";
 import { getMemberBySerial } from "@/lib/members";
-import LogoutButton from "./LogoutButton";
+import AccountView from "./AccountView";
 
 // Server Component, session-gated account page. Not signed in → /login. Shows
 // the member's account details and lets them download their Apple Wallet pass
@@ -27,47 +27,16 @@ export default async function DashboardPage() {
   });
 
   return (
-    <main className="auth-main">
-      <h1>Hi, {member.name.split(" ")[0]} 👋</h1>
-      <p>You&apos;re an active member of the Aiyara family.</p>
-
-      <div className="card pass-card">
-        <div className="pass-preview">
-          <span className="pass-org">UBC Thai Aiyara</span>
-          <span className="pass-name">{member.name}</span>
-          <span className="pass-status">MEMBER · Active</span>
-        </div>
-        <a className="button" href={`/api/passes/${member.serial_number}`}>
-          Add to Apple Wallet
-        </a>
-        <p className="hint">
-          Opens your <code>.pkpass</code> — add it to Apple Wallet on your iPhone.
-        </p>
-      </div>
-
-      <div className="card">
-        <h2 className="card-title">Account details</h2>
-        <dl className="detail-list">
-          <div className="detail-row">
-            <dt>Name</dt>
-            <dd>{member.name}</dd>
-          </div>
-          <div className="detail-row">
-            <dt>Email</dt>
-            <dd>{member.email}</dd>
-          </div>
-          <div className="detail-row">
-            <dt>Member since</dt>
-            <dd>{memberSince}</dd>
-          </div>
-          <div className="detail-row">
-            <dt>Status</dt>
-            <dd>Active</dd>
-          </div>
-        </dl>
-      </div>
-
-      <LogoutButton />
+    <main className="auth-main account-main">
+      <AccountView
+        name={member.name}
+        email={member.email}
+        faculty={member.faculty ?? ""}
+        program={member.program ?? ""}
+        year={member.year ?? ""}
+        memberSince={memberSince}
+        serial={member.serial_number}
+      />
     </main>
   );
 }

@@ -24,6 +24,19 @@ export interface Member {
   auth_token: string;
   password_hash: string;
   created_at: string; // ISO 8601 timestamp
+  // Optional profile fields the member can edit from their account page. When
+  // using Supabase these require matching columns (faculty, program, year).
+  faculty?: string | null;
+  program?: string | null;
+  year?: string | null;
+}
+
+/** Editable personal details. `name` is the recombined first + last name. */
+export interface ProfileUpdate {
+  name: string;
+  faculty: string;
+  program: string;
+  year: string;
 }
 
 /** Normalize an email for storage and lookup (trim + lowercase). */
@@ -191,4 +204,45 @@ export async function getMemberBySerial(
 
   // In-memory fallback.
   return membersBySerial.get(serial) ?? null;
+}
+
+/**
+ * Update a member's editable personal details (name + faculty/program/year).
+ * Returns the updated member, or null if the serial is unknown.
+ */
+export async function updateMemberProfile(
+  serial: string,
+  update: ProfileUpdate
+): Promise<Member | null> {
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("members")
+      .update({
+        name: update.name,
+        faculty: update.faculty,
+        program: update.program,
+        year: update.year,
+      })
+      .eq("serial_number", serial)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to update member: ${error.message}`);
+    }
+
+    return (data as Member) ?? null;
+  }
+
+  // In-memory fallback.
+  const member = membersBySerial.get(serial);
+  if (!member) return null;
+
+  member.name = update.name;
+  member.faculty = update.faculty;
+  member.program = update.program;
+  member.year = update.year;
+  membersBySerial.set(serial, member);
+  return member;
 }
