@@ -1362,7 +1362,7 @@ body:has(.auth-split) .site-footer {
 /* Sub-heading under the step title (e.g. the OTP instructions). Tucked up
    under the h1's bottom margin. */
 .auth-subtext {
-    margin: -1.5rem 0 1.75rem;
+    margin: -0.75rem 0 1.75rem;
     color: var(--muted);
     font-size: 0.98rem;
     white-space: normal;
