@@ -101,51 +101,16 @@ function drawCardFace(
   ctx.drawImage(grain, 0, 0);
   ctx.restore();
 
-  // Emboss helpers: a light copy shifted up-left + a dark copy shifted
-  // down-right, with the base drawn on top, so prints and pattern read as
-  // raised/pressed into the metal. They respect the current font/align.
-  const o = h * 0.004; // emboss offset
-  const HL = "rgba(255,255,255,0.6)";
-  const SH = "rgba(40,40,46,0.45)";
-  const embossText = (text: string, x: number, y: number, base: string) => {
-    ctx.fillStyle = HL;
-    ctx.fillText(text, x - o, y - o);
-    ctx.fillStyle = SH;
-    ctx.fillText(text, x + o, y + o);
-    ctx.fillStyle = base;
-    ctx.fillText(text, x, y);
-  };
-  const embossArc = (x: number, y: number, radius: number, base: string) => {
-    ctx.beginPath();
-    ctx.arc(x - o, y - o, radius, 0, Math.PI * 2);
-    ctx.fillStyle = HL;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x + o, y + o, radius, 0, Math.PI * 2);
-    ctx.fillStyle = SH;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = base;
-    ctx.fill();
-  };
-
-  // Concentric ripples in the lower-right (like the reference fingerprint),
-  // embossed so they look tooled into the surface.
+  // Concentric ripples in the lower-right (like the reference fingerprint).
   const cx = w * 1.02;
   const cy = h * 0.98;
   ctx.lineWidth = h * 0.006;
-  const strokeRipples = (dx: number, dy: number, color: string) => {
-    ctx.strokeStyle = color;
-    for (let i = 1; i <= 14; i++) {
-      ctx.beginPath();
-      ctx.arc(cx + dx, cy + dy, i * (h * 0.085), Math.PI, Math.PI * 1.5);
-      ctx.stroke();
-    }
-  };
-  strokeRipples(-o, -o, HL);
-  strokeRipples(o, o, SH);
-  strokeRipples(0, 0, "rgba(120,120,128,0.26)");
+  ctx.strokeStyle = "rgba(120,120,128,0.26)";
+  for (let i = 1; i <= 14; i++) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, i * (h * 0.085), Math.PI, Math.PI * 1.5);
+    ctx.stroke();
+  }
 
   const padX = w * 0.055;
   const padY = h * 0.13;
@@ -155,24 +120,31 @@ function drawCardFace(
   ctx.font = `600 ${h * 0.052}px system-ui, -apple-system, Segoe UI, sans-serif`;
   ctx.letterSpacing = `${h * 0.012}px`;
   ctx.textAlign = "left";
-  embossText(label.toUpperCase(), padX, padY, "#6c6c74");
+  ctx.fillStyle = "#6c6c74";
+  ctx.fillText(label.toUpperCase(), padX, padY);
 
   // Top-right "SINCE YYYY".
   ctx.textAlign = "right";
-  embossText(`SINCE ${since}`, w - padX, padY, "#6c6c74");
+  ctx.fillStyle = "#6c6c74";
+  ctx.fillText(`SINCE ${since}`, w - padX, padY);
 
   // Member name, large.
   ctx.letterSpacing = "0px";
   ctx.textAlign = "left";
   ctx.font = `500 ${h * 0.14}px system-ui, -apple-system, Segoe UI, sans-serif`;
-  embossText(name, padX, padY + h * 0.2, "#3a3a40");
+  ctx.fillStyle = "#3a3a40";
+  ctx.fillText(name, padX, padY + h * 0.2);
 
   // Bottom-left wordmark: a filled dot + AIYARA.
   const markY = h - padY * 0.7;
-  embossArc(padX + h * 0.045, markY - h * 0.02, h * 0.045, "#3a3a40");
+  ctx.beginPath();
+  ctx.arc(padX + h * 0.045, markY - h * 0.02, h * 0.045, 0, Math.PI * 2);
+  ctx.fillStyle = "#3a3a40";
+  ctx.fill();
   ctx.font = `700 ${h * 0.07}px system-ui, -apple-system, Segoe UI, sans-serif`;
   ctx.letterSpacing = `${h * 0.004}px`;
-  embossText("AIYARA", padX + h * 0.12, markY + h * 0.005, "#3a3a40");
+  ctx.fillStyle = "#3a3a40";
+  ctx.fillText("AIYARA", padX + h * 0.12, markY + h * 0.005);
   ctx.letterSpacing = "0px";
 
   ctx.restore();
