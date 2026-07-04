@@ -1774,6 +1774,18 @@ body:has(.auth-split) .site-footer {
     justify-content: flex-end;
 }
 
+/* three.js tilt card: keep the ISO card aspect and give the tilt room to
+   breathe so raised corners don't clip against the panel. */
+.membership-card-3d {
+    width: 100%;
+    max-width: 27rem;
+    aspect-ratio: 1.586;
+    margin: 0 auto 1.5rem;
+    cursor: pointer;
+    touch-action: pan-y;
+    filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.22));
+}
+
 .pass-org {
     font-size: 0.8rem;
     letter-spacing: 0.14em;
@@ -1796,6 +1808,35 @@ body:has(.auth-split) .site-footer {
 .pass-card .hint {
     display: block;
     margin-top: 0.85rem;
+}
+
+/* Official "Add to Apple Wallet" badge link. */
+.wallet-badge {
+    display: inline-block;
+    line-height: 0;
+    border-radius: 8px;
+    transition: transform 0.15s ease;
+}
+
+.wallet-badge img {
+    height: 2.75rem;
+    width: auto;
+    /* drop-shadow follows the badge's rounded silhouette, not a box */
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
+    transition: filter 0.15s ease;
+}
+
+.wallet-badge:hover {
+    transform: translateY(-1px);
+}
+
+.wallet-badge:hover img {
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
+}
+
+.wallet-badge:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 /* Account details */
