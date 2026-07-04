@@ -119,6 +119,79 @@ function drawCardFace(
   ctx.restore();
 }
 
+function drawCardBack(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+) {
+  const r = h * 0.05;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.arcTo(w, 0, w, h, r);
+  ctx.arcTo(w, h, 0, h, r);
+  ctx.arcTo(0, h, 0, 0, r);
+  ctx.arcTo(0, 0, w, 0, r);
+  ctx.closePath();
+  ctx.clip();
+
+  // Same dark brushed steel base.
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, "#3a3a40");
+  g.addColorStop(0.35, "#2a2a30");
+  g.addColorStop(0.6, "#222228");
+  g.addColorStop(0.85, "#323238");
+  g.addColorStop(1, "#28282e");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  const padX = w * 0.055;
+  const sigY = h * 0.38;
+  const sigH = h * 0.12;
+  const sigW = w - padX * 2;
+
+  // Signature panel label.
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.font = `500 ${h * 0.038}px system-ui, -apple-system, Segoe UI, sans-serif`;
+  ctx.letterSpacing = `${h * 0.008}px`;
+  ctx.fillStyle = "#888a90";
+  ctx.fillText("AUTHORIZED SIGNATURE", padX, sigY - h * 0.02);
+
+  // Signature strip.
+  ctx.fillStyle = "#d8d8dc";
+  const stripR = h * 0.01;
+  ctx.beginPath();
+  ctx.moveTo(padX + stripR, sigY);
+  ctx.arcTo(padX + sigW, sigY, padX + sigW, sigY + sigH, stripR);
+  ctx.arcTo(padX + sigW, sigY + sigH, padX, sigY + sigH, stripR);
+  ctx.arcTo(padX, sigY + sigH, padX, sigY, stripR);
+  ctx.arcTo(padX, sigY, padX + sigW, sigY, stripR);
+  ctx.closePath();
+  ctx.fill();
+
+  // Thin border around strip.
+  ctx.strokeStyle = "#b0b0b6";
+  ctx.lineWidth = h * 0.002;
+  ctx.stroke();
+
+  // Bottom fine print.
+  const fpY = h - padX * 0.8;
+  ctx.font = `${h * 0.03}px system-ui, -apple-system, Segoe UI, sans-serif`;
+  ctx.letterSpacing = `${h * 0.003}px`;
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#707278";
+  ctx.fillText(
+    "This card is the property of UBC Thai Aiyara. If found, please return.",
+    w / 2,
+    fpY,
+  );
+
+  ctx.restore();
+}
+
 export default function MembershipCard({
   name,
   since = "2025",
@@ -144,6 +217,17 @@ export default function MembershipCard({
     const texture = new THREE.CanvasTexture(faceCanvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
+
+    // --- Card back texture -------------------------------------------------
+    const backCanvas = document.createElement("canvas");
+    backCanvas.width = TEX_W;
+    backCanvas.height = TEX_H;
+    const backCtx = backCanvas.getContext("2d")!;
+    drawCardBack(backCtx, TEX_W, TEX_H);
+
+    const backTexture = new THREE.CanvasTexture(backCanvas);
+    backTexture.colorSpace = THREE.SRGBColorSpace;
+    backTexture.anisotropy = 8;
 
     // --- Scene / camera / renderer ----------------------------------------
     const scene = new THREE.Scene();
@@ -201,6 +285,21 @@ export default function MembershipCard({
     mesh.position.z = CARD_DEPTH / 2 + 0.001;
     card.add(mesh);
 
+    // Back face: same plane geometry, on the reverse side, flipped so the
+    // texture reads correctly when the card is rotated 180° around Y.
+    const backGeometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 1, 1);
+    const backMaterial = new THREE.MeshStandardMaterial({
+      map: backTexture,
+      transparent: true,
+      metalness: 0.7,
+      roughness: 0.25,
+      envMapIntensity: 1.3,
+    });
+    const backMesh = new THREE.Mesh(backGeometry, backMaterial);
+    backMesh.position.z = -CARD_DEPTH / 2 - 0.001;
+    backMesh.rotation.y = Math.PI;
+    card.add(backMesh);
+
     // Body: a rounded, extruded slab that gives the card real thickness so its
     // metallic edge catches light when tilted.
     const bodyGeometry = new THREE.ExtrudeGeometry(
@@ -239,8 +338,8 @@ export default function MembershipCard({
       const rect = mount!.getBoundingClientRect();
       const px = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const py = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-      targetY = px * 0.4; // yaw follows horizontal
-      targetX = -py * 0.28; // pitch follows vertical (inverted)
+      targetY = px * 0.4;
+      targetX = -py * 0.28;
     }
     function onLeave() {
       targetX = 0;
@@ -249,13 +348,27 @@ export default function MembershipCard({
     mount.addEventListener("pointermove", onMove);
     mount.addEventListener("pointerleave", onLeave);
 
+    // --- Flip on click -----------------------------------------------------
+    let flipTarget = 0;
+    function onClick() {
+      flipTarget = flipTarget === 0 ? Math.PI : 0;
+    }
+    mount.addEventListener("click", onClick);
+
     // --- Render loop -------------------------------------------------------
     let raf = 0;
     let targetScale = 1;
+    let flipCurrent = 0;
     function tick() {
       raf = requestAnimationFrame(tick);
+
+      // Smooth tilt toward pointer.
       card.rotation.x += (targetX - card.rotation.x) * 0.09;
-      card.rotation.y += (targetY - card.rotation.y) * 0.09;
+
+      // Smooth flip animation, with tilt layered on top.
+      flipCurrent += (flipTarget - flipCurrent) * 0.09;
+      card.rotation.y = flipCurrent + targetY;
+
       const hovering = targetX !== 0 || targetY !== 0;
       targetScale = hovering ? 1.03 : 1;
       const s = card.scale.x + (targetScale - card.scale.x) * 0.09;
@@ -269,11 +382,15 @@ export default function MembershipCard({
       ro.disconnect();
       mount.removeEventListener("pointermove", onMove);
       mount.removeEventListener("pointerleave", onLeave);
+      mount.removeEventListener("click", onClick);
       geometry.dispose();
       material.dispose();
+      backGeometry.dispose();
+      backMaterial.dispose();
       bodyGeometry.dispose();
       bodyMaterial.dispose();
       texture.dispose();
+      backTexture.dispose();
       envRT.dispose();
       pmrem.dispose();
       renderer.dispose();
