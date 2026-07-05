@@ -1305,6 +1305,12 @@ body:has(.auth-split) .site-footer {
     display: none;
 }
 
+/* Auth screens are white end-to-end, so the overscroll bounce/safe-area
+   should be too. Override the global dark html canvas (see top of file). */
+html:has(body .auth-split) {
+    background: #fff;
+}
+
 .auth-split {
     min-height: 100vh;
     min-height: 100dvh;

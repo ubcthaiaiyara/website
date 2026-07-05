@@ -1,6 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Viewport } from "next";
 import JoinForm from "./JoinForm";
+
+// Overrides the root layout's dark theme-color so Safari's toolbar tint
+// matches this page's white background instead of the hero's midnight.
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
 
 // Server Component shell. Mirrors the login page's split-screen layout: a white
 // form column on the left, the brand gradient panel on the right.
