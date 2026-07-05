@@ -1,25 +1,42 @@
 "use client";
 
 import { useState } from "react";
+import EyeIcon from "../components/EyeIcon";
 
-type Step = "details" | "otp";
+type Step = "details" | "otp" | "password";
 
 // Client sign-up flow, ordered like the reference: name + email first with a
 // primary "Continue", then a Google option, then the sign-in link. "Continue"
-// advances to an emailed verification code (passwordless, matching login).
+// advances to an emailed verification code (passwordless, matching login); a
+// password fallback is offered as an alternative that creates the account
+// directly via the existing /api/auth/signup endpoint.
 export default function JoinForm() {
   const [step, setStep] = useState<Step>("details");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Step 1 → request a verification code, then advance to the OTP step.
+  // Step 1 → validate the details, then advance to the OTP step. Names are
+  // trimmed so whitespace-only input is rejected here (the signup endpoint also
+  // requires a non-empty name).
   function handleDetails(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (firstName.trim().length === 0) {
+      setError("Please enter your first name.");
+      return;
+    }
+    if (lastName.trim().length === 0) {
+      setError("Please enter your last name.");
+      return;
+    }
+
     // TODO: POST { firstName, lastName, email } to start account creation and
     // send a verification code before advancing.
     setStep("otp");
@@ -32,6 +49,36 @@ export default function JoinForm() {
     setError(null);
     // TODO: verify { email, code }, create the account, then redirect.
     setSubmitting(false);
+  }
+
+  // Password fallback → create the account via the existing signup endpoint,
+  // which hashes the password, signs the member in, and returns their serial.
+  async function handlePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${firstName} ${lastName}`.trim(),
+          email,
+          password,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Something went wrong. Please try again.");
+      }
+
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+      setSubmitting(false);
+    }
   }
 
   function resend() {
@@ -66,11 +113,100 @@ export default function JoinForm() {
           <button type="button" className="link-button" onClick={resend}>
             Resend email
           </button>
+
+          <div className="oauth-divider">
+            <span>OR</span>
+          </div>
+
+          <button
+            type="button"
+            className="oauth-button"
+            onClick={() => {
+              setError(null);
+              setStep("password");
+            }}
+          >
+            Continue with password
+          </button>
           <button
             type="button"
             className="link-button"
             onClick={() => {
               setError(null);
+              setStep("details");
+            }}
+          >
+            <svg
+              className="chevron"
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M8.21192 3.09155C8.40164 2.95736 8.66555 2.96958 8.8418 3.13452C9.01806 3.29976 9.04853 3.56338 8.92676 3.76148L8.86524 3.84155L5.43555 7.49976L8.86524 11.158L8.92676 11.238C9.04853 11.4361 9.01806 11.6998 8.8418 11.865C8.66555 12.0299 8.40164 12.0422 8.21192 11.908L8.13477 11.8416L4.38477 7.84155C4.20487 7.64932 4.20487 7.35019 4.38477 7.15796L8.13477 3.15796L8.21192 3.09155Z"
+                fill="currentColor"
+              />
+            </svg>
+            Go back
+          </button>
+        </form>
+      </>
+    );
+  }
+
+  if (step === "password") {
+    return (
+      <>
+        <h1>Create account</h1>
+        <p className="auth-subtext">Creating your account as {email}</p>
+        <form className="card" onSubmit={handlePassword}>
+          <div className="field">
+            <div className="password-field">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                placeholder="Create a password (8+ characters)"
+                aria-label="Password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+              >
+                <EyeIcon open={showPassword} />
+              </button>
+            </div>
+          </div>
+          {error && <p className="error">{error}</p>}
+          <button className="button" type="submit" disabled={submitting}>
+            {submitting ? "Creating account…" : "Continue"}
+          </button>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => {
+              setError(null);
+              setStep("otp");
+            }}
+          >
+            Use email code instead
+          </button>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => {
+              setError(null);
+              setPassword("");
               setStep("details");
             }}
           >
@@ -108,7 +244,7 @@ export default function JoinForm() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               autoComplete="given-name"
-              placeholder="First name"
+              placeholder="First name *"
               aria-label="First name"
             />
           </div>
@@ -120,7 +256,7 @@ export default function JoinForm() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               autoComplete="family-name"
-              placeholder="Last name"
+              placeholder="Last name *"
               aria-label="Last name"
             />
           </div>
@@ -133,7 +269,7 @@ export default function JoinForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            placeholder="Enter your email address"
+            placeholder="Enter your email address *"
             aria-label="Email"
           />
         </div>
