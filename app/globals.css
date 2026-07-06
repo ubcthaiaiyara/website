@@ -1798,6 +1798,23 @@ html:has(body .auth-split) {
     filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.22));
 }
 
+/* On phones the card is boxed in by the pass-card padding, leaving it small.
+   Trim that padding and let the card bleed out to the panel edges so it renders
+   noticeably larger. */
+@media (max-width: 640px) {
+    .pass-card {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .membership-card-3d {
+        width: calc(100% + 1.5rem);
+        max-width: none;
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+    }
+}
+
 .pass-org {
     font-size: 0.8rem;
     letter-spacing: 0.14em;
