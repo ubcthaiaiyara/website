@@ -1174,14 +1174,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     flex-direction: column;
 }
 
-.account-greeting {
-    margin: 0 0 1.25rem;
-    padding: 0 0.9rem;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--fg);
-}
-
 .account-tabs {
     display: flex;
     flex-direction: column;

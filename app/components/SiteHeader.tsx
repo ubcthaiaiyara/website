@@ -1,14 +1,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import { readSession } from "@/lib/session";
+import { getMemberBySerial } from "@/lib/members";
 import HeaderChrome from "./HeaderChrome";
 
 // Server component: reads the session so the header can show either the
-// signed-out (Log in / Join) or signed-in (My Pass) actions. Rendered globally
-// from app/layout.tsx. HeaderChrome (client) owns the bar itself: the
-// scroll-driven transparent → frosted transition and the mobile hamburger.
+// signed-out (Log in / Join) or signed-in actions. Rendered globally from
+// app/layout.tsx. HeaderChrome (client) owns the bar itself: the scroll-driven
+// transparent → frosted transition and the mobile hamburger.
 export default async function SiteHeader() {
-  const signedIn = Boolean(await readSession());
+  const serial = await readSession();
+  const member = serial ? await getMemberBySerial(serial) : null;
+  // Greet the signed-in member by first name on the account button. `name` is
+  // the combined first + last; fall back to "there" if it's somehow blank.
+  const firstName = member?.name.trim().split(/\s+/)[0] || "there";
 
   return (
     <HeaderChrome>
@@ -34,9 +39,9 @@ export default async function SiteHeader() {
         </nav>
 
         <div className="nav-actions">
-          {signedIn ? (
+          {member ? (
             <Link className="button button-sm" href="/dashboard">
-              My Account
+              Hi, {firstName}
             </Link>
           ) : (
             <>

@@ -124,9 +124,6 @@ export default function AccountView(props: Props) {
     return (
         <div className="account">
             <aside className="account-nav">
-                <p className="account-greeting">
-                    Hi, {firstName || "there"} 👋
-                </p>
                 <div className="account-tabs">
                     {TABS.map((t) => (
                         <button
