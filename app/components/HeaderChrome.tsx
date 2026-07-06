@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Matches the overlay fade-out duration in globals.css (menu-fade-out).
+// Covers the sheet's slide-up exit animation in globals.css (sheet-slide-up).
 const MENU_EXIT_MS = 300;
 
 // Client shell for the site header: swaps the chrome from fully transparent

@@ -478,7 +478,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     /* The artwork is white-on-transparent; invert it to dark for light
      backgrounds (the over-hero state removes the filter). */
     filter: invert(1);
-    transition: filter 0.3s ease;
+    transition:
+        filter 0.3s ease,
+        opacity 0.3s ease;
 }
 
 .nav-links {
@@ -589,149 +591,149 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         order: 1;
     }
 
-    /* Full-screen overlay menu: the bar expands to cover the whole viewport in
-       solid midnight, with the brand/close pinned to the top corners and the
-       nav + auth labels centered, split by a horizontal rule. */
+    /* Apple-style full-screen takeover: the slim top bar (brand + toggle) stays
+       put so the hamburger morphs into the X in place, while the gradient sheet
+       and links slide down behind it to cover the screen. */
     .site-header.is-open {
+        /* The header itself becomes the full-screen fixed container. The sheet
+           inside is then a plain absolutely-positioned child — Safari animates
+           absolute-inside-fixed reliably, whereas a nested position:fixed sheet
+           animating transform renders incorrectly on iOS. */
         position: fixed;
-        /* inset:0 stretches the overlay across the full screen — including the
-           strip behind Safari's floating tab bar — so the bar samples midnight
-           and reads dark instead of the cream page underneath. No explicit
-           height (which would cap it at the tab bar's top edge). */
         inset: 0;
+        border-bottom: none;
+        /* Override the light frosted fill inherited from the desktop .is-open
+           rule. That cream background sits behind the sheet and was revealed as
+           a white flash when the sheet slid up on close — match it to the
+           midnight sheet so the reveal is seamless. */
         background: #050115;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        border-bottom: none;
     }
 
-    /* The progressive-blur stack is meaningless over the solid overlay. */
+    /* The progressive-blur stack is meaningless over the solid sheet. */
     .site-header.is-open .nav-blur {
         display: none;
     }
 
-    /* Exit: the whole overlay fades out while it's closing (the menu stays
-       mounted for the animation, driven by the .is-closing class). */
-    .site-header.is-open.is-closing {
-        animation: overlay-fade-out 0.3s ease both;
-    }
-
-    @keyframes overlay-fade-out {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .site-header.is-open.is-closing {
-            animation: none;
-        }
-    }
-
+    /* The bar row keeps brand + toggle pinned to the top of the full-screen
+       header (out of the sheet's flow, above it) so the hamburger→X morphs in
+       place while the sheet slides behind. */
     .site-header.is-open .nav-inner {
-        /* Column: brand stays in flow on the top row exactly as the closed bar
-           (so the logo doesn't shift), the close button is pinned top-right out
-           of flow, and .nav-menu grows to fill and centers its label groups. */
         height: 100%;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: stretch;
-        padding-bottom: calc(1.75rem + env(safe-area-inset-bottom));
+        align-items: flex-start;
     }
 
-    /* Match the closed bar's top row height (the 2rem toggle) so the vertically
-       centered logo lands at the exact same spot — no jump on open. */
     .site-header.is-open .brand {
-        min-height: 2rem;
-        display: inline-flex;
-        align-items: center;
-        align-self: flex-start;
+        position: relative;
+        z-index: 2;
     }
 
-    /* White artwork/text against the midnight overlay. */
+    /* The elephant fades out as the menu opens, leaving the corner clear, and
+       fades back in when it closes (transition on .brand-logo runs both ways). */
     .site-header.is-open .brand-logo {
         filter: none;
+        opacity: 0;
     }
 
     .site-header.is-open .nav-toggle {
-        position: absolute;
-        top: 0.75rem;
-        right: 1.75rem;
+        position: relative;
+        z-index: 2;
         color: #fff;
     }
 
-    /* The wrapper turns into a flex box that fills the space under the brand and
-       centers the two label groups. Fades in when the menu opens. */
+    /* The gradient sheet: an absolute layer filling the full-screen header,
+       sitting behind the bar and sliding down from the top edge on open, back
+       up on close. Same midnight→cream gradient as the hero. */
     .site-header.is-open .nav-menu {
         display: flex;
-        flex: 1;
         flex-direction: column;
-        justify-content: center;
-        gap: 1.75rem;
-        animation: menu-fade-in 0.3s ease both;
+        justify-content: flex-start;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 0;
+        /* Overshoot the bottom so the sheet bleeds behind Safari's floating tab
+           bar. Plain inset:0 stops at the layout-viewport bottom; the extra
+           height keeps the midnight fill continuous through the safe area. */
+        height: calc(100vh + 8rem);
+        height: calc(100lvh + 8rem);
+        /* Solid midnight — matches the html canvas so the whole view, including
+           the bottom toolbar, reads as one seamless dark surface. */
+        background: #050115;
+        /* Top padding clears the bar; the links sit well below it. */
+        padding: 6.5rem 1.75rem calc(1.75rem + env(safe-area-inset-bottom));
+        animation: sheet-slide-down 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
     }
 
-    @keyframes menu-fade-in {
+    @keyframes sheet-slide-down {
         from {
-            opacity: 0;
+            transform: translateY(-100%);
         }
         to {
-            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Exit: the sheet slides back up off the top edge (it stays mounted for the
+       animation via .is-closing; matches MENU_EXIT_MS). */
+    .site-header.is-open.is-closing .nav-menu {
+        animation: sheet-slide-up 0.3s ease both;
+    }
+
+    @keyframes sheet-slide-up {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(-100%);
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .site-header.is-open .nav-menu {
+        .site-header.is-open .nav-menu,
+        .site-header.is-open.is-closing .nav-menu {
             animation: none;
         }
     }
 
-    .site-header.is-open .nav-links {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 0.15rem;
-        margin: 0;
-        border-top: none;
-    }
-
-    /* Auth items become plain text labels styled exactly like the nav links,
-       stacked and separated from them by a horizontal rule. */
+    /* Links and auth actions collapse into one stacked list. */
+    .site-header.is-open .nav-links,
     .site-header.is-open .nav-actions {
         display: flex;
-        order: 5;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         width: 100%;
-        gap: 0.15rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.16);
-        padding: 1.75rem 0 0;
-        margin-left: 0;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        border: none;
     }
 
     .site-header.is-open .nav-links a,
     .site-header.is-open .nav-actions .button,
     .site-header.is-open .nav-login {
-        display: inline-flex;
-        padding: 0.4rem 0;
-        font-family:
-            var(--font-sans),
-            -apple-system,
-            sans-serif;
-        font-size: 2rem;
-        font-weight: 400;
-        letter-spacing: 0;
-        color: #fff;
-        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 1.05rem 0;
         border-radius: 0;
         background: none;
         background-image: none;
         box-shadow: none;
-        width: auto;
-        flex: none;
+        color: #fff;
+        font-family:
+            var(--font-sans),
+            -apple-system,
+            sans-serif;
+        font-size: 1.0625rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        text-align: left;
     }
 }
 
