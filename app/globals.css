@@ -7,6 +7,9 @@
     --accent-dark: #101830;
     --danger: #b3261e;
     --border: #e6e0d7;
+    /* Faint midnight hairline — a touch lighter than the #050115 dark surfaces.
+       Used for dividers on the dark footer and settings page. */
+    --border-dark: #1b1e38;
     --card: #ffffff;
     --max: 72rem;
     /* Signature "sunrise" gradient in the club's brand colors: midnight indigo
@@ -1003,7 +1006,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 
 /* ---------- Footer ---------- */
 .site-footer {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border-dark);
     background: #050115;
     color: rgba(255, 255, 255, 0.75);
 }
