@@ -115,8 +115,6 @@ export default function AccountView(props: Props) {
 
     return (
         <div className="settings">
-            <h1 className="settings-title">Settings</h1>
-
             <section className="settings-section">
                 <h2 className="settings-section-title">My membership card</h2>
                 <div className="settings-membership">

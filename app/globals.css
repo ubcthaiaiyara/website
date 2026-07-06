@@ -464,8 +464,33 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 .brand {
     display: flex;
     align-items: center;
+    gap: 0.85rem;
     text-decoration: none;
     color: var(--fg);
+}
+
+/* Wordmark beside the elephant. Inherits the brand's colour so it flips light
+   over the hero / dark pages just like the logo. */
+.brand-name {
+    font-weight: 400;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+/* On the account page the wordmark reads "Settings" in place of the club name,
+   signalling the current section. */
+.brand-name-settings {
+    display: none;
+}
+
+body:has(.settings) .brand-name-default {
+    display: none;
+}
+
+body:has(.settings) .brand-name-settings {
+    display: inline;
 }
 
 /* Transparent to layout by default — nav-links and nav-actions behave as direct
@@ -496,7 +521,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 400;
     transition: opacity 0.15s ease;
 }
 
@@ -517,7 +542,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .nav-login:hover {
@@ -648,11 +673,15 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         z-index: 2;
     }
 
-    /* The elephant fades out as the menu opens, leaving the corner clear, and
-       fades back in when it closes (transition on .brand-logo runs both ways). */
+    /* The elephant and the wordmark fade out as the menu opens, leaving the
+       corner clear, and fade back in on close (transitions run both ways). */
+    .site-header.is-open .brand-logo,
+    .site-header.is-open .brand-name {
+        opacity: 0;
+    }
+
     .site-header.is-open .brand-logo {
         filter: none;
-        opacity: 0;
     }
 
     .site-header.is-open .nav-toggle {
@@ -750,7 +779,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
             -apple-system,
             sans-serif;
         font-size: 1.0625rem;
-        font-weight: 500;
+        font-weight: 400;
         letter-spacing: -0.01em;
         text-align: left;
     }
@@ -1266,15 +1295,6 @@ body:has(.settings) .site-header:not(.is-open) .brand-logo {
     filter: none;
 }
 
-.account-main .settings-title {
-    font-family: var(--font-sans), sans-serif;
-    font-size: 1.9rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-    color: #fff;
-}
-
 /* Sections stack down the column, split by a faint midnight hairline rather
    than the bright cream border. */
 .settings-section {
@@ -1282,8 +1302,8 @@ body:has(.settings) .site-header:not(.is-open) .brand-logo {
     border-top: 1px solid var(--border-dark);
 }
 
-/* The first section sits right under the title with no top rule. */
-.settings-title + .settings-section {
+/* The first section sits at the top with no rule above it. */
+.settings-section:first-child {
     border-top: none;
     padding-top: 0.5rem;
 }

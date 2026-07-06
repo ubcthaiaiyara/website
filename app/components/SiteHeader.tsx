@@ -26,6 +26,8 @@ export default async function SiteHeader() {
           className="brand-logo"
           priority
         />
+        <span className="brand-name brand-name-default">UBC Thai Aiyara</span>
+        <span className="brand-name brand-name-settings">Settings</span>
       </Link>
 
       {/* Wrapper is display:contents normally (so the desktop bar lays the nav
