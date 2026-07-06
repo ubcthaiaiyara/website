@@ -271,10 +271,6 @@ export default function AccountView(props: Props) {
                                 alt="Add to Apple Wallet"
                             />
                         </a>
-                        <p className="hint">
-                            Opens your <code>.pkpass</code> — add it to Apple
-                            Wallet on your iPhone.
-                        </p>
                     </div>
                 )}
             </section>

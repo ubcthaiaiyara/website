@@ -1837,11 +1837,6 @@ html:has(body .auth-split) {
     opacity: 0.85;
 }
 
-.pass-card .hint {
-    display: block;
-    margin-top: 0.85rem;
-}
-
 /* Official "Add to Apple Wallet" badge link. */
 .wallet-badge {
     display: inline-block;
