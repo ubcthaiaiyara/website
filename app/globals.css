@@ -521,6 +521,22 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     opacity: 0.7;
 }
 
+/* The account button greets by first name on desktop, but reads "My account"
+   in the mobile menu (where a personal greeting is redundant). */
+.nav-account-label {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .nav-greeting {
+        display: none;
+    }
+
+    .nav-account-label {
+        display: inline;
+    }
+}
+
 /* Hamburger — hidden on desktop, shown by the mobile media query below. The
    three bars draw with currentColor so the over-hero light/dark flip applies. */
 .nav-toggle {
