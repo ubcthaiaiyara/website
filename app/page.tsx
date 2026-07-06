@@ -3,8 +3,8 @@ import { readSession } from "@/lib/session";
 
 // Server Component. Editorial landing page (hero, events, …). The hero CTAs
 // route into the membership module. For a signed-in member the Join / Login
-// split is meaningless, so it collapses to a single "View my membership" CTA
-// that mirrors the header's "My Account" — matching /login and /join, which
+// split is meaningless, so it collapses to a single "View my account" CTA
+// that mirrors the header's account button — matching /login and /join, which
 // already send signed-in users to the dashboard.
 export default async function HomePage() {
     const signedIn = Boolean(await readSession());
@@ -25,7 +25,7 @@ export default async function HomePage() {
                         <div className="hero-cta">
                             {signedIn ? (
                                 <Link className="button" href="/dashboard">
-                                    View my membership
+                                    View my account
                                 </Link>
                             ) : (
                                 <>
