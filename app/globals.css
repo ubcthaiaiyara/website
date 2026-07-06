@@ -1798,20 +1798,23 @@ html:has(body .auth-split) {
     filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.22));
 }
 
-/* On phones the card is boxed in by the pass-card padding, leaving it small.
-   Trim that padding and let the card bleed out to the panel edges so it renders
-   noticeably larger. */
+/* On phones the card is boxed in by the pass-card panel, leaving it small. Let
+   it grow to nearly the full screen: drop the panel's box (so the enlarged card
+   isn't framed by a smaller border) and break the card out to near-viewport
+   width via the 50% + translateX centering trick. */
 @media (max-width: 640px) {
     .pass-card {
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
+        padding: 0;
+        border: none;
+        background: none;
     }
 
     .membership-card-3d {
-        width: calc(100% + 1.5rem);
+        width: 94vw;
         max-width: none;
-        margin-left: -0.75rem;
-        margin-right: -0.75rem;
+        margin-left: 50%;
+        margin-right: 0;
+        transform: translateX(-50%);
     }
 }
 
