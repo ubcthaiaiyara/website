@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { readSession } from "@/lib/session";
 
-// Server Component. Static landing page — an editorial redesign of the club's
-// site (hero, president quote, about, sponsors, events, contact). All CTAs
-// route into the membership module (/join, /login).
-export default function HomePage() {
+// Server Component. Editorial landing page (hero, events, …). The hero CTAs
+// route into the membership module. For a signed-in member the Join / Login
+// split is meaningless, so it collapses to a single "View my membership" CTA
+// that mirrors the header's "My Account" — matching /login and /join, which
+// already send signed-in users to the dashboard.
+export default async function HomePage() {
+    const signedIn = Boolean(await readSession());
+
     return (
         <>
             {/* Hero */}
@@ -18,15 +23,23 @@ export default function HomePage() {
                             pass in Apple Wallet.
                         </p>
                         <div className="hero-cta">
-                            <Link className="button" href="/join">
-                                Join us
-                            </Link>
-                            <Link
-                                className="button button-ghost"
-                                href="/login"
-                            >
-                                Member login
-                            </Link>
+                            {signedIn ? (
+                                <Link className="button" href="/dashboard">
+                                    View my membership
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link className="button" href="/join">
+                                        Join us
+                                    </Link>
+                                    <Link
+                                        className="button button-ghost"
+                                        href="/login"
+                                    >
+                                        Member login
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

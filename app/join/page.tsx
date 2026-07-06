@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { Viewport } from "next";
+import { readSession } from "@/lib/session";
 import JoinForm from "./JoinForm";
 
 // Overrides the root layout's dark theme-color so Safari's toolbar tint
@@ -10,8 +12,13 @@ export const viewport: Viewport = {
 };
 
 // Server Component shell. Mirrors the login page's split-screen layout: a white
-// form column on the left, the brand gradient panel on the right.
-export default function JoinPage() {
+// form column on the left, the brand gradient panel on the right. Already signed
+// in? A member has no reason to re-run signup — send them to the dashboard.
+export default async function JoinPage() {
+  if (await readSession()) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="auth-split">
       {/* Left: form column */}
