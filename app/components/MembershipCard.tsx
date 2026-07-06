@@ -232,7 +232,10 @@ export default function MembershipCard({
     // --- Scene / camera / renderer ----------------------------------------
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(28, CARD_ASPECT, 0.1, 100);
-    camera.position.set(0, 0, 3.1);
+    // Closer camera → the card fills more of the canvas, trimming the empty
+    // inner padding. Kept back far enough that the tilt/hover-scale doesn't
+    // push the near corners off the canvas edge.
+    camera.position.set(0, 0, 2.9);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
