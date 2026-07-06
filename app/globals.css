@@ -758,6 +758,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 
 /* ---------- Hero ---------- */
 .hero {
+    position: relative;
     background: var(--sunrise);
     color: #fff;
     /* Fill the whole screen immersively. lvh is the *large* viewport height —
@@ -770,7 +771,76 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     display: flex;
 }
 
+/* Firefly field over the dark upper sky of the hero: soft warm glow-dots that
+   drift and blink independently, masked so they fade out before the cream lower
+   band. Each firefly's position, size, drift vector and timing come from inline
+   custom properties set in the markup. */
+.fireflies {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 48%,
+        transparent 74%
+    );
+    mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 48%,
+        transparent 74%
+    );
+}
+
+.firefly {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 251, 236, 0.95) 0%,
+        rgba(255, 251, 236, 0.5) 45%,
+        transparent 70%
+    );
+    box-shadow: 0 0 6px 2px rgba(255, 251, 236, 0.45);
+    opacity: 0;
+    animation:
+        firefly-float var(--dur, 9s) ease-in-out var(--delay, 0s) infinite
+            alternate,
+        firefly-glow calc(var(--dur, 9s) / 2) ease-in-out var(--delay, 0s)
+            infinite;
+}
+
+@keyframes firefly-float {
+    from {
+        transform: translate(0, 0);
+    }
+    to {
+        transform: translate(var(--dx, 20px), var(--dy, -20px));
+    }
+}
+
+@keyframes firefly-glow {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .firefly {
+        animation: none;
+        opacity: 0.4;
+    }
+}
+
 .hero-inner {
+    position: relative;
+    z-index: 1;
     max-width: var(--max);
     width: 100%;
     margin: 0 auto;
