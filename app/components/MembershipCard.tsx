@@ -333,27 +333,81 @@ export default function MembershipCard({
     const ro = new ResizeObserver(resize);
     ro.observe(mount);
 
-    // --- Pointer-driven tilt ----------------------------------------------
+    // --- Tilt: pointer (desktop) + device orientation (mobile) ------------
     let targetX = 0;
     let targetY = 0;
+    let pointerHovering = false;
+
     function onMove(e: PointerEvent) {
       if (prefersReduced) return;
       const rect = mount!.getBoundingClientRect();
       const px = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const py = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      pointerHovering = true;
       targetY = px * 0.4;
       targetX = -py * 0.28;
     }
     function onLeave() {
+      pointerHovering = false;
       targetX = 0;
       targetY = 0;
     }
     mount.addEventListener("pointermove", onMove);
     mount.addEventListener("pointerleave", onLeave);
 
-    // --- Flip on click -----------------------------------------------------
+    // Device-orientation tilt: on a phone, tilt the card to match how the
+    // handset is physically held. beta = front/back, gamma = left/right. The
+    // first reading is captured as "neutral" so the card tilts relative to the
+    // user's natural holding angle. ~30° of physical tilt maps to full range.
+    let baseBeta: number | null = null;
+    let baseGamma: number | null = null;
+    function onOrient(e: DeviceOrientationEvent) {
+      if (prefersReduced || e.beta === null || e.gamma === null) return;
+      if (baseBeta === null) {
+        baseBeta = e.beta;
+        baseGamma = e.gamma;
+      }
+      const dBeta = e.beta - baseBeta;
+      const dGamma = e.gamma - (baseGamma ?? 0);
+      targetY = THREE.MathUtils.clamp(dGamma / 30, -1, 1) * 0.4;
+      targetX = THREE.MathUtils.clamp(-dBeta / 30, -1, 1) * 0.28;
+    }
+
+    // iOS 13+ gates the motion sensor behind a permission prompt that must be
+    // requested from a user gesture (the tap handler below). Other platforms
+    // can start listening straight away.
+    type OrientCtor = typeof DeviceOrientationEvent & {
+      requestPermission?: () => Promise<"granted" | "denied">;
+    };
+    const hasOrientation = typeof DeviceOrientationEvent !== "undefined";
+    const needsGesture =
+      hasOrientation &&
+      typeof (DeviceOrientationEvent as OrientCtor).requestPermission ===
+        "function";
+    let orientationOn = false;
+    function enableOrientation() {
+      if (orientationOn || !hasOrientation) return;
+      if (needsGesture) {
+        (DeviceOrientationEvent as OrientCtor)
+          .requestPermission!()
+          .then((state) => {
+            if (state === "granted") {
+              window.addEventListener("deviceorientation", onOrient);
+              orientationOn = true;
+            }
+          })
+          .catch(() => {});
+      } else {
+        window.addEventListener("deviceorientation", onOrient);
+        orientationOn = true;
+      }
+    }
+    if (hasOrientation && !needsGesture) enableOrientation();
+
+    // --- Flip on click (also the gesture that unlocks the iOS sensor) ------
     let flipTarget = 0;
     function onClick() {
+      enableOrientation();
       flipTarget = flipTarget === 0 ? Math.PI : 0;
     }
     mount.addEventListener("click", onClick);
@@ -372,8 +426,9 @@ export default function MembershipCard({
       flipCurrent += (flipTarget - flipCurrent) * 0.09;
       card.rotation.y = flipCurrent + targetY;
 
-      const hovering = targetX !== 0 || targetY !== 0;
-      targetScale = hovering ? 1.03 : 1;
+      // Only the pointer hover lifts the card — device-orientation tilt keeps
+      // a continuous non-zero target, which would otherwise pin it scaled up.
+      targetScale = pointerHovering ? 1.03 : 1;
       const s = card.scale.x + (targetScale - card.scale.x) * 0.09;
       card.scale.set(s, s, s);
       renderer.render(scene, camera);
@@ -386,6 +441,7 @@ export default function MembershipCard({
       mount.removeEventListener("pointermove", onMove);
       mount.removeEventListener("pointerleave", onLeave);
       mount.removeEventListener("click", onClick);
+      window.removeEventListener("deviceorientation", onOrient);
       geometry.dispose();
       material.dispose();
       backGeometry.dispose();
