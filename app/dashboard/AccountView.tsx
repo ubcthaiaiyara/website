@@ -14,13 +14,6 @@ type Props = {
     serial: string;
 };
 
-const TABS = [
-    { id: "account", label: "Account" },
-    { id: "membership", label: "Membership" },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
-
 const YEAR_OPTIONS = [
     "1st year",
     "2nd year",
@@ -64,11 +57,10 @@ function splitName(full: string): [string, string] {
     return [parts[0] ?? "", parts.slice(1).join(" ")];
 }
 
-// Settings-style account view: a left column to pick a category, a right panel
-// showing that category's content. The Account tab is an editable form.
+// Substack-style settings: a single centered column titled "Settings" with
+// stacked sections (Personal details, Membership, sign out). Each field is a
+// row — label on the left, editable control on the right — split by hairlines.
 export default function AccountView(props: Props) {
-    const [tab, setTab] = useState<TabId>("account");
-
     const [initialFirst, initialLast] = splitName(props.name);
     const [firstName, setFirstName] = useState(initialFirst);
     const [lastName, setLastName] = useState(initialLast);
@@ -122,60 +114,83 @@ export default function AccountView(props: Props) {
     }
 
     return (
-        <div className="account">
-            <aside className="account-nav">
-                <div className="account-tabs">
-                    {TABS.map((t) => (
-                        <button
-                            key={t.id}
-                            type="button"
-                            className={`account-tab${tab === t.id ? " is-active" : ""}`}
-                            onClick={() => setTab(t.id)}
+        <div className="settings">
+            <h1 className="settings-title">Settings</h1>
+
+            <section className="settings-section">
+                <h2 className="settings-section-title">My membership card</h2>
+                <div className="settings-membership">
+                    <MembershipCard
+                        name={firstName || "Member"}
+                        since={props.memberSince.match(/\d{4}/)?.[0] ?? "2025"}
+                        label="Aiyara Member"
+                    />
+                    <div className="wallet-badges">
+                        <a
+                            className="wallet-badge"
+                            href={`/api/passes/${props.serial}`}
+                            aria-label="Add to Apple Wallet"
                         >
-                            {t.label}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/add-to-apple-wallet.svg"
+                                alt="Add to Apple Wallet"
+                            />
+                        </a>
+
+                        {/* Presentational only — Google Wallet pass generation
+                            is not wired up yet. */}
+                        <button
+                            type="button"
+                            className="wallet-badge-google"
+                            aria-label="Add to Google Wallet"
+                        >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/add-to-google-wallet.svg"
+                                alt="Add to Google Wallet"
+                            />
                         </button>
-                    ))}
+                    </div>
                 </div>
-                <div className="account-nav-foot">
-                    <LogoutButton />
-                </div>
-            </aside>
+            </section>
 
-            <section className="account-panel">
-                {tab === "account" && (
-                    <form className="card account-form" onSubmit={handleSubmit}>
-                        <h2 className="card-title">Personal details</h2>
+            <form className="settings-section" onSubmit={handleSubmit}>
+                <h2 className="settings-section-title">Personal details</h2>
 
-                        <div className="account-form-grid">
-                            <div className="field">
-                                <label htmlFor="firstName">First name</label>
-                                <input
-                                    id="firstName"
-                                    type="text"
-                                    required
-                                    value={firstName}
-                                    onChange={(e) =>
-                                        onChange(setFirstName)(e.target.value)
-                                    }
-                                    autoComplete="given-name"
-                                />
-                            </div>
-                            <div className="field">
-                                <label htmlFor="lastName">Last name</label>
-                                <input
-                                    id="lastName"
-                                    type="text"
-                                    value={lastName}
-                                    onChange={(e) =>
-                                        onChange(setLastName)(e.target.value)
-                                    }
-                                    autoComplete="family-name"
-                                />
-                            </div>
+                <div className="settings-rows">
+                    <div className="settings-row">
+                        <span className="settings-row-name">Name</span>
+                        <div className="settings-row-control settings-name">
+                            <input
+                                type="text"
+                                required
+                                value={firstName}
+                                onChange={(e) =>
+                                    onChange(setFirstName)(e.target.value)
+                                }
+                                autoComplete="given-name"
+                                aria-label="First name"
+                                placeholder="First name"
+                            />
+                            <input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) =>
+                                    onChange(setLastName)(e.target.value)
+                                }
+                                autoComplete="family-name"
+                                aria-label="Last name"
+                                placeholder="Last name"
+                            />
                         </div>
+                    </div>
 
-                        <div className="field">
-                            <label htmlFor="faculty">Faculty</label>
+                    <div className="settings-row">
+                        <label className="settings-row-name" htmlFor="faculty">
+                            Faculty
+                        </label>
+                        <div className="settings-row-control">
                             <select
                                 id="faculty"
                                 value={faculty}
@@ -191,9 +206,13 @@ export default function AccountView(props: Props) {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
-                        <div className="field">
-                            <label htmlFor="program">Program</label>
+                    <div className="settings-row">
+                        <label className="settings-row-name" htmlFor="program">
+                            Program
+                        </label>
+                        <div className="settings-row-control">
                             <input
                                 id="program"
                                 type="text"
@@ -204,9 +223,13 @@ export default function AccountView(props: Props) {
                                 placeholder="e.g. Integrated Engineering"
                             />
                         </div>
+                    </div>
 
-                        <div className="field">
-                            <label htmlFor="year">Year</label>
+                    <div className="settings-row">
+                        <label className="settings-row-name" htmlFor="year">
+                            Year
+                        </label>
+                        <div className="settings-row-control">
                             <select
                                 id="year"
                                 value={year}
@@ -222,9 +245,21 @@ export default function AccountView(props: Props) {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
-                        <div className="field">
-                            <label htmlFor="email">Email</label>
+                    <div className="settings-row">
+                        <span className="settings-row-info">
+                            <label
+                                className="settings-row-name"
+                                htmlFor="email"
+                            >
+                                Email
+                            </label>
+                            <span className="settings-row-desc">
+                                Your email can&apos;t be changed.
+                            </span>
+                        </span>
+                        <div className="settings-row-control">
                             <input
                                 id="email"
                                 type="email"
@@ -232,47 +267,24 @@ export default function AccountView(props: Props) {
                                 disabled
                             />
                         </div>
-
-                        {error && <p className="error">{error}</p>}
-
-                        <div className="account-form-actions">
-                            <button
-                                className="button"
-                                type="submit"
-                                disabled={saving}
-                            >
-                                {saving
-                                    ? "Saving…"
-                                    : saved
-                                      ? "Saved ✓"
-                                      : "Save changes"}
-                            </button>
-                        </div>
-                    </form>
-                )}
-
-                {tab === "membership" && (
-                    <div className="card pass-card">
-                        <MembershipCard
-                            name={firstName || "Member"}
-                            since={
-                                props.memberSince.match(/\d{4}/)?.[0] ?? "2025"
-                            }
-                            label="Aiyara Member"
-                        />
-                        <a
-                            className="wallet-badge"
-                            href={`/api/passes/${props.serial}`}
-                            aria-label="Add to Apple Wallet"
-                        >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/add-to-apple-wallet.svg"
-                                alt="Add to Apple Wallet"
-                            />
-                        </a>
                     </div>
-                )}
+                </div>
+
+                {error && <p className="error">{error}</p>}
+
+                <div className="settings-actions">
+                    <button className="button" type="submit" disabled={saving}>
+                        {saving
+                            ? "Saving…"
+                            : saved
+                              ? "Saved ✓"
+                              : "Save changes"}
+                    </button>
+                </div>
+            </form>
+
+            <section className="settings-section settings-signout">
+                <LogoutButton />
             </section>
         </div>
     );

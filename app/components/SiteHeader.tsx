@@ -41,7 +41,8 @@ export default async function SiteHeader() {
         <div className="nav-actions">
           {member ? (
             <Link className="button button-sm" href="/dashboard">
-              Hi, {firstName}
+              <span className="nav-greeting">Hi, {firstName}</span>
+              <span className="nav-account-label">My account</span>
             </Link>
           ) : (
             <>
