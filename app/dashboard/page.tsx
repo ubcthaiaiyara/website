@@ -28,6 +28,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="auth-main account-main">
+      <h1 className="account-page-title">Settings</h1>
       <AccountView
         name={member.name}
         email={member.email}
