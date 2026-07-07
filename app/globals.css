@@ -195,11 +195,28 @@ p {
     left: 0;
     right: 0;
     z-index: 20;
+    isolation: isolate;
     background: transparent;
     transition:
         background-color 0.3s ease,
         transform 0.4s ease,
         opacity 0.4s ease;
+}
+
+.site-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4.25rem;
+    z-index: 0;
+    background: rgba(255, 255, 255, 0.001);
+    backdrop-filter: saturate(170%) blur(18px);
+    -webkit-backdrop-filter: saturate(170%) blur(18px);
+    mask-image: none;
+    -webkit-mask-image: none;
+    pointer-events: none;
 }
 
 /* Near the bottom of the page the dark footer scrolls up behind the bar. Give
@@ -256,12 +273,15 @@ p {
     left: 0;
     right: 0;
     height: 200px;
+    z-index: 0;
     pointer-events: none;
 }
 
 .nav-blur > div {
     position: absolute;
     inset: 0;
+    background: rgba(255, 255, 255, 0.001);
+    will-change: backdrop-filter;
 }
 
 .nav-blur > div:nth-child(1) {
@@ -400,7 +420,7 @@ p {
 /* Keep the nav content above the blur stack. */
 .site-header .nav-inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* The open mobile menu needs solid legibility rather than diffusion. */
@@ -424,6 +444,18 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
 /* The artwork is already white — show it as-is over the dark hero. */
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand-logo {
     filter: none;
+}
+
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open)::before,
+body:has(.account-main) .site-header:not(.is-open)::before,
+.site-header.over-footer::before {
+    background: rgba(255, 255, 255, 0.001);
+}
+
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-blur > div,
+body:has(.account-main) .site-header:not(.is-open) .nav-blur > div,
+.site-header.over-footer .nav-blur > div {
+    background: rgba(255, 255, 255, 0.001);
 }
 
 body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
@@ -1264,10 +1296,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 body:has(.account-main) .page-body {
     background: #050115;
     color: rgba(255, 255, 255, 0.92);
-}
-
-body:has(.account-main) .nav-blur {
-    display: none;
 }
 
 /* Light header over the dark page (the mobile is-open overlay themes itself). */
