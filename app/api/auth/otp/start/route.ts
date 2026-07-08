@@ -61,6 +61,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // Reword Supabase's rate-limit message ("For security purposes, you can only
+    // request this after N seconds.") into something friendlier.
+    const rateLimit = /request this after (\d+) seconds/i.exec(error.message);
+    if (rateLimit || error.status === 429) {
+      const seconds = rateLimit?.[1];
+      return NextResponse.json(
+        {
+          error: seconds
+            ? `Please wait ${seconds} seconds before requesting a new code.`
+            : "Too many attempts. Please wait a moment and try again.",
+        },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
       { error: error.message },
       { status: error.status ?? 400 }
