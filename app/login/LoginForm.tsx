@@ -4,8 +4,13 @@ import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
 import OtpInput from "../components/OtpInput";
 import { firstAutofilledEmail } from "@/lib/email-autofill";
+import { useCountdown, parseWaitSeconds } from "../hooks/useCountdown";
 
 type Step = "email" | "otp" | "password";
+
+// How long to disable "Resend code" after a code is sent. A server rate-limit
+// response overrides this with the exact wait it asks for.
+const RESEND_COOLDOWN_SECONDS = 30;
 
 // Client login flow. Step 1 collects an email and (once wired up) requests a
 // one-time code; step 2 verifies that code; a password fallback is offered as
@@ -18,6 +23,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resendIn, startResendCountdown] = useCountdown();
 
   // Step 1 → request an email code, then advance to the OTP step.
   async function handleEmail(event: React.FormEvent<HTMLFormElement>) {
@@ -38,6 +44,7 @@ export default function LoginForm() {
       }
 
       setStep("otp");
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
     } finally {
@@ -96,6 +103,7 @@ export default function LoginForm() {
   }
 
   async function resend() {
+    if (resendIn > 0) return;
     setError(null);
     setSubmitting(true);
     try {
@@ -107,8 +115,12 @@ export default function LoginForm() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        // If the server is rate-limiting, count down the exact wait it returned.
+        startResendCountdown(parseWaitSeconds(data.error) ?? RESEND_COOLDOWN_SECONDS);
         throw new Error(data.error ?? "Could not resend the code.");
       }
+
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
     } finally {
@@ -143,8 +155,13 @@ export default function LoginForm() {
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend} disabled={submitting}>
-            Resend code
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
           </button>
 
           <div className="oauth-divider">

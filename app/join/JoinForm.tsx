@@ -4,8 +4,13 @@ import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
 import OtpInput from "../components/OtpInput";
 import { firstAutofilledEmail } from "@/lib/email-autofill";
+import { useCountdown, parseWaitSeconds } from "../hooks/useCountdown";
 
 type Step = "details" | "otp" | "password" | "confirm-email";
+
+// How long to disable "Resend code" after a code is sent. A server rate-limit
+// response overrides this with the exact wait it asks for.
+const RESEND_COOLDOWN_SECONDS = 30;
 
 // Client sign-up flow, ordered like the reference: name + email first with a
 // primary "Continue", then a Google option, then the sign-in link. "Continue"
@@ -22,6 +27,7 @@ export default function JoinForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resendIn, startResendCountdown] = useCountdown();
 
   // Step 1 → validate the details, send a signup OTP, then advance to the code
   // step. Names are trimmed so whitespace-only input is rejected here.
@@ -58,6 +64,7 @@ export default function JoinForm() {
       }
 
       setStep("otp");
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
     } finally {
@@ -117,6 +124,7 @@ export default function JoinForm() {
       if (res.status === 202) {
         setCode("");
         setStep("confirm-email");
+        startResendCountdown(RESEND_COOLDOWN_SECONDS);
         setSubmitting(false);
         return;
       }
@@ -133,6 +141,7 @@ export default function JoinForm() {
   }
 
   async function resend() {
+    if (resendIn > 0) return;
     setError(null);
     setSubmitting(true);
 
@@ -149,8 +158,12 @@ export default function JoinForm() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        // If the server is rate-limiting, count down the exact wait it returned.
+        startResendCountdown(parseWaitSeconds(data.error) ?? RESEND_COOLDOWN_SECONDS);
         throw new Error(data.error ?? "Could not resend the code.");
       }
+
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error.");
     } finally {
@@ -177,8 +190,13 @@ export default function JoinForm() {
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend} disabled={submitting}>
-            Resend code
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
           </button>
           <button
             type="button"
@@ -215,8 +233,13 @@ export default function JoinForm() {
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend} disabled={submitting}>
-            Resend code
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
           </button>
 
           <div className="oauth-divider">
