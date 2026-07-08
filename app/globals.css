@@ -598,7 +598,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 .nav-toggle span {
     display: block;
     width: 100%;
-    height: 2px;
+    height: 1.5px;
     border-radius: 1px;
     background: currentColor;
     transition:
@@ -606,10 +606,10 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         opacity 0.2s ease;
 }
 
-/* Offset = bar gap (0.32rem) + bar height (2px ≈ 0.125rem) so the two diagonals
+/* Offset = bar gap (0.32rem) + bar height (1.5px ≈ 0.094rem) so the two diagonals
    cross exactly at the middle bar's center for a symmetrical X. */
 .site-header.is-open .nav-toggle span:nth-child(1) {
-    transform: translateY(0.445rem) rotate(45deg);
+    transform: translateY(0.414rem) rotate(45deg);
 }
 
 .site-header.is-open .nav-toggle span:nth-child(2) {
@@ -617,7 +617,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .site-header.is-open .nav-toggle span:nth-child(3) {
-    transform: translateY(-0.445rem) rotate(-45deg);
+    transform: translateY(-0.414rem) rotate(-45deg);
 }
 
 /* Mobile nav: collapse the links and actions behind the hamburger. */
