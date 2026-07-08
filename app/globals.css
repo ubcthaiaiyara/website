@@ -1735,6 +1735,17 @@ html:has(body .auth-split) {
     text-underline-offset: 2px;
 }
 
+/* Disabled (e.g. "Resend code" during the cooldown): read as not clickable. */
+.link-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.link-button:disabled:hover {
+    color: var(--muted);
+    text-decoration: none;
+}
+
 .chevron {
     width: 1.15em;
     height: 1.15em;

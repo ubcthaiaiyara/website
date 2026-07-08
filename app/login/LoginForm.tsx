@@ -28,6 +28,7 @@ export default function LoginForm() {
   // Step 1 → request an email code, then advance to the OTP step.
   async function handleEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting || resendIn > 0) return;
     setSubmitting(true);
     setError(null);
 
@@ -40,6 +41,16 @@ export default function LoginForm() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        // A rate-limit means a code was just sent (likely from a previous
+        // session) and is still valid — so move to the code step and let them
+        // enter it, counting down before a resend is allowed, instead of showing
+        // a confusing "requesting a new code" error on the email step.
+        const wait = parseWaitSeconds(data.error);
+        if (wait !== null) {
+          setStep("otp");
+          startResendCountdown(wait);
+          return;
+        }
         throw new Error(data.error ?? "Could not send a code. Please try again.");
       }
 
@@ -284,8 +295,16 @@ export default function LoginForm() {
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <button className="button" type="submit" disabled={submitting}>
-          {submitting ? "Sending code…" : "Continue with email"}
+        <button
+          className="button"
+          type="submit"
+          disabled={submitting || resendIn > 0}
+        >
+          {submitting
+            ? "Sending code…"
+            : resendIn > 0
+              ? `Request a new code in ${resendIn}s`
+              : "Continue with email"}
         </button>
 
         <div className="oauth-divider">
