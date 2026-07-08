@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 
 /**
  * Minimal signed-cookie sessions — no external dependency.
@@ -53,16 +54,25 @@ function decode(value: string | undefined): string | null {
   return userId;
 }
 
-/** Set the session cookie for the given Supabase Auth user id. */
-export async function createSession(userId: string): Promise<void> {
-  const store = await cookies();
-  store.set(COOKIE_NAME, encode(userId), {
+function cookieOptions() {
+  return {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: MAX_AGE_SECONDS,
-  });
+  };
+}
+
+/**
+ * Set the session cookie directly on a response. All auth routes return their
+ * own NextResponse, and cookies written via next/headers `cookies()` are not
+ * reliably applied to a response object you construct and return yourself
+ * (especially a redirect, or when the response's own cookies are also touched),
+ * so we always set the session on the response we hand back.
+ */
+export function setSessionCookie(response: NextResponse, userId: string): void {
+  response.cookies.set(COOKIE_NAME, encode(userId), cookieOptions());
 }
 
 /** Read the current session's Supabase Auth user id, or null if not signed in. */
@@ -71,8 +81,7 @@ export async function readSession(): Promise<string | null> {
   return decode(store.get(COOKIE_NAME)?.value);
 }
 
-/** Clear the session cookie (logout). */
-export async function clearSession(): Promise<void> {
-  const store = await cookies();
-  store.delete(COOKIE_NAME);
+/** Clear the session cookie on a response (logout). */
+export function clearSessionCookie(response: NextResponse): void {
+  response.cookies.delete(COOKIE_NAME);
 }

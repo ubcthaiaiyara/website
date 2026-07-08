@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getOrCreateAuthMember } from "@/lib/members";
-import { createSession } from "@/lib/session";
+import { setSessionCookie } from "@/lib/session";
 import { getSupabaseAuth } from "@/lib/supabase";
 
 // POST /api/auth/otp/verify
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     userEmail.split("@")[0];
 
   const member = await getOrCreateAuthMember(data.user.id, displayName, userEmail);
-  await createSession(data.user.id);
-
-  return NextResponse.json({ ok: true, serial: member.serial_number });
+  const response = NextResponse.json({ ok: true, serial: member.serial_number });
+  setSessionCookie(response, data.user.id);
+  return response;
 }

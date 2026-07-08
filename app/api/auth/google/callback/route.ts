@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getOrCreateAuthMember } from "@/lib/members";
-import { createSession } from "@/lib/session";
+import { setSessionCookie } from "@/lib/session";
 import { createOAuthClient, OAUTH_CODE_VERIFIER_KEY } from "@/lib/supabase";
 
 const MODE_COOKIE = "aiyara_google_oauth_mode";
@@ -63,9 +63,10 @@ export async function GET(request: Request) {
     email.split("@")[0];
 
   await getOrCreateAuthMember(data.user.id, name, email);
-  await createSession(data.user.id);
 
-  return clearOAuthCookies(
+  const response = clearOAuthCookies(
     NextResponse.redirect(new URL("/dashboard", getBaseUrl(request)))
   );
+  setSessionCookie(response, data.user.id);
+  return response;
 }

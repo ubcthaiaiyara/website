@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { DuplicateEmailError, getOrCreateAuthMember } from "@/lib/members";
-import { createSession } from "@/lib/session";
+import { setSessionCookie } from "@/lib/session";
 import { getSupabaseAuth } from "@/lib/supabase";
 
 // POST /api/auth/signup
@@ -84,8 +84,9 @@ export async function POST(request: Request) {
       );
     }
 
-    await createSession(data.user.id);
-    return NextResponse.json({ ok: true, serial: member.serial_number });
+    const response = NextResponse.json({ ok: true, serial: member.serial_number });
+    setSessionCookie(response, data.user.id);
+    return response;
   } catch (err) {
     if (err instanceof DuplicateEmailError) {
       return NextResponse.json(
