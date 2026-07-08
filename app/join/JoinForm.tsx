@@ -3,6 +3,7 @@
 import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
 import OtpInput from "../components/OtpInput";
+import { firstAutofilledEmail } from "@/lib/email-autofill";
 
 type Step = "details" | "otp" | "password" | "confirm-email";
 
@@ -271,6 +272,7 @@ export default function JoinForm() {
             <div className="password-field">
               <input
                 id="password"
+                name="new-password"
                 type={showPassword ? "text" : "password"}
                 required
                 minLength={8}
@@ -343,6 +345,7 @@ export default function JoinForm() {
           <div className="field">
             <input
               id="firstName"
+              name="given-name"
               type="text"
               required
               value={firstName}
@@ -355,6 +358,7 @@ export default function JoinForm() {
           <div className="field">
             <input
               id="lastName"
+              name="family-name"
               type="text"
               required
               value={lastName}
@@ -368,10 +372,11 @@ export default function JoinForm() {
         <div className="field">
           <input
             id="email"
+            name="email"
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(firstAutofilledEmail(e.target.value))}
             autoComplete="email"
             placeholder="Enter your email address *"
             aria-label="Email"

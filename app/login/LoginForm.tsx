@@ -3,6 +3,7 @@
 import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
 import OtpInput from "../components/OtpInput";
+import { firstAutofilledEmail } from "@/lib/email-autofill";
 
 type Step = "email" | "otp" | "password";
 
@@ -192,6 +193,7 @@ export default function LoginForm() {
             <div className="password-field">
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
@@ -254,10 +256,11 @@ export default function LoginForm() {
         <div className="field">
           <input
             id="email"
+            name="email"
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(firstAutofilledEmail(e.target.value))}
             autoComplete="email"
             placeholder="Enter your email address"
             aria-label="Email"
