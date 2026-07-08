@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
+import OtpInput from "../components/OtpInput";
 
 type Step = "email" | "otp" | "password";
 
@@ -20,9 +21,27 @@ export default function LoginForm() {
   // Step 1 → request an email code, then advance to the OTP step.
   async function handleEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSubmitting(true);
     setError(null);
-    // TODO: POST { email } to a "send login code" endpoint before advancing.
-    setStep("otp");
+
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, mode: "login" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Could not send a code. Please try again.");
+      }
+
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   // Step 2 → verify the code.
@@ -30,8 +49,24 @@ export default function LoginForm() {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
-    // TODO: verify { email, code } and, on success, redirect to the dashboard.
-    setSubmitting(false);
+
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token: code }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Invalid or expired code.");
+      }
+
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+      setSubmitting(false);
+    }
   }
 
   // Password fallback → the existing password login.
@@ -59,9 +94,25 @@ export default function LoginForm() {
     }
   }
 
-  function resend() {
+  async function resend() {
     setError(null);
-    // TODO: re-request a login code for `email`.
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, mode: "login" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Could not resend the code.");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   // Return to the first (email) step, clearing any entered code/password.
@@ -80,24 +131,19 @@ export default function LoginForm() {
           Enter the verification code we just sent to {email}
         </p>
         <form className="card" onSubmit={handleOtp}>
-          <div className="field">
-            <input
-              id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Code"
-              aria-label="Verification code"
-            />
-          </div>
+          <OtpInput
+            id="code"
+            value={code}
+            onChange={setCode}
+            disabled={submitting}
+            label="Verification code"
+          />
           {error && <p className="error">{error}</p>}
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend}>
-            Resend email
+          <button type="button" className="link-button" onClick={resend} disabled={submitting}>
+            Resend code
           </button>
 
           <div className="oauth-divider">
@@ -219,15 +265,14 @@ export default function LoginForm() {
         </div>
         {error && <p className="error">{error}</p>}
         <button className="button" type="submit" disabled={submitting}>
-          Continue with email
+          {submitting ? "Sending code…" : "Continue with email"}
         </button>
 
         <div className="oauth-divider">
           <span>OR</span>
         </div>
 
-        {/* TODO: wire up Google OAuth — presentation only for now. */}
-        <button type="button" className="oauth-button">
+        <a className="oauth-button" href="/api/auth/google/start?mode=login">
           <svg className="oauth-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="#4285F4"
@@ -247,7 +292,7 @@ export default function LoginForm() {
             />
           </svg>
           Sign in with Google
-        </button>
+        </a>
 
         <p className="form-alt">
           Don&apos;t have an account? <a href="/join">Sign up</a>
