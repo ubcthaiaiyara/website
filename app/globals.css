@@ -1662,7 +1662,7 @@ html:has(body .auth-split) {
 }
 
 .auth-brand img {
-    height: 2rem;
+    height: 1.7rem;
     width: auto;
     /* The elephant art is white; darken it for the light column. */
     filter: invert(1);
