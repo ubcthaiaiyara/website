@@ -17,12 +17,14 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
 export function isSupabaseConfigured(): boolean {
   return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
 }
 
 let cachedClient: SupabaseClient | null = null;
+let cachedAuthClient: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) {
@@ -36,4 +38,22 @@ export function getSupabase(): SupabaseClient | null {
   }
 
   return cachedClient;
+}
+
+export function getSupabaseAuth(): SupabaseClient | null {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return null;
+  }
+
+  if (!cachedAuthClient) {
+    cachedAuthClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        persistSession: false,
+      },
+    });
+  }
+
+  return cachedAuthClient;
 }
