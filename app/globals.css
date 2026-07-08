@@ -1396,7 +1396,7 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 .account-nav-foot {
     margin-top: 1.25rem;
-    padding-top: 1.25rem;
+    padding: 1.25rem 0.35rem 0;
     border-top: 1px solid var(--border-dark);
 }
 
@@ -1519,7 +1519,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    margin-top: -2.75rem;
+    margin-top: -3.25rem;
 }
 
 /* Official "Add to Google Wallet" badge — a bare button wrapping the SVG, sized
@@ -1595,7 +1595,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account-nav-foot {
         order: 3;
         margin-top: 0;
-        padding-top: 3rem;
+        padding: 3rem 0 0;
         width: 100%;
     }
 
@@ -2115,7 +2115,7 @@ html:has(body .auth-split) {
    breathe so raised corners don't clip against the panel. */
 .membership-card-3d {
     width: 100%;
-    max-width: 27rem;
+    max-width: 34rem;
     aspect-ratio: 1.586;
     margin: 0 auto 1.5rem;
     cursor: pointer;
