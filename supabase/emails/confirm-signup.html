@@ -1,0 +1,90 @@
+<!--
+  Signup confirmation email for UBC Thai Aiyara.
+
+  New members created via email OTP get Supabase's "Confirm signup" template, so
+  paste this into: Dashboard → Authentication → Email Templates → Confirm signup.
+
+  Same layout/CI as the Magic Link template (supabase/emails/otp.html); the only
+  differences are the copy and type=signup on the confirm link.
+
+  Template variables:
+    {{ .Token }}     - the 6-digit code (entered in the app)
+    {{ .TokenHash }} - used by the "click here" link, which points at
+                       /api/auth/confirm (verifies the hash and signs the user
+                       in). {{ .SiteURL }} must match NEXT_PUBLIC_SITE_URL.
+
+  Styles are inline so they survive email clients; colors follow the brand CI
+  (purple #4f548c / cream #f7f3f0, see app/globals.css).
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+  </head>
+  <body style="margin: 0; padding: 0">
+    <div style="padding: 12px 12px 40px">
+      <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 37.5em">
+        <tbody>
+          <tr style="width: 100%">
+            <td>
+
+              <!-- Card -->
+              <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" style="padding: 24px; border-radius: 12px; background-color: #ffffff">
+                <tbody>
+                  <tr>
+                    <td>
+                      <h2 style="font-size: 22px; letter-spacing: 0.25px; color: #4f548c; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; margin: 0 0 8px; line-height: 1.2">UBC Thai Aiyara</h2>
+                      <p style="font-size: 16px; line-height: 1.5; margin: 0; letter-spacing: 0.25px; color: #16130f; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif">Confirm your email to finish creating your account:</p>
+
+                      <!-- Code -->
+                      <div style="background: #f7f3f0; border-radius: 8px; padding: 24px; text-align: center; margin: 40px 0">
+                        <span style="font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding-left: 8px; color: #4f548c">{{ .Token }}</span>
+                      </div>
+
+                      <p style="font-size: 15px; line-height: 1.5; margin: 0 0 16px; letter-spacing: 0.25px; color: #6f6a63; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif">
+                        Or <a href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=signup" style="color: #4f548c; text-decoration: none; font-weight: 600" target="_blank">click here to confirm</a> instantly.
+                      </p>
+
+                      <p style="font-size: 12px; line-height: 1.5; margin: 0; letter-spacing: 0.25px; color: #9a938a; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif">
+                        This code expires in 10 minutes. If you didn't create an account, you can safely ignore this email.
+                      </p>
+
+                      <!-- Footer -->
+                      <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" style="padding-top: 24px">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <hr style="width: 100%; border: none; border-top: 1px solid #e6e0d7; margin: 0" />
+                              <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <p style="font-size: 13px; line-height: 1.5; margin: 0; letter-spacing: 0.25px; color: #9a938a; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif">
+                                        <a href="https://ubcthaiaiyara.com" style="color: #4f548c; text-decoration: none; font-weight: 600" target="_blank">UBC Thai Aiyara</a>
+                                      </p>
+                                    </td>
+                                    <td style="text-align: right">
+                                      <a href="mailto:contact@ubcthaiaiyara.com" style="font-size: 13px; color: #9a938a; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" target="_blank">contact@ubcthaiaiyara.com</a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

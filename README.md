@@ -24,18 +24,23 @@ Supabase Auth redirect allow list:
 http://localhost:3000/api/auth/google/callback
 ```
 
-Email auth uses one-time passcodes. Use the ready-made template at
-[`supabase/emails/otp.html`](./supabase/emails/otp.html) for the **Magic Link**
-template (Dashboard → Authentication → Email Templates → Magic Link). It offers
-both the 6-digit code (`{{ .Token }}`) and a one-click magic link that points at
-`/api/auth/confirm`:
+Email auth uses one-time passcodes. Ready-made templates live in
+[`supabase/emails/`](./supabase/emails) — paste them into Dashboard →
+Authentication → Email Templates:
+
+- [`otp.html`](./supabase/emails/otp.html) → **Magic Link** (existing-user login)
+- [`confirm-signup.html`](./supabase/emails/confirm-signup.html) → **Confirm signup** (new members)
+
+Each offers both the 6-digit code (`{{ .Token }}`) and a one-click link that
+points at `/api/auth/confirm`. The two differ only in the link's `type`
+(`email` for login, `signup` for confirmation):
 
 ```text
 {{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email
 ```
 
-For the magic link to resolve to the app, `{{ .SiteURL }}` (Supabase's Site URL)
-must match `NEXT_PUBLIC_SITE_URL`, and the app must be reached on that same host
+For the link to resolve to the app, `{{ .SiteURL }}` (Supabase's Site URL) must
+match `NEXT_PUBLIC_SITE_URL`, and the app must be reached on that same host
 (cookies are host-bound).
 
 ## License
