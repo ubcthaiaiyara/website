@@ -211,9 +211,7 @@ p {
     right: 0;
     height: 4.25rem;
     z-index: 0;
-    background: rgba(255, 255, 255, 0.001);
-    backdrop-filter: saturate(170%) blur(18px);
-    -webkit-backdrop-filter: saturate(170%) blur(18px);
+    background: transparent;
     mask-image: none;
     -webkit-mask-image: none;
     pointer-events: none;
@@ -268,13 +266,7 @@ p {
 }
 
 .nav-blur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 200px;
-    z-index: 0;
-    pointer-events: none;
+    display: none;
 }
 
 .nav-blur > div {
@@ -426,8 +418,6 @@ p {
 /* The open mobile menu needs solid legibility rather than diffusion. */
 .site-header.is-open {
     background: rgba(247, 243, 240, 0.88);
-    backdrop-filter: saturate(180%) blur(14px);
-    -webkit-backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid var(--border);
 }
 
@@ -1310,6 +1300,10 @@ body:has(.account-main) .site-header:not(.is-open) .brand-logo {
     filter: none;
 }
 
+body:has(.account-main) .site-header:not(.is-open) {
+    background: #050115;
+}
+
 /* Left category nav + right content panel. */
 .account {
     display: grid;
@@ -1331,13 +1325,16 @@ body:has(.account-main) .site-header:not(.is-open) .brand-logo {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    padding: 0.35rem;
+    border-radius: 0.95rem;
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .account-tab-indicator {
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 0.6rem;
+    border-radius: 0.8rem;
     background: rgba(255, 255, 255, 0.1);
     transition:
         transform 0.22s ease,
@@ -1352,7 +1349,7 @@ body:has(.account-main) .site-header:not(.is-open) .brand-logo {
     text-align: left;
     padding: 0.55rem 0.85rem;
     border: none;
-    border-radius: 0.6rem;
+    border-radius: 0.8rem;
     background: none;
     font: inherit;
     font-size: 0.95rem;
@@ -1571,18 +1568,6 @@ body:has(.account-main) .site-header:not(.is-open) .brand-logo {
         flex-wrap: wrap;
         width: fit-content;
         max-width: 100%;
-        padding: 0.35rem;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    .account-tab-indicator {
-        border-radius: 999px;
-    }
-
-    .account-tab {
-        padding: 0.45rem 0.7rem;
-        border-radius: 999px;
     }
 
     .account-panel {
