@@ -1331,9 +1331,10 @@ body:has(.account-main) .site-header:not(.is-open) {
 /* Left: sticky category nav with the sign-out pinned below the tabs. */
 .account-nav {
     position: sticky;
-    top: 6rem;
+    top: 0.75rem;
     display: flex;
     flex-direction: column;
+    background: #050115;
 }
 
 .account-tabs {
