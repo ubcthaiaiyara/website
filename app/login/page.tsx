@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import type { Viewport } from "next";
 import { readSession } from "@/lib/session";
+import AuthBrand from "../components/AuthBrand";
 import LoginForm from "./LoginForm";
 
 // Overrides the root layout's dark theme-color so Safari's toolbar tint
@@ -21,15 +20,7 @@ export default async function LoginPage() {
     <main className="auth-split">
       {/* Left: form column */}
       <div className="auth-form-col">
-        <Link href="/" className="auth-brand">
-          <Image
-            src="/elephant.png"
-            alt="UBC Thai Aiyara"
-            width={81}
-            height={109}
-            priority
-          />
-        </Link>
+        <AuthBrand />
 
         <div className="auth-form-inner">
           <LoginForm />
