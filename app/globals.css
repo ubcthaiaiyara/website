@@ -598,7 +598,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 .nav-toggle span {
     display: block;
     width: 100%;
-    height: 2px;
+    height: 1.5px;
     border-radius: 1px;
     background: currentColor;
     transition:
@@ -606,10 +606,10 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         opacity 0.2s ease;
 }
 
-/* Offset = bar gap (0.32rem) + bar height (2px ≈ 0.125rem) so the two diagonals
+/* Offset = bar gap (0.32rem) + bar height (1.5px ≈ 0.094rem) so the two diagonals
    cross exactly at the middle bar's center for a symmetrical X. */
 .site-header.is-open .nav-toggle span:nth-child(1) {
-    transform: translateY(0.445rem) rotate(45deg);
+    transform: translateY(0.414rem) rotate(45deg);
 }
 
 .site-header.is-open .nav-toggle span:nth-child(2) {
@@ -617,7 +617,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .site-header.is-open .nav-toggle span:nth-child(3) {
-    transform: translateY(-0.445rem) rotate(-45deg);
+    transform: translateY(-0.414rem) rotate(-45deg);
 }
 
 /* Mobile nav: collapse the links and actions behind the hamburger. */
@@ -1331,9 +1331,10 @@ body:has(.account-main) .site-header:not(.is-open) {
 /* Left: sticky category nav with the sign-out pinned below the tabs. */
 .account-nav {
     position: sticky;
-    top: 6rem;
+    top: 0.75rem;
     display: flex;
     flex-direction: column;
+    background: #050115;
 }
 
 .account-tabs {
@@ -1343,7 +1344,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     gap: 0.25rem;
     padding: 0.35rem;
     border-radius: 0.95rem;
-    background: rgba(255, 255, 255, 0.04);
+    background: transparent;
 }
 
 .account-tab-indicator {
@@ -1395,7 +1396,7 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 .account-nav-foot {
     margin-top: 1.25rem;
-    padding-top: 1.25rem;
+    padding: 1.25rem 0.35rem 0;
     border-top: 1px solid var(--border-dark);
 }
 
@@ -1518,7 +1519,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    margin-top: -2.75rem;
+    margin-top: -3.25rem;
 }
 
 /* Official "Add to Google Wallet" badge — a bare button wrapping the SVG, sized
@@ -1584,6 +1585,7 @@ body:has(.account-main) .site-header:not(.is-open) {
         flex-wrap: wrap;
         width: fit-content;
         max-width: 100%;
+        background: rgba(255, 255, 255, 0.04);
     }
 
     .account-panel {
@@ -1593,7 +1595,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account-nav-foot {
         order: 3;
         margin-top: 0;
-        padding-top: 3rem;
+        padding: 3rem 0 0;
         width: 100%;
     }
 
@@ -2113,7 +2115,7 @@ html:has(body .auth-split) {
    breathe so raised corners don't clip against the panel. */
 .membership-card-3d {
     width: 100%;
-    max-width: 27rem;
+    max-width: 34rem;
     aspect-ratio: 1.586;
     margin: 0 auto 1.5rem;
     cursor: pointer;
