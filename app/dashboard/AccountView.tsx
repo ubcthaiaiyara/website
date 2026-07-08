@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import LogoutButton from "./LogoutButton";
 import MembershipCard from "../components/MembershipCard";
 
@@ -12,6 +12,20 @@ type Props = {
     year: string;
     memberSince: string;
     serial: string;
+};
+
+const TABS = [
+    { id: "account", label: "Account" },
+    { id: "membership", label: "Membership" },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
+
+type TabIndicator = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 };
 
 const YEAR_OPTIONS = [
@@ -57,10 +71,21 @@ function splitName(full: string): [string, string] {
     return [parts[0] ?? "", parts.slice(1).join(" ")];
 }
 
-// Substack-style settings: a single centered column titled "Settings" with
-// stacked sections (Personal details, Membership, sign out). Each field is a
-// row — label on the left, editable control on the right — split by hairlines.
+// Settings with a left category nav and a right content panel. The Account tab
+// is an editable form; the Membership tab shows the 3D card + wallet badges.
 export default function AccountView(props: Props) {
+    const [tab, setTab] = useState<TabId>("account");
+    const tabsRef = useRef<HTMLDivElement>(null);
+    const tabRefs = useRef<Record<TabId, HTMLButtonElement | null>>({
+        account: null,
+        membership: null,
+    });
+    const [tabIndicator, setTabIndicator] = useState<TabIndicator>({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+    });
     const [initialFirst, initialLast] = splitName(props.name);
     const [firstName, setFirstName] = useState(initialFirst);
     const [lastName, setLastName] = useState(initialLast);
@@ -113,76 +138,156 @@ export default function AccountView(props: Props) {
         }
     }
 
+    useLayoutEffect(() => {
+        const updateIndicator = () => {
+            const tabs = tabsRef.current;
+            const activeTab = tabRefs.current[tab];
+            if (!tabs || !activeTab) return;
+
+            const tabsRect = tabs.getBoundingClientRect();
+            const activeRect = activeTab.getBoundingClientRect();
+            setTabIndicator({
+                x: activeRect.left - tabsRect.left,
+                y: activeRect.top - tabsRect.top,
+                width: activeRect.width,
+                height: activeRect.height,
+            });
+        };
+
+        updateIndicator();
+
+        const resizeObserver =
+            typeof ResizeObserver === "undefined"
+                ? null
+                : new ResizeObserver(updateIndicator);
+
+        if (resizeObserver) {
+            if (tabsRef.current) resizeObserver.observe(tabsRef.current);
+            TABS.forEach((t) => {
+                const node = tabRefs.current[t.id];
+                if (node) resizeObserver.observe(node);
+            });
+        }
+
+        window.addEventListener("resize", updateIndicator);
+        return () => {
+            resizeObserver?.disconnect();
+            window.removeEventListener("resize", updateIndicator);
+        };
+    }, [tab]);
+
     return (
-        <div className="settings">
-            <section className="settings-section">
-                <h2 className="settings-section-title">My membership card</h2>
-                <div className="settings-membership">
-                    <MembershipCard
-                        name={firstName || "Member"}
-                        since={props.memberSince.match(/\d{4}/)?.[0] ?? "2025"}
-                        label="Aiyara Member"
+        <div className="account">
+            <aside className="account-nav">
+                <div className="account-tabs" ref={tabsRef}>
+                    <span
+                        className="account-tab-indicator"
+                        aria-hidden="true"
+                        style={{
+                            width: tabIndicator.width,
+                            height: tabIndicator.height,
+                            transform: `translate(${tabIndicator.x}px, ${tabIndicator.y}px)`,
+                        }}
                     />
-                    <div className="wallet-badges">
-                        <a
-                            className="wallet-badge"
-                            href={`/api/passes/${props.serial}`}
-                            aria-label="Add to Apple Wallet"
-                        >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/add-to-apple-wallet.svg"
-                                alt="Add to Apple Wallet"
-                            />
-                        </a>
-
-                        {/* Presentational only — Google Wallet pass generation
-                            is not wired up yet. */}
+                    {TABS.map((t) => (
                         <button
+                            key={t.id}
+                            ref={(node) => {
+                                tabRefs.current[t.id] = node;
+                            }}
                             type="button"
-                            className="wallet-badge-google"
-                            aria-label="Add to Google Wallet"
+                            className={`account-tab${tab === t.id ? " is-active" : ""}`}
+                            onClick={() => setTab(t.id)}
                         >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/add-to-google-wallet.svg"
-                                alt="Add to Google Wallet"
-                            />
+                            {t.label}
                         </button>
-                    </div>
+                    ))}
                 </div>
-            </section>
+                <div className={`account-nav-foot${tab === "membership" ? " is-hidden" : ""}`}>
+                    <LogoutButton />
+                </div>
+            </aside>
 
-            <form className="settings-section" onSubmit={handleSubmit}>
-                <h2 className="settings-section-title">Personal details</h2>
+            <section className="account-panel">
+                {tab === "membership" && (
+                    <div className="membership-panel">
+                        <div className="settings-membership">
+                            <MembershipCard
+                                name={firstName || "Member"}
+                                since={
+                                    props.memberSince.match(/\d{4}/)?.[0] ??
+                                    "2025"
+                                }
+                                label="Membership"
+                            />
+                            <div className="wallet-badges">
+                                <a
+                                    className="wallet-badge"
+                                    href={`/api/passes/${props.serial}`}
+                                    aria-label="Add to Apple Wallet"
+                                >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src="/add-to-apple-wallet.svg"
+                                        alt="Add to Apple Wallet"
+                                    />
+                                </a>
 
-                <div className="settings-rows">
-                    <div className="settings-row">
-                        <span className="settings-row-name">Name</span>
-                        <div className="settings-row-control settings-name">
-                            <input
-                                type="text"
-                                required
-                                value={firstName}
-                                onChange={(e) =>
-                                    onChange(setFirstName)(e.target.value)
-                                }
-                                autoComplete="given-name"
-                                aria-label="First name"
-                                placeholder="First name"
-                            />
-                            <input
-                                type="text"
-                                value={lastName}
-                                onChange={(e) =>
-                                    onChange(setLastName)(e.target.value)
-                                }
-                                autoComplete="family-name"
-                                aria-label="Last name"
-                                placeholder="Last name"
-                            />
+                                {/* Presentational only — Google Wallet pass
+                                    generation is not wired up yet. */}
+                                <button
+                                    type="button"
+                                    className="wallet-badge-google"
+                                    aria-label="Add to Google Wallet"
+                                >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src="/add-to-google-wallet.svg"
+                                        alt="Add to Google Wallet"
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </div>
+                )}
+
+                {tab === "account" && (
+                    <form onSubmit={handleSubmit}>
+                        <h2 className="settings-section-title">
+                            Personal details
+                        </h2>
+
+                        <div className="settings-rows">
+                            <div className="settings-row">
+                                <span className="settings-row-name">Name</span>
+                                <div className="settings-row-control settings-name">
+                                    <input
+                                        type="text"
+                                        required
+                                        value={firstName}
+                                        onChange={(e) =>
+                                            onChange(setFirstName)(
+                                                e.target.value,
+                                            )
+                                        }
+                                        autoComplete="given-name"
+                                        aria-label="First name"
+                                        placeholder="First name"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) =>
+                                            onChange(setLastName)(
+                                                e.target.value,
+                                            )
+                                        }
+                                        autoComplete="family-name"
+                                        aria-label="Last name"
+                                        placeholder="Last name"
+                                    />
+                                </div>
+                            </div>
 
                     <div className="settings-row">
                         <label className="settings-row-name" htmlFor="faculty">
@@ -268,21 +373,23 @@ export default function AccountView(props: Props) {
                     </div>
                 </div>
 
-                {error && <p className="error">{error}</p>}
+                        {error && <p className="error">{error}</p>}
 
-                <div className="settings-actions">
-                    <button className="button" type="submit" disabled={saving}>
-                        {saving
-                            ? "Saving…"
-                            : saved
-                              ? "Saved ✓"
-                              : "Save changes"}
-                    </button>
-                </div>
-            </form>
-
-            <section className="settings-section settings-signout">
-                <LogoutButton />
+                        <div className="settings-actions">
+                            <button
+                                className="button"
+                                type="submit"
+                                disabled={saving}
+                            >
+                                {saving
+                                    ? "Saving…"
+                                    : saved
+                                      ? "Saved ✓"
+                                      : "Save changes"}
+                            </button>
+                        </div>
+                    </form>
+                )}
             </section>
         </div>
     );
