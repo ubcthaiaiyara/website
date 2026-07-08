@@ -1343,7 +1343,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     gap: 0.25rem;
     padding: 0.35rem;
     border-radius: 0.95rem;
-    background: rgba(255, 255, 255, 0.04);
+    background: transparent;
 }
 
 .account-tab-indicator {
@@ -1584,6 +1584,7 @@ body:has(.account-main) .site-header:not(.is-open) {
         flex-wrap: wrap;
         width: fit-content;
         max-width: 100%;
+        background: rgba(255, 255, 255, 0.04);
     }
 
     .account-panel {
