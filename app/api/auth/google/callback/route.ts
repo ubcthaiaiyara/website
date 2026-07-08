@@ -2,22 +2,44 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getOrCreateAuthMember } from "@/lib/members";
 import { createSession } from "@/lib/session";
-import { getSupabaseAuth } from "@/lib/supabase";
+import { createOAuthClient, OAUTH_CODE_VERIFIER_KEY } from "@/lib/supabase";
 
 const MODE_COOKIE = "aiyara_google_oauth_mode";
+const VERIFIER_COOKIE = "aiyara_google_oauth_verifier";
 
 function getBaseUrl(request: Request): string {
   return process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
 }
 
+function clearOAuthCookies(response: NextResponse) {
+  response.cookies.delete(MODE_COOKIE);
+  response.cookies.delete(VERIFIER_COOKIE);
+  return response;
+}
+
 function redirectToAuth(request: Request, mode: string | undefined) {
-  return NextResponse.redirect(
-    new URL(mode === "signup" ? "/join" : "/login", getBaseUrl(request))
+  return clearOAuthCookies(
+    NextResponse.redirect(
+      new URL(mode === "signup" ? "/join" : "/login", getBaseUrl(request))
+    )
   );
 }
 
 export async function GET(request: Request) {
-  const supabase = getSupabaseAuth();
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const cookieStore = await cookies();
+  const mode = cookieStore.get(MODE_COOKIE)?.value;
+  const verifier = cookieStore.get(VERIFIER_COOKIE)?.value;
+
+  if (!code || !verifier) {
+    return redirectToAuth(request, mode);
+  }
+
+  // Re-seed the PKCE verifier captured in /start so exchangeCodeForSession can
+  // complete the flow.
+  const store: Record<string, string> = { [OAUTH_CODE_VERIFIER_KEY]: verifier };
+  const supabase = createOAuthClient(store);
   if (!supabase) {
     return NextResponse.json(
       { error: "Supabase Auth is not configured." },
@@ -25,29 +47,14 @@ export async function GET(request: Request) {
     );
   }
 
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const cookieStore = await cookies();
-  const mode = cookieStore.get(MODE_COOKIE)?.value;
-
-  if (!code) {
-    const response = redirectToAuth(request, mode);
-    response.cookies.delete(MODE_COOKIE);
-    return response;
-  }
-
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user) {
-    const response = redirectToAuth(request, mode);
-    response.cookies.delete(MODE_COOKIE);
-    return response;
+    return redirectToAuth(request, mode);
   }
 
   const email = data.user.email;
   if (!email) {
-    const response = redirectToAuth(request, mode);
-    response.cookies.delete(MODE_COOKIE);
-    return response;
+    return redirectToAuth(request, mode);
   }
 
   const name =
@@ -58,7 +65,7 @@ export async function GET(request: Request) {
   await getOrCreateAuthMember(data.user.id, name, email);
   await createSession(data.user.id);
 
-  const response = NextResponse.redirect(new URL("/dashboard", getBaseUrl(request)));
-  response.cookies.delete(MODE_COOKIE);
-  return response;
+  return clearOAuthCookies(
+    NextResponse.redirect(new URL("/dashboard", getBaseUrl(request)))
+  );
 }

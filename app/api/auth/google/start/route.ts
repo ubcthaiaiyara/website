@@ -1,14 +1,22 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAuth } from "@/lib/supabase";
+import {
+  createOAuthClient,
+  OAUTH_CODE_VERIFIER_KEY,
+} from "@/lib/supabase";
 
 const MODE_COOKIE = "aiyara_google_oauth_mode";
+const VERIFIER_COOKIE = "aiyara_google_oauth_verifier";
 
 function getBaseUrl(request: Request): string {
   return process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
 }
 
 export async function GET(request: Request) {
-  const supabase = getSupabaseAuth();
+  // The PKCE code verifier supabase-js generates here must survive until the
+  // callback request, so we back the client with a plain object and read the
+  // verifier out of it afterwards.
+  const store: Record<string, string> = {};
+  const supabase = createOAuthClient(store);
   if (!supabase) {
     return NextResponse.json(
       { error: "Supabase Auth is not configured." },
@@ -24,13 +32,15 @@ export async function GET(request: Request) {
     provider: "google",
     options: {
       redirectTo,
+      skipBrowserRedirect: true,
       queryParams: {
         prompt: "select_account",
       },
     },
   });
 
-  if (error || !data.url) {
+  const verifier = store[OAUTH_CODE_VERIFIER_KEY];
+  if (error || !data.url || !verifier) {
     return NextResponse.json(
       { error: error?.message ?? "Could not start Google sign-in." },
       { status: 500 }
@@ -38,12 +48,14 @@ export async function GET(request: Request) {
   }
 
   const response = NextResponse.redirect(data.url);
-  response.cookies.set(MODE_COOKIE, mode, {
+  const cookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 60 * 10,
-  });
+  };
+  response.cookies.set(MODE_COOKIE, mode, cookieOptions);
+  response.cookies.set(VERIFIER_COOKIE, verifier, cookieOptions);
   return response;
 }

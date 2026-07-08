@@ -57,3 +57,44 @@ export function getSupabaseAuth(): SupabaseClient | null {
 
   return cachedAuthClient;
 }
+
+// Fixed storage key so the PKCE code-verifier lands at a predictable slot we can
+// read back. The OAuth flow spans two requests (start → provider → callback), so
+// we can't share in-process state; the caller passes a plain object we read the
+// verifier out of (start) or seed it into (callback).
+export const OAUTH_STORAGE_KEY = "aiyara-oauth";
+export const OAUTH_CODE_VERIFIER_KEY = `${OAUTH_STORAGE_KEY}-code-verifier`;
+
+// Auth client for the Google OAuth (PKCE) flow, backed by a caller-provided
+// storage map. supabase-js writes/reads the code verifier through this map, so
+// the caller can persist it in a cookie between the two requests.
+export function createOAuthClient(
+  store: Record<string, string>
+): SupabaseClient | null {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return null;
+  }
+
+  return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      // Must be true: auth-js ignores a custom `storage` unless the session is
+      // "persisted". The store is a fresh per-request object, so nothing
+      // actually leaks between requests — it just lets us capture/replay the
+      // PKCE code verifier.
+      persistSession: true,
+      storageKey: OAUTH_STORAGE_KEY,
+      storage: {
+        getItem: (key) => store[key] ?? null,
+        setItem: (key, value) => {
+          store[key] = value;
+        },
+        removeItem: (key) => {
+          delete store[key];
+        },
+      },
+    },
+  });
+}
