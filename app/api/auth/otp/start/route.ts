@@ -51,6 +51,16 @@ export async function POST(request: Request) {
   });
 
   if (error) {
+    // On login we don't create users, so an unregistered email comes back as
+    // Supabase's generic "signups not allowed" rejection. Surface it as a clear
+    // "no matching account" error instead.
+    if (!isSignup && (error.code === "otp_disabled" || error.status === 422)) {
+      return NextResponse.json(
+        { error: "We couldn't find an account with that email." },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json(
       { error: error.message },
       { status: error.status ?? 400 }
