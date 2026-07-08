@@ -509,6 +509,22 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         opacity 0.3s ease;
 }
 
+.site-header.from-auth .brand-logo {
+    transform-origin: top left;
+    animation: nav-brand-from-auth 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes nav-brand-from-auth {
+    from {
+        transform: translate(0.25rem, 1rem) scale(1.333);
+        opacity: 0.92;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
 .nav-links {
     display: flex;
     gap: 1.5rem;
@@ -1639,6 +1655,8 @@ html:has(body .auth-split) {
     letter-spacing: -0.01em;
     color: var(--fg);
     text-decoration: none;
+    transform-origin: top left;
+    animation: auth-brand-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .auth-brand img {
@@ -1646,6 +1664,24 @@ html:has(body .auth-split) {
     width: auto;
     /* The elephant art is white; darken it for the light column. */
     filter: invert(1);
+}
+
+@keyframes auth-brand-enter {
+    from {
+        transform: translate(-0.25rem, -1rem) scale(0.75);
+        opacity: 0.88;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header.from-auth .brand-logo,
+    .auth-brand {
+        animation: none;
+    }
 }
 
 .auth-form-inner {
@@ -1715,19 +1751,19 @@ html:has(body .auth-split) {
     text-align: center;
     font-size: 0.68rem;
     line-height: 1.5;
-    color: var(--muted);
+    color: rgba(111, 106, 99, 0.58);
     white-space: nowrap;
 }
 
 .auth-footer a {
-    color: var(--muted);
+    color: rgba(111, 106, 99, 0.68);
     text-decoration: underline;
-    text-decoration-color: rgba(111, 106, 99, 0.4);
+    text-decoration-color: rgba(111, 106, 99, 0.28);
     text-underline-offset: 2px;
 }
 
 .auth-footer a:hover {
-    color: var(--fg);
+    color: rgba(22, 19, 15, 0.72);
 }
 
 /* On mobile the disclaimer can wrap rather than overflow the narrow screen. */

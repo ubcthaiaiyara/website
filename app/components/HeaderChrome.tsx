@@ -1,9 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // Covers the sheet's slide-up exit animation in globals.css (sheet-slide-up).
 const MENU_EXIT_MS = 300;
+const AUTH_TO_HOME_KEY = "aiyara-auth-to-home";
 
 // Client shell for the site header: swaps the chrome from fully transparent
 // (blended into the page background / hero) to a frosted translucent bar once
@@ -14,14 +16,17 @@ export default function HeaderChrome({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [overFooter, setOverFooter] = useState(false);
   const [open, setOpen] = useState(false);
+  const [fromAuth, setFromAuth] = useState(false);
   // True while the overlay is playing its exit animation — the menu stays
   // mounted (still .is-open) so it can fade out before actually closing.
   const [closing, setClosing] = useState(false);
   const exitTimer = useRef<number | undefined>(undefined);
+  const fromAuthTimer = useRef<number | undefined>(undefined);
 
   const closeMenu = () => {
     setClosing(true);
@@ -38,7 +43,37 @@ export default function HeaderChrome({
     setOpen(true);
   };
 
-  useEffect(() => () => window.clearTimeout(exitTimer.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(exitTimer.current);
+      window.clearTimeout(fromAuthTimer.current);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      return;
+    }
+
+    try {
+      if (
+        sessionStorage.getItem(AUTH_TO_HOME_KEY) !== "1" ||
+        !document.querySelector(".hero")
+      ) {
+        return;
+      }
+
+      sessionStorage.removeItem(AUTH_TO_HOME_KEY);
+    } catch {
+      return;
+    }
+
+    setFromAuth(true);
+    window.clearTimeout(fromAuthTimer.current);
+    fromAuthTimer.current = window.setTimeout(() => setFromAuth(false), 520);
+    return () => window.clearTimeout(fromAuthTimer.current);
+  }, [pathname]);
 
   useEffect(() => {
     // The nav text flips from light to dark when the background behind it
@@ -100,7 +135,7 @@ export default function HeaderChrome({
         open ? " is-open" : ""
       }${closing ? " is-closing" : ""}${hidden && !open ? " is-hidden" : ""}${
         overFooter && !open ? " over-footer" : ""
-      }`}
+      }${fromAuth ? " from-auth" : ""}`}
       onClick={(e) => {
         // Following any nav link should collapse the mobile menu.
         if ((e.target as HTMLElement).closest("a")) closeMenu();
