@@ -24,12 +24,19 @@ Supabase Auth redirect allow list:
 http://localhost:3000/api/auth/google/callback
 ```
 
-Email auth uses one-time passcodes. In Supabase Auth email templates, include
-the OTP token instead of relying on a magic link:
+Email auth uses one-time passcodes. Use the ready-made template at
+[`supabase/emails/otp.html`](./supabase/emails/otp.html) for the **Magic Link**
+template (Dashboard → Authentication → Email Templates → Magic Link). It offers
+both the 6-digit code (`{{ .Token }}`) and a one-click magic link that points at
+`/api/auth/confirm`:
 
 ```text
-Your code is: {{ .Token }}
+{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email
 ```
+
+For the magic link to resolve to the app, `{{ .SiteURL }}` (Supabase's Site URL)
+must match `NEXT_PUBLIC_SITE_URL`, and the app must be reached on that same host
+(cookies are host-bound).
 
 ## License
 
