@@ -881,10 +881,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     max-width: var(--max);
     width: 100%;
     margin: 0 auto;
-    /* Top padding clears the fixed header (~4.5rem). space-between anchors the
-       headline up top and the intro + CTAs at the bottom, so the pair always
-       fills the viewport height cleanly whatever the screen size. */
-    padding: 9.5rem 1.75rem 4rem;
+    /* Top padding clears the fixed header (~4.5rem) and drops the headline a
+       little lower into the sky. space-between anchors the headline up top and
+       the intro + CTAs at the bottom, so the pair always fills the viewport
+       height cleanly whatever the screen size. */
+    padding: 11rem 1.75rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -901,8 +902,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .hero h1 {
-    font-size: clamp(2.65rem, 6.25vw, 4.85rem);
-    max-width: 16ch;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    max-width: 20ch;
     margin: 0;
     color: #fff;
     animation: hero-rise 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -935,14 +937,14 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .hero-bottom {
-    max-width: 34rem;
+    max-width: 42rem;
     color: var(--fg);
 }
 
 .hero-sub {
     color: rgba(22, 19, 15, 0.82);
-    font-size: 1.15rem;
-    margin: 0 0 1.75rem;
+    font-size: 1.02rem;
+    margin: 0 0 1.1rem;
 }
 
 .hero-cta {
@@ -989,7 +991,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .section h2 {
+    font-family: var(--font-serif), Georgia, serif;
     font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
     margin: 0 0 1.5rem;
     max-width: 20ch;
 }
@@ -1285,7 +1291,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .auth-main h1 {
-    font-size: 2.4rem;
+    font-size: 2.95rem;
     margin: 0 0 1.25rem;
 }
 
@@ -1806,7 +1812,7 @@ html:has(body .auth-split) {
 }
 
 .auth-form-col h1 {
-    font-size: clamp(2rem, 2.8vw, 2.6rem);
+    font-size: clamp(2.45rem, 3.5vw, 3.2rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.05;
@@ -2396,13 +2402,13 @@ html:has(body .auth-split) {
     }
 
     .hero h1 {
-        font-size: clamp(2.7rem, 11vw, 3.4rem);
-        max-width: 8ch;
+        font-size: clamp(3rem, 12.5vw, 4rem);
+        max-width: 12ch;
     }
 
     .hero-sub {
-        font-size: 1.05rem;
-        margin-bottom: 1.4rem;
+        font-size: 0.95rem;
+        margin-bottom: 0.9rem;
     }
 
     /* Keep the CTAs on one line, each taking an equal half of the width. */
@@ -2459,4 +2465,1220 @@ html:has(body .auth-split) {
     .auth-main {
         padding: 6.5rem 1.75rem 3.5rem;
     }
+}
+
+/* ---------- Landing sections: floating cards + scroll reveal ---------- */
+
+/* Reveal-on-scroll: content starts slightly lowered + faded, then settles into
+   place when <FloatingSection> adds .is-visible. Subtle by design. */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Visitors who prefer reduced motion never get the offset (JS also skips the
+   observer, but guard here too so first paint is correct). */
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* The lifted card: white surface floating over the cream page with a soft,
+   layered shadow. A gentle rise on hover reinforces the "floating" read. */
+.float-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 12px 32px -12px rgba(16, 24, 48, 0.16);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.float-card:hover {
+    transform: translateY(-4px) rotate(var(--card-rotate, 0deg)) skewY(var(--card-skew, 0deg));
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 24px 48px -16px rgba(16, 24, 48, 0.22);
+}
+
+/* Responsive card grid shared by events / voices / team sections. */
+.float-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.story-card {
+    margin-top: 2.5rem;
+    width: 100%;
+    max-width: none;
+}
+
+.story-card .lead {
+    margin: 0 0 1rem;
+}
+
+/* Event tile: image band on top, then title + blurb. */
+.event-card-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 0.85rem;
+    margin-bottom: 1.25rem;
+    background:
+        radial-gradient(
+            120% 120% at 20% 10%,
+            rgba(79, 84, 140, 0.28),
+            transparent 60%
+        ),
+        var(--sunrise);
+}
+
+.event-card h3,
+.team-card h3 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+}
+
+.event-card p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.culture-section .win-intro {
+    color: var(--muted);
+}
+
+.win-visual.culture-visual {
+    background:
+        radial-gradient(
+            80% 90% at 18% 18%,
+            rgba(255, 251, 236, 0.85),
+            transparent 62%
+        ),
+        linear-gradient(160deg, #f4f6ff, #efeaf1);
+}
+
+.win-visual.culture-festival {
+    background:
+        radial-gradient(circle at 50% 24%, rgba(255, 251, 236, 0.9), transparent 23%),
+        radial-gradient(circle at 16% 78%, rgba(91, 97, 152, 0.38), transparent 30%),
+        linear-gradient(155deg, #fffbec 0%, #f2eaf4 48%, #ddd9ec 100%);
+}
+
+.win-visual.culture-food {
+    background:
+        radial-gradient(circle at 28% 35%, rgba(255, 251, 236, 0.88), transparent 24%),
+        radial-gradient(circle at 72% 70%, rgba(45, 49, 93, 0.26), transparent 32%),
+        linear-gradient(150deg, #f8f0db 0%, #efeaf1 58%, #cfd2e6 100%);
+}
+
+.win-visual.culture-social {
+    background:
+        radial-gradient(circle at 35% 32%, rgba(255, 251, 236, 0.82), transparent 24%),
+        radial-gradient(circle at 68% 62%, rgba(91, 97, 152, 0.5), transparent 34%),
+        linear-gradient(145deg, #f4f6ff 0%, #ddd9ec 52%, #5b6198 100%);
+}
+
+/* Testimonial card: serif italic pull-quote over an attribution. */
+.voices-section {
+    max-width: none;
+}
+
+.voices-section > .section-label,
+.voices-section > h2 {
+    width: min(100%, var(--max));
+    max-width: var(--max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    text-align: left;
+}
+
+.voice-scroll {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    margin-left: -1.75rem;
+    margin-right: -1.75rem;
+    padding: 1rem max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem)) 2.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.voice-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.voice-card {
+    --card-rotate: 0deg;
+    --card-skew: 0deg;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 0 0 min(22rem, calc(100vw - 3.5rem));
+    transform: rotate(var(--card-rotate)) skewY(var(--card-skew));
+}
+
+.voice-card-0 {
+    --card-rotate: -3.4deg;
+    --card-skew: -1.1deg;
+}
+
+.voice-card-1 {
+    --card-rotate: 2.8deg;
+    --card-skew: 0.9deg;
+}
+
+.voice-card-2 {
+    --card-rotate: -2.2deg;
+    --card-skew: 1.2deg;
+}
+
+.voice-card-3 {
+    --card-rotate: 3.6deg;
+    --card-skew: -0.8deg;
+}
+
+.voice-card-4 {
+    --card-rotate: -3deg;
+    --card-skew: 0.75deg;
+}
+
+.voice-card-5 {
+    --card-rotate: 2.4deg;
+    --card-skew: -1.25deg;
+}
+
+.voice-card blockquote {
+    margin: 0;
+    font-family: var(--font-serif), Georgia, serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--fg);
+}
+
+.voice-card figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: auto;
+}
+
+.voice-name {
+    font-weight: 600;
+}
+
+.voice-detail {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* Team card: round photo, name, role. */
+.team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+
+.team-card {
+    text-align: center;
+    padding: 1.75rem;
+}
+
+.team-card-photo {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 999px;
+    margin: 0 auto 1.25rem;
+    background:
+        radial-gradient(
+            120% 120% at 30% 20%,
+            rgba(79, 84, 140, 0.3),
+            transparent 60%
+        ),
+        var(--sunrise);
+}
+
+.team-role {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+/* Closing CTA modelled on billow.so's "Stop running on guesswork" block:
+   white rounded container, compact image tile, centered display copy, blue pill,
+   and a soft cloud layer underneath the content. */
+.billow-cta-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.billow-cta-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 22rem;
+    overflow: hidden;
+    padding: 4.5rem 5rem 5rem;
+    border: 1px solid rgba(255, 251, 236, 0.14);
+    border-radius: 1rem;
+    background:
+        radial-gradient(
+            80% 95% at 50% 120%,
+            rgba(255, 251, 236, 0.34),
+            transparent 58%
+        ),
+        linear-gradient(160deg, #5b6198 0%, #2d315d 48%, #050115 100%);
+    color: #fffbec;
+    box-shadow:
+        0 1px 2px rgba(5, 1, 21, 0.2),
+        0 24px 70px -24px rgba(5, 1, 21, 0.65);
+}
+
+.billow-cta-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.6rem;
+    width: 100%;
+}
+
+.billow-cta-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.15rem;
+    width: 100%;
+}
+
+.billow-cta-copy h2 {
+    max-width: 46.875rem;
+    margin: 0;
+    color: #fffbec;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-align: center;
+}
+
+.billow-cta-copy p {
+    max-width: 35rem;
+    margin: 0;
+    color: rgba(255, 251, 236, 0.78);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.billow-cta-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    overflow: hidden;
+    padding: 0.625rem 1.125rem 0.625rem 1.5rem;
+    border-radius: 999px;
+    background: #fffbec;
+    color: #050115;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+    box-shadow:
+        0 0.72px 2.75px -1.17px rgba(255, 251, 236, 0.28),
+        0 2.75px 10.44px -2.33px rgba(255, 251, 236, 0.2),
+        0 12px 45.6px -3.5px rgba(5, 1, 21, 0.25);
+}
+
+.billow-cta-button::after {
+    content: "";
+    position: absolute;
+    top: -35%;
+    bottom: -35%;
+    left: -2rem;
+    width: 1.5rem;
+    background: rgba(91, 97, 152, 0.45);
+    filter: blur(10px);
+    transform: translateX(-2.5rem) rotate(20deg);
+    transition: transform 0.45s ease;
+}
+
+.billow-cta-button:hover::after {
+    transform: translateX(11rem) rotate(20deg);
+}
+
+.billow-cta-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.billow-cta-clouds {
+    position: absolute;
+    inset: -1.25rem;
+    z-index: 1;
+    overflow: hidden;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.billow-cta-clouds::before {
+    content: "";
+    position: absolute;
+    inset: auto -8% -45% -8%;
+    height: 70%;
+    background:
+        radial-gradient(ellipse at 20% 70%, rgba(255, 251, 236, 0.52) 0 18%, transparent 44%),
+        radial-gradient(ellipse at 48% 78%, rgba(91, 97, 152, 0.6) 0 20%, transparent 48%),
+        radial-gradient(ellipse at 76% 70%, rgba(255, 251, 236, 0.4) 0 17%, transparent 42%),
+        linear-gradient(180deg, transparent 0%, rgba(255, 251, 236, 0.36) 66%, rgba(255, 251, 236, 0.54) 100%);
+    -webkit-mask: linear-gradient(180deg, transparent 0%, #000 39%);
+    mask: linear-gradient(180deg, transparent 0%, #000 39%);
+}
+
+.billow-cloud {
+    position: absolute;
+    display: block;
+    border-radius: 999px;
+    background: rgba(255, 251, 236, 0.35);
+    filter: blur(28px);
+}
+
+.billow-cloud-one {
+    right: 8%;
+    bottom: -2.5rem;
+    width: 20rem;
+    height: 8rem;
+}
+
+.billow-cloud-two {
+    left: 12%;
+    bottom: -1.5rem;
+    width: 16rem;
+    height: 7rem;
+    background: rgba(91, 97, 152, 0.55);
+}
+
+.billow-cloud-three {
+    left: 38%;
+    bottom: -3.5rem;
+    width: 22rem;
+    height: 9rem;
+    background: rgba(255, 251, 236, 0.3);
+}
+
+@media (max-width: 720px) {
+    .billow-cta-card {
+        min-height: 20rem;
+        padding: 3.5rem 2rem 4rem;
+    }
+
+    .billow-cta-copy p {
+        font-size: 1rem;
+    }
+}
+
+/* ---------- billow-style elements ---------- */
+
+/* Smart-Insights showcase (billow.so): rounded panel split into a text column
+   and a gradient panel holding a floating notification card. */
+.insight-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.75rem;
+    padding: 3rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 24px 60px -28px rgba(16, 24, 48, 0.18);
+}
+
+.insight-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.insight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--fg);
+    box-shadow: 0 1px 2px rgba(16, 24, 48, 0.05);
+}
+
+.insight-badge svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Two-tone serif heading — second line lighter, like billow. Scoped to
+   .insight-panel so it beats the generic `.section h2` rule (which would
+   otherwise zero the top margin). */
+.insight-panel .insight-title {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(1.9rem, 3.2vw, 2.9rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    /* 1.5rem gap between the pill and heading — matches billow's 24px. */
+    margin: 1.5rem 0 0;
+}
+
+.insight-title-alt {
+    color: #9aa0c4;
+}
+
+.insight-copy {
+    margin: 1.25rem 0 0;
+    max-width: 34rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.insight-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 2rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 6px 18px -6px rgba(28, 38, 68, 0.5);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.insight-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgba(28, 38, 68, 0.55);
+}
+
+.insight-cta svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Right: soft gradient panel with blurred blobs, holding the floating card. */
+.insight-visual {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 20rem;
+    border-radius: 1.4rem;
+    padding: 2.5rem;
+    background:
+        radial-gradient(
+            60% 55% at 25% 25%,
+            rgba(120, 140, 240, 0.35),
+            transparent 70%
+        ),
+        radial-gradient(
+            55% 55% at 75% 80%,
+            rgba(150, 200, 255, 0.4),
+            transparent 70%
+        ),
+        linear-gradient(135deg, #e9eeff, #f1ecfb);
+}
+
+.insight-card {
+    width: 100%;
+    max-width: 24rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.06),
+        0 30px 60px -24px rgba(16, 24, 48, 0.35);
+}
+
+.insight-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.insight-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(40, 163, 92, 0.12);
+    color: #1f8a55;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.insight-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: #28a35c;
+}
+
+.insight-card-icons {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.insight-card-icons span {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.45rem;
+    background: rgba(28, 38, 68, 0.06);
+    border: 1px solid var(--border);
+}
+
+.insight-card h3 {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-sans), sans-serif;
+    font-size: 1.05rem;
+}
+
+.insight-card > p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.insight-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.insight-tag {
+    padding: 0.28rem 0.6rem;
+    border-radius: 0.5rem;
+    background: rgba(28, 38, 68, 0.05);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.insight-card-action {
+    margin-top: 0.2rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--fg);
+}
+
+@media (max-width: 820px) {
+    .insight-panel {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .insight-visual {
+        min-height: 16rem;
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Bento grid — mixed-size feature cards. Four-column base; a couple of cards
+   span extra tracks for the bento rhythm. */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.bento-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    grid-column: span 2;
+}
+
+.bento-card h3 {
+    margin: 0;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+}
+
+.bento-card p {
+    margin: 0;
+    color: var(--muted);
+}
+
+/* Feature card spanning two rows for a taller hero tile. */
+.bento-lg {
+    grid-row: span 2;
+    justify-content: flex-start;
+}
+
+.bento-lg h3 {
+    font-size: 1.7rem;
+}
+
+/* Full-width closing tile. */
+.bento-wide {
+    grid-column: span 4;
+}
+
+@media (max-width: 720px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bento-card,
+    .bento-wide,
+    .bento-lg {
+        grid-column: auto;
+        grid-row: auto;
+    }
+}
+
+/* "Your first win is five minutes away" getting-started section (billow.so):
+   centered header, then three cards each with a product mockup above the copy. */
+.win-section {
+    text-align: center;
+}
+
+.win-section > .section-label,
+.win-section > h2 {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.win-section > h2 {
+    max-width: 22ch;
+}
+
+.win-intro {
+    max-width: 40rem;
+    margin: -0.5rem auto 0;
+    color: rgba(255, 251, 236, 0.68);
+    font-size: 1.02rem;
+    line-height: 1.6;
+}
+
+.win-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.win-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 24px 56px -24px rgba(5, 1, 21, 0.35);
+}
+
+/* Mockup area — soft tinted panel holding the illustration + a floating accent. */
+.win-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 13rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(160deg, #f4f6ff, #eef0fb);
+}
+
+.win-body {
+    padding: 1.5rem;
+}
+
+.win-body h3 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.win-body p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+/* Skeleton "form" mock. */
+.win-mock {
+    position: relative;
+    z-index: 0;
+}
+
+.win-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 62%;
+}
+
+.win-bar {
+    height: 0.9rem;
+    border-radius: 0.4rem;
+    background: rgba(28, 38, 68, 0.1);
+}
+
+.win-bar-sm {
+    width: 55%;
+}
+
+/* Floating accent element shared by the three mockups. */
+.win-float {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 14px 28px -8px rgba(47, 107, 255, 0.55);
+}
+
+.win-float-btn {
+    left: 50%;
+    bottom: 2.4rem;
+    transform: translateX(-50%);
+    padding: 0.6rem 1.15rem;
+    border-radius: 0.7rem;
+    background: #2f6bff;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 0.9rem;
+}
+
+/* OTP mock. */
+.win-otp {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.win-otp span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.9rem;
+    border-radius: 0.6rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 1.35rem;
+    color: var(--fg);
+    box-shadow: 0 4px 10px -4px rgba(16, 24, 48, 0.15);
+}
+
+.win-float-check {
+    top: 2rem;
+    right: 2.6rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    background: #28a35c;
+    box-shadow: 0 14px 28px -8px rgba(40, 163, 92, 0.55);
+}
+
+.win-float-check svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Wallet-pass mock. */
+.win-pass {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 64%;
+    aspect-ratio: 16 / 10;
+    padding: 0.9rem;
+    border-radius: 0.8rem;
+    background: var(--sunrise);
+    box-shadow: 0 16px 32px -12px rgba(5, 1, 21, 0.45);
+    text-align: left;
+}
+
+.win-pass-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.win-pass-name {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.15rem;
+    color: #16130f;
+}
+
+.win-float-time {
+    top: 1.7rem;
+    right: 2rem;
+    flex-direction: column;
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 999px;
+    background: #2f6bff;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 0.62rem;
+    line-height: 1;
+}
+
+.win-float-time strong {
+    font-size: 1.05rem;
+}
+
+@media (max-width: 820px) {
+    .win-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* FAQ — flat, minimal, billow-style: centered heading + subheading, then a
+   single column of rows separated by thin divider lines (no boxed cards). It
+   sits on the dark lower band, so text and dividers are light. Native
+   <details>/<summary>, no JS. */
+#faq {
+    text-align: center;
+    padding-bottom: 13rem;
+}
+
+#faq > .section-label,
+#faq > h2 {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#faq > h2 {
+    max-width: 22ch;
+}
+
+.faq-intro {
+    max-width: 40rem;
+    margin: -0.5rem auto 0;
+    color: rgba(255, 251, 236, 0.68);
+    font-size: 1.05rem;
+}
+
+.faq-list {
+    max-width: 44rem;
+    margin: 2.75rem auto 0;
+    /* No horizontal padding here — the rows carry it — so the dividers run the
+       full width of the container. overflow keeps them inside the rounded
+       corners. */
+    padding: 0;
+    overflow: hidden;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 24px 56px -22px rgba(5, 1, 21, 0.35);
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--border);
+}
+
+/* No divider under the last row — the container border closes it off. */
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+/* Question row: billow sizing — 15px, medium weight, tight tracking. */
+.faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 1.5rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+}
+
+/* Hide the default disclosure triangle across browsers. */
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+/* billow-style toggle button: a rounded-square with a "+" that rotates into an
+   "×" on open. Filled (light on the dark band) rather than a bare line icon. */
+.faq-icon {
+    position: relative;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.625rem;
+    background: rgba(28, 38, 68, 0.07);
+    transition: background 0.2s ease;
+}
+
+.faq-item summary:hover .faq-icon {
+    background: rgba(28, 38, 68, 0.13);
+}
+
+.faq-icon::before,
+.faq-icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: transform 0.25s ease;
+}
+
+/* Horizontal bar. */
+.faq-icon::before {
+    width: 0.75rem;
+    height: 2px;
+    transform: translate(-50%, -50%);
+}
+
+/* Vertical bar. */
+.faq-icon::after {
+    width: 2px;
+    height: 0.75rem;
+    transform: translate(-50%, -50%);
+}
+
+/* On open, rotate both bars 45° so the "+" becomes an "×". */
+.faq-item[open] .faq-icon::before,
+.faq-item[open] .faq-icon::after {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.faq-answer {
+    max-width: 40rem;
+    padding: 0 1.5rem 1.3rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.faq-answer p {
+    margin: 0;
+}
+
+/* Smooth height expand/collapse of the answer. ::details-content wraps all the
+   non-<summary> content; animating its block-size to `auto` needs
+   interpolate-size, and content-visibility is animated discretely so the
+   collapse also transitions. Browsers without ::details-content support just
+   snap open (graceful). */
+:root {
+    interpolate-size: allow-keywords;
+}
+
+.faq-item::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+        block-size 0.3s ease,
+        opacity 0.3s ease,
+        content-visibility 0.3s ease allow-discrete;
+}
+
+.faq-item[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+}
+
+/* Page-wide firefly field. Sits behind all content but above the page gradient
+   (isolation makes .page-body a stacking context so the z-index:-1 layer stays
+   contained — above the gradient background, below the in-flow sections). The
+   sections have transparent backgrounds, so the fireflies show through them over
+   the dark bands and wash out over the cream. Scoped to home via the markup. */
+body:has(.hero) .page-body {
+    position: relative;
+    isolation: isolate;
+}
+
+.page-fireflies {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Stats band: full-bleed dark strip placed right after the hero to break the
+   hero gradient from the content gradient below (and carry quick social proof).
+   It spans the full page width, painting over the page gradient for its height. */
+.stats-band {
+    position: relative;
+    overflow: hidden;
+    background: var(--accent-dark);
+    color: #fff;
+    padding: 3.5rem 1.75rem;
+}
+
+/* Traditional Thai floral motif tiled faintly across the dark break band as a
+   texture. Kept low-contrast so the stats stay legible above it. */
+.stats-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("/thai-motif.png");
+    background-repeat: repeat;
+    background-size: 96px 96px;
+    background-position: center center;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.stats-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    gap: 2rem 1.5rem;
+    text-align: center;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.stat-value {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    color: #fff;
+}
+
+.stat-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 251, 236, 0.68);
+}
+
+/* ---------- Home page: one seamless gradient, hero → footer ---------- */
+
+/* The hero keeps its own dynamic --sunrise (midnight → cream), untouched. The
+   content picks that cream up at 0% and flows as ONE continuous gradient — no
+   flat band — easing cream → lavender → purple → midnight so the whole page
+   reads as a single seamless wash that melts into the dark footer. Scoped to
+   .hero pages so subpages stay flat cream.
+
+   Because the descent runs light→dark, section headings that sit outside cards
+   flip ink by position: upper sections stay dark on cream/lavender, while the
+   lower joining and FAQ sections go light on the purple/midnight band. If real
+   content changes the page height enough that a heading lands on the wrong side
+   of the transition, move it into the light-ink list below or nudge the stops. */
+body:has(.hero) .page-body {
+    background: linear-gradient(
+        180deg,
+        #fffbec 0%,
+        #fffbec 12%,
+        #f7f3f0 28%,
+        #ddd9ec 62%,
+        #5b6198 82%,
+        #2d315d 93%,
+        #050115 100%
+    );
+}
+
+/* The content holds on light tones until ~70%, so only the bottom sections
+   (#join-steps, #faq) land on the dark descent and need light ink for their
+   out-of-card headers. (Card contents stay dark on their white surface.) If you
+   add/remove sections and a heading lands on the wrong side, update this list. */
+body:has(.hero) #join-steps > .section-label,
+body:has(.hero) #faq > .section-label {
+    color: rgba(255, 251, 236, 0.72);
+}
+
+body:has(.hero) #join-steps > h2,
+body:has(.hero) #faq > h2 {
+    color: #fffbec;
+    text-shadow: 0 1px 24px rgba(5, 1, 21, 0.35);
 }

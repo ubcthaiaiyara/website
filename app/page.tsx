@@ -1,6 +1,16 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { readSession } from "@/lib/session";
+import Fireflies from "./components/Fireflies";
+import {
+    StorySection,
+    WhatWeDoSection,
+    HighlightSection,
+    BentoSection,
+    VoicesSection,
+    FaqSection,
+    JoinCtaSection,
+} from "./components/LandingSections";
 
 // Fireflies drifting over the dark upper sky of the hero. Fixed (deterministic)
 // values so the server-rendered markup is stable — no hydration mismatch.
@@ -43,6 +53,10 @@ export default async function HomePage() {
 
     return (
         <>
+            {/* Page-wide firefly field, behind all content — twinkles over the
+                dark bands (hero, the lower sunset) and washes out over cream. */}
+            <Fireflies className="page-fireflies" />
+
             {/* Hero */}
             <section className="hero">
                 <div className="fireflies" aria-hidden="true">
@@ -71,8 +85,8 @@ export default async function HomePage() {
                     </div>
                     <div className="hero-bottom">
                         <p className="hero-sub">
-                            Join the family and carry your digital membership
-                            pass in Apple Wallet.
+                            Whether you&apos;re Thai or simply love the culture,
+                            you belong here.
                         </p>
                         <div className="hero-cta">
                             {signedIn ? (
@@ -97,14 +111,15 @@ export default async function HomePage() {
                 </div>
             </section>
 
-            {/* Events */}
-            <section id="events" className="section">
-                <span className="section-label">Events</span>
-                <h2>What&apos;s happening.</h2>
-                <div className="events-empty">
-                    <p>No events at the moment — check back soon!</p>
-                </div>
-            </section>
+            {/* Editorial content sections (placeholder copy — see
+                components/LandingSections.tsx). Each floats in on scroll. */}
+            <StorySection />
+            <WhatWeDoSection />
+            <VoicesSection />
+            <BentoSection />
+            <HighlightSection />
+            <JoinCtaSection />
+            <FaqSection />
         </>
     );
 }
