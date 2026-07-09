@@ -1,22 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Libre_Baskerville } from "next/font/google";
 import localFont from "next/font/local";
 import Link from "next/link";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
 
-// Type system: Libre Baskerville (serif) for primary display statements, and
-// Open Runde — a rounded sans by Laurids Kern (OFL) — for everything else
-// (titles, UI, descriptions, paragraphs). Exposed as CSS variables consumed by
-// globals.css.
-const libreBaskerville = Libre_Baskerville({
-    subsets: ["latin"],
-    variable: "--font-serif",
-    display: "swap",
-    weight: ["400", "700"],
-    style: ["normal", "italic"],
-});
+// Type system: Lastik (serif display) for headings and display statements, and
+// Open Runde — a rounded sans by Laurids Kern (OFL) — for everything else (UI,
+// descriptions, paragraphs). Exposed as CSS variables consumed by globals.css.
 
 // Self-hosted: Open Runde isn't on Google Fonts.
 const openRunde = localFont({
@@ -46,6 +37,17 @@ const openRunde = localFont({
     ],
 });
 
+// Self-hosted display face — Lastik Free (That That Type, free for personal and
+// commercial use). Single weight (400). Serves as the site's serif throughout
+// (headings, quotes, display numerals), replacing Libre Baskerville.
+const lastik = localFont({
+    variable: "--font-serif",
+    display: "swap",
+    src: [
+        { path: "./fonts/Lastik-Regular.woff2", weight: "400", style: "normal" },
+    ],
+});
+
 export const metadata: Metadata = {
     title: "UBC Thai Aiyara",
     description: "Club membership for the UBC Thai Aiyara club.",
@@ -64,7 +66,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${libreBaskerville.variable} ${openRunde.variable}`}
+            className={`${openRunde.variable} ${lastik.variable}`}
         >
             <body>
                 <SiteHeader />
