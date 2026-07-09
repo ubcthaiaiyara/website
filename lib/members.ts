@@ -1,6 +1,5 @@
 import { randomUUID, randomBytes } from "crypto";
 import { getSupabase } from "./supabase";
-import { hashPassword, verifyPassword } from "./password";
 
 /**
  * Server-only data access for club members.
@@ -22,7 +21,8 @@ export interface Member {
   email: string;
   serial_number: string;
   auth_token: string;
-  password_hash: string;
+  user_id?: string | null;
+  password_hash?: string | null;
   created_at: string; // ISO 8601 timestamp
   // Optional profile fields the member can edit from their account page. When
   // using Supabase these require matching columns (faculty, program, year).
@@ -64,7 +64,7 @@ if (!globalStore.__aiyaraMembers) {
 }
 
 /**
- * Raised by createMember when the email is already registered. Callers map this
+ * Raised by member creation when the email is already registered. Callers map this
  * to a 409 so the client can show a friendly "account exists" message.
  */
 export class DuplicateEmailError extends Error {
@@ -75,22 +75,20 @@ export class DuplicateEmailError extends Error {
 }
 
 /**
- * Create a member, generating a unique serial number and a random auth token and
- * hashing the chosen password. Rejects a duplicate email with DuplicateEmailError.
- * Returns the stored member row.
+ * Create a member profile for a Supabase Auth user, generating a unique serial
+ * number and random pass auth token. Rejects duplicate emails/users.
  */
-export async function createMember(
+export async function createMemberForAuthUser(
+  userId: string,
   name: string,
-  email: string,
-  password: string
+  email: string
 ): Promise<Member> {
   const normalizedEmail = normalizeEmail(email);
   const serial_number = randomUUID();
   const auth_token = randomBytes(20).toString("hex");
-  const password_hash = hashPassword(password);
 
   // Reject duplicates up front (also enforced by the unique index in Supabase).
-  if (await getMemberByEmail(normalizedEmail)) {
+  if ((await getMemberByUserId(userId)) || (await getMemberByEmail(normalizedEmail))) {
     throw new DuplicateEmailError();
   }
 
@@ -102,9 +100,9 @@ export async function createMember(
       .insert({
         name,
         email: normalizedEmail,
+        user_id: userId,
         serial_number,
         auth_token,
-        password_hash,
       })
       .select()
       .single();
@@ -125,13 +123,86 @@ export async function createMember(
     id: randomUUID(),
     name,
     email: normalizedEmail,
+    user_id: userId,
     serial_number,
     auth_token,
-    password_hash,
     created_at: new Date().toISOString(),
   };
   membersBySerial.set(member.serial_number, member);
   return member;
+}
+
+/** Find, link, or create a member profile for a Supabase Auth user. */
+export async function getOrCreateAuthMember(
+  userId: string,
+  name: string,
+  email: string
+): Promise<Member> {
+  const existingByUser = await getMemberByUserId(userId);
+  if (existingByUser) {
+    return existingByUser;
+  }
+
+  const existing = await getMemberByEmail(email);
+  if (existing?.user_id && existing.user_id !== userId) {
+    return existing;
+  }
+
+  if (existing && !existing.user_id) {
+    const supabase = getSupabase();
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("members")
+        .update({ user_id: userId })
+        .eq("email", normalizeEmail(email))
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        throw new Error(`Failed to link member to auth user: ${error.message}`);
+      }
+
+      return (data as Member) ?? existing;
+    }
+
+    existing.user_id = userId;
+    membersBySerial.set(existing.serial_number, existing);
+    return existing;
+  }
+
+  try {
+    return await createMemberForAuthUser(userId, name, email);
+  } catch (err) {
+    if (err instanceof DuplicateEmailError) {
+      const member = (await getMemberByUserId(userId)) ?? (await getMemberByEmail(email));
+      if (member) return member;
+    }
+    throw err;
+  }
+}
+
+export async function getMemberByUserId(userId: string): Promise<Member | null> {
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("members")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to look up member: ${error.message}`);
+    }
+
+    return (data as Member) ?? null;
+  }
+
+  for (const member of membersBySerial.values()) {
+    if (member.user_id === userId) {
+      return member;
+    }
+  }
+  return null;
 }
 
 /**
@@ -165,25 +236,7 @@ export async function getMemberByEmail(email: string): Promise<Member | null> {
   return null;
 }
 
-/**
- * Verify email + password. Returns the member on success, or null on either an
- * unknown email or a wrong password (callers should not distinguish the two, to
- * avoid leaking which emails are registered).
- */
-export async function verifyCredentials(
-  email: string,
-  password: string
-): Promise<Member | null> {
-  const member = await getMemberByEmail(email);
-  if (!member) {
-    return null;
-  }
-  return verifyPassword(password, member.password_hash) ? member : null;
-}
-
-/**
- * Look up a member by serial number. Returns null if not found.
- */
+/** Look up a member by serial number. Returns null if not found. */
 export async function getMemberBySerial(
   serial: string
 ): Promise<Member | null> {

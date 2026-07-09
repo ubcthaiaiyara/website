@@ -1662,7 +1662,7 @@ html:has(body .auth-split) {
 }
 
 .auth-brand img {
-    height: 2rem;
+    height: 1.7rem;
     width: auto;
     /* The elephant art is white; darken it for the light column. */
     filter: invert(1);
@@ -1733,6 +1733,17 @@ html:has(body .auth-split) {
     text-decoration: underline;
     text-decoration-color: rgba(22, 19, 15, 0.35);
     text-underline-offset: 2px;
+}
+
+/* Disabled (e.g. "Resend code" during the cooldown): read as not clickable. */
+.link-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.link-button:disabled:hover {
+    color: var(--muted);
+    text-decoration: none;
 }
 
 .chevron {
@@ -1818,6 +1829,42 @@ html:has(body .auth-split) {
     border-color: var(--fg);
 }
 
+.otp-field {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 1.85rem 0 2.2rem;
+}
+
+.otp-box {
+    width: 100%;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    border: 1px solid #c9cbcf;
+    border-radius: 0.55rem;
+    background: #fff;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 2px 6px -1px rgba(16, 24, 48, 0.05);
+}
+
+.otp-box:focus {
+    outline: none;
+    border-color: var(--fg);
+}
+
+.otp-box:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .auth-split .card .button {
     margin-top: 0.25rem;
 }
@@ -1840,7 +1887,7 @@ html:has(body .auth-split) {
     text-underline-offset: 2px;
 }
 
-/* Google OAuth button (presentation only for now). */
+/* Google OAuth button. */
 .oauth-button {
     display: flex;
     align-items: center;
@@ -1852,6 +1899,7 @@ html:has(body .auth-split) {
     border-radius: 999px;
     background: #fff;
     color: var(--fg);
+    text-decoration: none;
     font-family: inherit;
     font-size: 1rem;
     font-weight: 600;

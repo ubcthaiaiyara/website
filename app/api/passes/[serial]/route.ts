@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMemberBySerial } from "@/lib/members";
+import { getMemberByUserId } from "@/lib/members";
 import { generatePass } from "@/lib/applePass";
 import { readSession } from "@/lib/session";
 
@@ -15,21 +15,17 @@ export async function GET(
 ) {
   const { serial } = await params;
 
-  const sessionSerial = await readSession();
-  if (!sessionSerial) {
+  const userId = await readSession();
+  if (!userId) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
-  if (sessionSerial !== serial) {
+
+  const member = await getMemberByUserId(userId);
+  if (!member || member.serial_number !== serial) {
     return NextResponse.json(
       { error: "You can only download your own pass." },
       { status: 403 }
     );
-  }
-
-  const member = await getMemberBySerial(serial);
-
-  if (!member) {
-    return NextResponse.json({ error: "Pass not found." }, { status: 404 });
   }
 
   const pkpass = await generatePass(member);

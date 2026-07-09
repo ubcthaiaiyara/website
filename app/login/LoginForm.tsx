@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
+import OtpInput from "../components/OtpInput";
+import { firstAutofilledEmail } from "@/lib/email-autofill";
+import { useCountdown, parseWaitSeconds } from "../hooks/useCountdown";
 
 type Step = "email" | "otp" | "password";
+
+// How long to disable "Resend code" after a code is sent. A server rate-limit
+// response overrides this with the exact wait it asks for.
+const RESEND_COOLDOWN_SECONDS = 30;
 
 // Client login flow. Step 1 collects an email and (once wired up) requests a
 // one-time code; step 2 verifies that code; a password fallback is offered as
@@ -16,13 +23,44 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resendIn, startResendCountdown] = useCountdown();
 
   // Step 1 → request an email code, then advance to the OTP step.
   async function handleEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting || resendIn > 0) return;
+    setSubmitting(true);
     setError(null);
-    // TODO: POST { email } to a "send login code" endpoint before advancing.
-    setStep("otp");
+
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, mode: "login" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        // A rate-limit means a code was just sent (likely from a previous
+        // session) and is still valid — so move to the code step and let them
+        // enter it, counting down before a resend is allowed, instead of showing
+        // a confusing "requesting a new code" error on the email step.
+        const wait = parseWaitSeconds(data.error);
+        if (wait !== null) {
+          setStep("otp");
+          startResendCountdown(wait);
+          return;
+        }
+        throw new Error(data.error ?? "Could not send a code. Please try again.");
+      }
+
+      setStep("otp");
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   // Step 2 → verify the code.
@@ -30,8 +68,24 @@ export default function LoginForm() {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
-    // TODO: verify { email, code } and, on success, redirect to the dashboard.
-    setSubmitting(false);
+
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token: code }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Invalid or expired code.");
+      }
+
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+      setSubmitting(false);
+    }
   }
 
   // Password fallback → the existing password login.
@@ -59,9 +113,30 @@ export default function LoginForm() {
     }
   }
 
-  function resend() {
+  async function resend() {
+    if (resendIn > 0) return;
     setError(null);
-    // TODO: re-request a login code for `email`.
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, mode: "login" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        // If the server is rate-limiting, count down the exact wait it returned.
+        startResendCountdown(parseWaitSeconds(data.error) ?? RESEND_COOLDOWN_SECONDS);
+        throw new Error(data.error ?? "Could not resend the code.");
+      }
+
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   // Return to the first (email) step, clearing any entered code/password.
@@ -80,24 +155,24 @@ export default function LoginForm() {
           Enter the verification code we just sent to {email}
         </p>
         <form className="card" onSubmit={handleOtp}>
-          <div className="field">
-            <input
-              id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Code"
-              aria-label="Verification code"
-            />
-          </div>
+          <OtpInput
+            id="code"
+            value={code}
+            onChange={setCode}
+            disabled={submitting}
+            label="Verification code"
+          />
           {error && <p className="error">{error}</p>}
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend}>
-            Resend email
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
           </button>
 
           <div className="oauth-divider">
@@ -146,6 +221,7 @@ export default function LoginForm() {
             <div className="password-field">
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
@@ -208,26 +284,34 @@ export default function LoginForm() {
         <div className="field">
           <input
             id="email"
+            name="email"
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(firstAutofilledEmail(e.target.value))}
             autoComplete="email"
             placeholder="Enter your email address"
             aria-label="Email"
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <button className="button" type="submit" disabled={submitting}>
-          Continue with email
+        <button
+          className="button"
+          type="submit"
+          disabled={submitting || resendIn > 0}
+        >
+          {submitting
+            ? "Sending code…"
+            : resendIn > 0
+              ? `Request a new code in ${resendIn}s`
+              : "Continue with email"}
         </button>
 
         <div className="oauth-divider">
           <span>OR</span>
         </div>
 
-        {/* TODO: wire up Google OAuth — presentation only for now. */}
-        <button type="button" className="oauth-button">
+        <a className="oauth-button" href="/api/auth/google/start?mode=login">
           <svg className="oauth-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="#4285F4"
@@ -247,7 +331,7 @@ export default function LoginForm() {
             />
           </svg>
           Sign in with Google
-        </button>
+        </a>
 
         <p className="form-alt">
           Don&apos;t have an account? <a href="/join">Sign up</a>

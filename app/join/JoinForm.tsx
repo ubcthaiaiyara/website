@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import EyeIcon from "../components/EyeIcon";
+import OtpInput from "../components/OtpInput";
+import { firstAutofilledEmail } from "@/lib/email-autofill";
+import { useCountdown, parseWaitSeconds } from "../hooks/useCountdown";
 
-type Step = "details" | "otp" | "password";
+type Step = "details" | "otp" | "password" | "confirm-email";
+
+// How long to disable "Resend code" after a code is sent. A server rate-limit
+// response overrides this with the exact wait it asks for.
+const RESEND_COOLDOWN_SECONDS = 30;
 
 // Client sign-up flow, ordered like the reference: name + email first with a
 // primary "Continue", then a Google option, then the sign-in link. "Continue"
@@ -20,35 +27,78 @@ export default function JoinForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resendIn, startResendCountdown] = useCountdown();
 
-  // Step 1 → validate the details, then advance to the OTP step. Names are
-  // trimmed so whitespace-only input is rejected here (the signup endpoint also
-  // requires a non-empty name).
-  function handleDetails(event: React.FormEvent<HTMLFormElement>) {
+  // Step 1 → validate the details, send a signup OTP, then advance to the code
+  // step. Names are trimmed so whitespace-only input is rejected here.
+  async function handleDetails(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSubmitting(true);
     setError(null);
 
     if (firstName.trim().length === 0) {
       setError("Please enter your first name.");
+      setSubmitting(false);
       return;
     }
     if (lastName.trim().length === 0) {
       setError("Please enter your last name.");
+      setSubmitting(false);
       return;
     }
 
-    // TODO: POST { firstName, lastName, email } to start account creation and
-    // send a verification code before advancing.
-    setStep("otp");
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "signup",
+          name: `${firstName} ${lastName}`.trim(),
+          email,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Could not send a confirmation code.");
+      }
+
+      setStep("otp");
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
-  // Step 2 → verify the code and finish creating the account.
-  function handleOtp(event: React.FormEvent<HTMLFormElement>) {
+  // Step 2 → verify the code and finish creating/signing into the account.
+  async function handleOtp(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
-    // TODO: verify { email, code }, create the account, then redirect.
-    setSubmitting(false);
+
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          token: code,
+          name: `${firstName} ${lastName}`.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Invalid or expired code.");
+      }
+
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+      setSubmitting(false);
+    }
   }
 
   // Password fallback → create the account via the existing signup endpoint,
@@ -69,8 +119,17 @@ export default function JoinForm() {
         }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 202) {
+        setCode("");
+        setStep("confirm-email");
+        startResendCountdown(RESEND_COOLDOWN_SECONDS);
+        setSubmitting(false);
+        return;
+      }
+
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Something went wrong. Please try again.");
       }
 
@@ -81,9 +140,78 @@ export default function JoinForm() {
     }
   }
 
-  function resend() {
+  async function resend() {
+    if (resendIn > 0) return;
     setError(null);
-    // TODO: re-request a verification code for `email`.
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/auth/otp/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "signup",
+          name: `${firstName} ${lastName}`.trim(),
+          email,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        // If the server is rate-limiting, count down the exact wait it returned.
+        startResendCountdown(parseWaitSeconds(data.error) ?? RESEND_COOLDOWN_SECONDS);
+        throw new Error(data.error ?? "Could not resend the code.");
+      }
+
+      startResendCountdown(RESEND_COOLDOWN_SECONDS);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (step === "confirm-email") {
+    return (
+      <>
+        <h1>Confirm your email</h1>
+        <p className="auth-subtext">
+          Enter the confirmation code we sent to {email}
+        </p>
+        <form className="card" onSubmit={handleOtp}>
+          <OtpInput
+            id="confirm-code"
+            value={code}
+            onChange={setCode}
+            disabled={submitting}
+            label="Confirmation code"
+          />
+          {error && <p className="error">{error}</p>}
+          <button className="button" type="submit" disabled={submitting}>
+            {submitting ? "Verifying…" : "Continue"}
+          </button>
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+          </button>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => {
+              setError(null);
+              setPassword("");
+              setStep("details");
+            }}
+          >
+            Use a different email
+          </button>
+        </form>
+      </>
+    );
   }
 
   if (step === "otp") {
@@ -94,24 +222,24 @@ export default function JoinForm() {
           Enter the verification code we just sent to {email}
         </p>
         <form className="card" onSubmit={handleOtp}>
-          <div className="field">
-            <input
-              id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Code"
-              aria-label="Verification code"
-            />
-          </div>
+          <OtpInput
+            id="code"
+            value={code}
+            onChange={setCode}
+            disabled={submitting}
+            label="Verification code"
+          />
           {error && <p className="error">{error}</p>}
           <button className="button" type="submit" disabled={submitting}>
             {submitting ? "Verifying…" : "Continue"}
           </button>
-          <button type="button" className="link-button" onClick={resend}>
-            Resend email
+          <button
+            type="button"
+            className="link-button"
+            onClick={resend}
+            disabled={submitting || resendIn > 0}
+          >
+            {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
           </button>
 
           <div className="oauth-divider">
@@ -167,6 +295,7 @@ export default function JoinForm() {
             <div className="password-field">
               <input
                 id="password"
+                name="new-password"
                 type={showPassword ? "text" : "password"}
                 required
                 minLength={8}
@@ -239,6 +368,7 @@ export default function JoinForm() {
           <div className="field">
             <input
               id="firstName"
+              name="given-name"
               type="text"
               required
               value={firstName}
@@ -251,6 +381,7 @@ export default function JoinForm() {
           <div className="field">
             <input
               id="lastName"
+              name="family-name"
               type="text"
               required
               value={lastName}
@@ -264,10 +395,11 @@ export default function JoinForm() {
         <div className="field">
           <input
             id="email"
+            name="email"
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(firstAutofilledEmail(e.target.value))}
             autoComplete="email"
             placeholder="Enter your email address *"
             aria-label="Email"
@@ -275,15 +407,14 @@ export default function JoinForm() {
         </div>
         {error && <p className="error">{error}</p>}
         <button className="button" type="submit" disabled={submitting}>
-          Continue
+          {submitting ? "Sending code…" : "Continue"}
         </button>
 
         <div className="oauth-divider">
           <span>OR</span>
         </div>
 
-        {/* TODO: wire up Google OAuth — presentation only for now. */}
-        <button type="button" className="oauth-button">
+        <a className="oauth-button" href="/api/auth/google/start?mode=signup">
           <svg className="oauth-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="#4285F4"
@@ -303,7 +434,7 @@ export default function JoinForm() {
             />
           </svg>
           Sign up with Google
-        </button>
+        </a>
 
         <p className="form-alt">
           Already a member? <a href="/login">Log in</a>

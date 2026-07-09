@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { readSession } from "@/lib/session";
-import { getMemberBySerial, updateMemberProfile } from "@/lib/members";
+import { getMemberByUserId, updateMemberProfile } from "@/lib/members";
 
 // PATCH /api/account
 // Updates the signed-in member's editable personal details.
 export async function PATCH(request: Request) {
-  const serial = await readSession();
-  if (!serial) {
+  const userId = await readSession();
+  if (!userId) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
@@ -31,14 +31,14 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const member = await getMemberBySerial(serial);
+  const member = await getMemberByUserId(userId);
   if (!member) {
     return NextResponse.json({ error: "Account not found." }, { status: 404 });
   }
 
   const name = [str(firstName), str(lastName)].filter(Boolean).join(" ");
 
-  const updated = await updateMemberProfile(serial, {
+  const updated = await updateMemberProfile(member.serial_number, {
     name,
     faculty: str(faculty),
     program: str(program),

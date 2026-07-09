@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
-import { createMember, DuplicateEmailError } from "@/lib/members";
-import { createSession } from "@/lib/session";
+import { DuplicateEmailError, getOrCreateAuthMember } from "@/lib/members";
+import { setSessionCookie } from "@/lib/session";
+import { getSupabaseAuth } from "@/lib/supabase";
 
 // POST /api/auth/signup
-// Validates the body, creates a member (with a hashed password), signs the
-// caller in, and returns { ok, serial }. Replaces the old /api/passes/issue:
-// this is now the single member-creation path.
+// Validates the body, creates a Supabase Auth user, links/creates the member
+// profile row, signs the caller in when Supabase returns a session, and returns
+// { ok, serial }.
 export async function POST(request: Request) {
+  const supabase = getSupabaseAuth();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase Auth is not configured." },
+      { status: 500 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -41,9 +50,43 @@ export async function POST(request: Request) {
     );
   }
 
-  let member;
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const { data, error } = await supabase.auth.signUp({
+    email: trimmedEmail,
+    password,
+    options: {
+      data: { name: trimmedName },
+    },
+  });
+
+  if (error || !data.user) {
+    return NextResponse.json(
+      { error: error?.message ?? "Could not create account." },
+      { status: error?.status ?? 400 }
+    );
+  }
+
   try {
-    member = await createMember(name.trim(), email.trim(), password);
+    const member = await getOrCreateAuthMember(
+      data.user.id,
+      trimmedName,
+      data.user.email || trimmedEmail
+    );
+
+    if (!data.session) {
+      return NextResponse.json(
+        {
+          error:
+            "Account created. Check your email to confirm your address, then log in.",
+        },
+        { status: 202 }
+      );
+    }
+
+    const response = NextResponse.json({ ok: true, serial: member.serial_number });
+    setSessionCookie(response, data.user.id);
+    return response;
   } catch (err) {
     if (err instanceof DuplicateEmailError) {
       return NextResponse.json(
@@ -53,8 +96,4 @@ export async function POST(request: Request) {
     }
     throw err;
   }
-
-  await createSession(member.serial_number);
-
-  return NextResponse.json({ ok: true, serial: member.serial_number });
 }

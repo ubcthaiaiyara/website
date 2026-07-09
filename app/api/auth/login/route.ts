@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
-import { verifyCredentials } from "@/lib/members";
-import { createSession } from "@/lib/session";
+import { getOrCreateAuthMember } from "@/lib/members";
+import { setSessionCookie } from "@/lib/session";
+import { getSupabaseAuth } from "@/lib/supabase";
 
 // POST /api/auth/login
-// Verifies email + password and, on success, sets the session cookie. Returns a
-// single generic error for both unknown-email and wrong-password so we don't
-// reveal which emails are registered.
+// Verifies email + password through Supabase Auth and, on success, sets the app
+// session cookie to the Supabase Auth user id. Returns a single generic error
+// for both unknown-email and wrong-password so we don't reveal registered emails.
 export async function POST(request: Request) {
+  const supabase = getSupabaseAuth();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase Auth is not configured." },
+      { status: 500 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -26,15 +35,24 @@ export async function POST(request: Request) {
     );
   }
 
-  const member = await verifyCredentials(email, password);
-  if (!member) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+  });
+
+  if (error || !data.user) {
     return NextResponse.json(
       { error: "Incorrect email or password." },
       { status: 401 }
     );
   }
 
-  await createSession(member.serial_number);
-
-  return NextResponse.json({ ok: true });
+  await getOrCreateAuthMember(
+    data.user.id,
+    data.user.user_metadata?.name || data.user.email?.split("@")[0] || "Member",
+    data.user.email || email
+  );
+  const response = NextResponse.json({ ok: true });
+  setSessionCookie(response, data.user.id);
+  return response;
 }

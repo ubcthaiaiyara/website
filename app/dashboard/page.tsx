@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Viewport } from "next";
 import { readSession } from "@/lib/session";
-import { getMemberBySerial } from "@/lib/members";
+import { getMemberByUserId } from "@/lib/members";
 import AccountView from "./AccountView";
 
 // Keep iOS Safari's browser chrome aligned with the account page's midnight
@@ -15,12 +15,12 @@ export const viewport: Viewport = {
 // from /api/passes/<serial>, which independently verifies the session matches
 // this serial.
 export default async function DashboardPage() {
-  const serial = await readSession();
-  if (!serial) {
+  const userId = await readSession();
+  if (!userId) {
     redirect("/login");
   }
 
-  const member = await getMemberBySerial(serial);
+  const member = await getMemberByUserId(userId);
   if (!member) {
     // Session references a member that no longer exists (e.g. in-memory store
     // was reset). Treat as signed out.
