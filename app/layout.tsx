@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville } from "next/font/google";
 import localFont from "next/font/local";
 import Link from "next/link";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
 
@@ -22,10 +23,26 @@ const openRunde = localFont({
     variable: "--font-sans",
     display: "swap",
     src: [
-        { path: "./fonts/OpenRunde-Regular.woff2", weight: "400", style: "normal" },
-        { path: "./fonts/OpenRunde-Medium.woff2", weight: "500", style: "normal" },
-        { path: "./fonts/OpenRunde-Semibold.woff2", weight: "600", style: "normal" },
-        { path: "./fonts/OpenRunde-Bold.woff2", weight: "700", style: "normal" },
+        {
+            path: "./fonts/OpenRunde-Regular.woff2",
+            weight: "400",
+            style: "normal",
+        },
+        {
+            path: "./fonts/OpenRunde-Medium.woff2",
+            weight: "500",
+            style: "normal",
+        },
+        {
+            path: "./fonts/OpenRunde-Semibold.woff2",
+            weight: "600",
+            style: "normal",
+        },
+        {
+            path: "./fonts/OpenRunde-Bold.woff2",
+            weight: "700",
+            style: "normal",
+        },
     ],
 });
 
@@ -120,6 +137,7 @@ export default function RootLayout({
                         </div>
                     </div>
                 </footer>
+                <SpeedInsights />
             </body>
         </html>
     );
