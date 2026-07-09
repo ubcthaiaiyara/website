@@ -1163,6 +1163,17 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: rgba(255, 255, 255, 0.6);
 }
 
+.footer-email {
+    color: #fff;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.footer-email:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 .footer-socials {
     display: flex;
     gap: 1rem;
@@ -1454,6 +1465,13 @@ body:has(.account-main) .site-header:not(.is-open) {
     color: #fff;
 }
 
+.settings-row-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .settings-row-desc {
     font-size: 0.82rem;
     font-weight: 400;
@@ -1552,6 +1570,12 @@ body:has(.account-main) .site-header:not(.is-open) {
     color: rgba(255, 255, 255, 0.82);
     font-size: 0.9rem;
     font-weight: 600;
+}
+
+.settings-row-heading .settings-status {
+    min-height: 0;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
 }
 
 .danger-zone .settings-section-title,

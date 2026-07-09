@@ -114,6 +114,9 @@ export default function AccountView(props: Props) {
     const [pwSaving, setPwSaving] = useState(false);
     const [pwSaved, setPwSaved] = useState(false);
     const [pwError, setPwError] = useState<string | null>(null);
+    const [googleConnected, setGoogleConnected] = useState(props.hasGoogle);
+    const [googleSaving, setGoogleSaving] = useState(false);
+    const [googleError, setGoogleError] = useState<string | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState("");
     const [deletePassword, setDeletePassword] = useState("");
     const [showDeletePassword, setShowDeletePassword] = useState(false);
@@ -241,6 +244,32 @@ export default function AccountView(props: Props) {
                 err instanceof Error ? err.message : "Unexpected error.",
             );
             setDeleting(false);
+        }
+    }
+
+    async function handleDisconnectGoogle() {
+        setGoogleSaving(true);
+        setGoogleError(null);
+
+        try {
+            const res = await fetch("/api/account/providers/google", {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(
+                    data.error ?? "Could not disconnect Google.",
+                );
+            }
+
+            setGoogleConnected(false);
+        } catch (err) {
+            setGoogleError(
+                err instanceof Error ? err.message : "Unexpected error.",
+            );
+        } finally {
+            setGoogleSaving(false);
         }
     }
 
@@ -670,15 +699,29 @@ export default function AccountView(props: Props) {
                         <div className="settings-rows">
                             <div className="settings-row settings-row-inline-mobile">
                                 <span className="settings-row-info">
-                                    <span className="settings-row-name">
-                                        Google
+                                    <span className="settings-row-heading">
+                                        <span className="settings-row-name">
+                                            Google
+                                        </span>
+                                        {googleConnected && (
+                                            <span className="settings-status">
+                                                Connected
+                                            </span>
+                                        )}
                                     </span>
                                 </span>
                                 <div className="settings-row-control settings-inline-action">
-                                    {props.hasGoogle ? (
-                                        <span className="settings-status">
-                                            Connected
-                                        </span>
+                                    {googleConnected ? (
+                                        <button
+                                            className="button button-ghost settings-action-button"
+                                            type="button"
+                                            onClick={handleDisconnectGoogle}
+                                            disabled={googleSaving}
+                                        >
+                                            {googleSaving
+                                                ? "Disconnecting..."
+                                                : "Disconnect"}
+                                        </button>
                                     ) : (
                                         <a
                                             className="button button-ghost settings-action-button"
@@ -711,6 +754,9 @@ export default function AccountView(props: Props) {
                                     )}
                                 </div>
                             </div>
+                            {googleError && (
+                                <p className="error">{googleError}</p>
+                            )}
                         </div>
                     </section>
 

@@ -41,6 +41,54 @@ export async function getUserProviders(userId: string): Promise<string[]> {
   return (data.user.identities ?? []).map((identity) => identity.provider);
 }
 
+export async function unlinkUserIdentityProvider(
+  userId: string,
+  provider: string
+): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Supabase Auth is not configured.");
+  }
+
+  const { data, error } = await supabase.auth.admin.getUserById(userId);
+  if (error || !data.user) {
+    throw new Error(error?.message ?? "Account not found.");
+  }
+
+  const identity = data.user.identities?.find(
+    (item) => item.provider === provider
+  );
+  if (!identity) {
+    return;
+  }
+
+  if ((data.user.identities?.length ?? 0) <= 1) {
+    throw new Error("Add another sign-in method before disconnecting Google.");
+  }
+
+  const res = await fetch(
+    `${SUPABASE_URL}/auth/v1/user/identities/${identity.identity_id}`,
+    {
+      method: "DELETE",
+      headers: {
+        apikey: SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(
+      typeof body.msg === "string"
+        ? body.msg
+        : typeof body.error_description === "string"
+          ? body.error_description
+          : "Could not disconnect Google."
+    );
+  }
+}
+
 export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) {
     return null;
