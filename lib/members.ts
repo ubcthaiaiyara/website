@@ -206,6 +206,33 @@ export async function getMemberByUserId(userId: string): Promise<Member | null> 
 }
 
 /**
+ * Remove the member row for an auth user. With Supabase this is usually handled
+ * by the auth.users → members ON DELETE CASCADE, but we call it for the
+ * in-memory store (and it's harmless/idempotent against Supabase).
+ */
+export async function deleteMemberByUserId(userId: string): Promise<void> {
+  const supabase = getSupabase();
+  if (supabase) {
+    const { error } = await supabase
+      .from("members")
+      .delete()
+      .eq("user_id", userId);
+
+    if (error) {
+      throw new Error(`Failed to delete member: ${error.message}`);
+    }
+    return;
+  }
+
+  for (const member of membersBySerial.values()) {
+    if (member.user_id === userId) {
+      membersBySerial.delete(member.serial_number);
+      return;
+    }
+  }
+}
+
+/**
  * Look up a member by email. Returns null if not found. Email comparison is
  * case-insensitive (emails are stored normalized).
  */
