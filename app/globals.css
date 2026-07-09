@@ -1330,8 +1330,6 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 /* Left: sticky category nav with the sign-out pinned below the tabs. */
 .account-nav {
-    position: sticky;
-    top: 0.75rem;
     display: flex;
     flex-direction: column;
     background: #050115;
@@ -1342,7 +1340,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.35rem;
+    padding: 0;
     border-radius: 0.95rem;
     background: transparent;
 }
@@ -1396,7 +1394,7 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 .account-nav-foot {
     margin-top: 1.25rem;
-    padding: 1.25rem 0.35rem 0;
+    padding: 1.25rem 0 0;
     border-top: 1px solid var(--border-dark);
 }
 
@@ -1483,6 +1481,11 @@ body:has(.account-main) .site-header:not(.is-open) {
     cursor: not-allowed;
 }
 
+/* Match placeholders to the (disabled) email field's tone. */
+.settings-row-control input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 /* First / last name pair share the control cell. */
 .settings-name {
     display: grid;
@@ -1522,6 +1525,48 @@ body:has(.account-main) .site-header:not(.is-open) {
     margin: 1.5rem 0;
 }
 
+.settings-inline-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settings-action-button {
+    gap: 0.7rem;
+    width: fit-content;
+}
+
+.settings-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.4rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.danger-zone .settings-section-title,
+.danger-zone .settings-row-name {
+    color: #ffb4b4;
+}
+
+.danger-zone .settings-row-desc {
+    color: rgba(255, 180, 180, 0.72);
+}
+
+.danger-button,
+.danger-button:hover {
+    background-image: linear-gradient(180deg, #dc5a5a 0%, #8f1f1f 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 0.7px 2.7px -1.2px rgba(143, 31, 31, 0.4),
+        0 2.7px 10.4px -2.3px rgba(143, 31, 31, 0.34),
+        0 12px 45px -3.5px rgba(143, 31, 31, 0.22);
+}
+
 /* Membership section: the 3D card + wallet badge, centered. */
 .settings-membership {
     display: flex;
@@ -1541,46 +1586,16 @@ body:has(.account-main) .site-header:not(.is-open) {
     margin-top: -3.25rem;
 }
 
-/* Official "Add to Google Wallet" badge — a bare button wrapping the SVG, sized
-   to the same 2.75rem height as the Apple badge. Presentational only for now. */
-.wallet-badge-google {
-    display: inline-block;
-    padding: 0;
-    border: none;
-    background: none;
-    line-height: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-}
-
-.wallet-badge-google img {
-    height: 2.25rem;
-    width: auto;
-    display: block;
-    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
-    transition: filter 0.15s ease;
-}
-
-.wallet-badge-google:hover {
-    transform: translateY(-1px);
-}
-
-.wallet-badge-google:hover img {
-    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
-}
-
-.wallet-badge-google:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 3px;
-}
-
 @media (max-width: 640px) {
     /* Stack each row: label above its control. */
     .settings-row {
         grid-template-columns: 1fr;
         gap: 0.4rem;
         align-items: stretch;
+    }
+
+    .settings-inline-action {
+        justify-content: flex-start;
     }
 }
 
@@ -1601,10 +1616,14 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account-tabs {
         order: 1;
         flex-direction: row;
-        flex-wrap: wrap;
-        width: fit-content;
-        max-width: 100%;
+        width: 100%;
         background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Tabs share the full switcher width evenly. */
+    .account-tabs .account-tab {
+        flex: 1;
+        text-align: center;
     }
 
     .account-panel {
