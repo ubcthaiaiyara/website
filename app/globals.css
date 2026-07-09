@@ -1403,6 +1403,14 @@ body:has(.account-main) .site-header:not(.is-open) {
     min-width: 0;
 }
 
+.settings-section {
+    padding: 2rem 0;
+}
+
+.settings-section:first-child {
+    padding-top: 0;
+}
+
 .settings-section-title {
     font-family: var(--font-sans), sans-serif;
     font-size: 1.15rem;
@@ -1412,12 +1420,10 @@ body:has(.account-main) .site-header:not(.is-open) {
     color: #fff;
 }
 
-/* Second settings block (e.g. Password) under the personal-details form,
-   separated by a hairline. */
+/* Later settings blocks are separated by a hairline; vertical padding is shared
+   by every settings section. */
 .settings-subsection {
     display: block;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
     border-top: 1px solid var(--border-dark);
 }
 
@@ -1522,7 +1528,7 @@ body:has(.account-main) .site-header:not(.is-open) {
 }
 
 .settings-actions {
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 0;
 }
 
 .settings-inline-action {
@@ -1607,7 +1613,8 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 0;
+        row-gap: 1.5rem;
     }
 
     .account-nav {
@@ -1618,6 +1625,8 @@ body:has(.account-main) .site-header:not(.is-open) {
         order: 1;
         flex-direction: row;
         width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.35rem;
         background: rgba(255, 255, 255, 0.04);
     }
 

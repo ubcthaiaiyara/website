@@ -344,7 +344,7 @@ export default function AccountView(props: Props) {
                 )}
 
                 {tab === "account" && (
-                    <form onSubmit={handleSubmit}>
+                    <form className="settings-section" onSubmit={handleSubmit}>
                         <h2 className="settings-section-title">
                             Personal details
                         </h2>
@@ -464,7 +464,7 @@ export default function AccountView(props: Props) {
 
                 {tab === "security" && (
                     <>
-                    <section>
+                    <section className="settings-section">
                         <h2 className="settings-section-title">Email</h2>
                         <p className="settings-row-desc">
                             Your email can&apos;t be changed.
@@ -491,7 +491,7 @@ export default function AccountView(props: Props) {
                     </section>
 
                     <form
-                        className="settings-subsection"
+                        className="settings-section settings-subsection"
                         onSubmit={handlePasswordSubmit}
                     >
                         <h2 className="settings-section-title">Password</h2>
@@ -659,7 +659,7 @@ export default function AccountView(props: Props) {
                         </div>
                     </form>
 
-                    <section className="settings-subsection">
+                    <section className="settings-section settings-subsection">
                         <h2 className="settings-section-title">
                             Sign-in methods
                         </h2>
@@ -715,7 +715,7 @@ export default function AccountView(props: Props) {
                     </section>
 
                     <form
-                        className="settings-subsection danger-zone"
+                        className="settings-section settings-subsection danger-zone"
                         onSubmit={handleDeleteSubmit}
                     >
                         <h2 className="settings-section-title">
