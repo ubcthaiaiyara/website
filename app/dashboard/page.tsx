@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { Viewport } from "next";
 import { readSession } from "@/lib/session";
 import { getMemberByUserId } from "@/lib/members";
+import { getUserProviders } from "@/lib/supabase";
 import AccountView from "./AccountView";
 
 // Keep iOS Safari's browser chrome aligned with the account page's midnight
@@ -27,6 +28,8 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const providers = await getUserProviders(userId);
+
   const memberSince = new Date(member.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -44,6 +47,8 @@ export default async function DashboardPage() {
         year={member.year ?? ""}
         memberSince={memberSince}
         serial={member.serial_number}
+        hasPassword={Boolean(member.password_hash)}
+        hasGoogle={providers.includes("google")}
       />
     </main>
   );

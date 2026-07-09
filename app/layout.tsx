@@ -64,25 +64,31 @@ export default function RootLayout({
                                     friends at the University of British
                                     Columbia.
                                 </p>
+                                <a
+                                    className="footer-email"
+                                    href="mailto:contact@ubcthaiaiyara.com"
+                                >
+                                    contact@ubcthaiaiyara.com
+                                </a>
                             </div>
 
                             <nav className="footer-col">
                                 <h4>Explore</h4>
                                 <Link href="/about">About</Link>
                                 <Link href="/sponsors">Sponsors</Link>
-                                <Link href="/contact">Contact</Link>
+                                <Link href="/contact">Socials</Link>
                             </nav>
 
                             <nav className="footer-col">
-                                <h4>Contact</h4>
+                                <h4>Socials</h4>
                                 <a href="https://www.instagram.com/ubcthaiaiyara">
                                     Instagram
                                 </a>
+                                <a href="https://www.tiktok.com/@ubc.thaiaiyara">
+                                    TikTok
+                                </a>
                                 <a href="https://www.linkedin.com/company/ubc-thaiaiyara">
                                     LinkedIn
-                                </a>
-                                <a href="mailto:contact@ubcthaiaiyara.com">
-                                    Email
                                 </a>
                             </nav>
 

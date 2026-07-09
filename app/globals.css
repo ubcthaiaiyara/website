@@ -1163,6 +1163,17 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: rgba(255, 255, 255, 0.6);
 }
 
+.footer-email {
+    color: #fff;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.footer-email:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 .footer-socials {
     display: flex;
     gap: 1rem;
@@ -1330,8 +1341,6 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 /* Left: sticky category nav with the sign-out pinned below the tabs. */
 .account-nav {
-    position: sticky;
-    top: 0.75rem;
     display: flex;
     flex-direction: column;
     background: #050115;
@@ -1342,7 +1351,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.35rem;
+    padding: 0;
     border-radius: 0.95rem;
     background: transparent;
 }
@@ -1396,13 +1405,21 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 .account-nav-foot {
     margin-top: 1.25rem;
-    padding: 1.25rem 0.35rem 0;
+    padding: 1.25rem 0 0;
     border-top: 1px solid var(--border-dark);
 }
 
 /* Right: content panel. */
 .account-panel {
     min-width: 0;
+}
+
+.settings-section {
+    padding: 2rem 0;
+}
+
+.settings-section:first-child {
+    padding-top: 0;
 }
 
 .settings-section-title {
@@ -1412,6 +1429,54 @@ body:has(.account-main) .site-header:not(.is-open) {
     letter-spacing: -0.01em;
     margin: 0 0 0.5rem;
     color: #fff;
+}
+
+/* Inline result banner (e.g. Google connect success/failure). */
+.settings-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0 0 1.25rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+}
+
+.settings-notice-dismiss {
+    flex: none;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0 0.15rem;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.settings-notice-dismiss:hover {
+    opacity: 1;
+}
+
+.settings-notice.is-success {
+    color: #7ee0a0;
+    background: rgba(126, 224, 160, 0.1);
+    border-color: rgba(126, 224, 160, 0.3);
+}
+
+.settings-notice.is-error {
+    color: #ff8a80;
+    background: rgba(179, 38, 30, 0.12);
+    border-color: rgba(255, 138, 128, 0.35);
+}
+
+/* Later settings blocks are separated by a hairline; vertical padding is shared
+   by every settings section. */
+.settings-subsection {
+    display: block;
+    border-top: 1px solid var(--border-dark);
 }
 
 .settings-rows {
@@ -1439,6 +1504,13 @@ body:has(.account-main) .site-header:not(.is-open) {
     font-size: 0.95rem;
     font-weight: 600;
     color: #fff;
+}
+
+.settings-row-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
 }
 
 .settings-row-desc {
@@ -1474,6 +1546,11 @@ body:has(.account-main) .site-header:not(.is-open) {
     cursor: not-allowed;
 }
 
+/* Match placeholders to the (disabled) email field's tone. */
+.settings-row-control input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 /* First / last name pair share the control cell. */
 .settings-name {
     display: grid;
@@ -1493,6 +1570,16 @@ body:has(.account-main) .site-header:not(.is-open) {
     background-size: 1.1rem;
 }
 
+/* On the dark settings panel, match the reveal icon to the select chevron
+   (#a8aab0) instead of the light-form muted tone. */
+.settings-row-control .password-toggle {
+    color: #a8aab0;
+}
+
+.settings-row-control .password-toggle:hover {
+    color: #fff;
+}
+
 /* Dropdown list items render on the system (light) popup, so keep them dark. */
 .settings-row-control option {
     color: #16130f;
@@ -1500,7 +1587,55 @@ body:has(.account-main) .site-header:not(.is-open) {
 }
 
 .settings-actions {
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 0;
+}
+
+.settings-inline-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settings-action-button {
+    gap: 0.7rem;
+    width: fit-content;
+}
+
+.settings-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.4rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid rgba(126, 224, 160, 0.35);
+    border-radius: 999px;
+    background: rgba(126, 224, 160, 0.12);
+    color: #7ee0a0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.settings-row-heading .settings-status {
+    min-height: 0;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+.danger-zone .settings-section-title,
+.danger-zone .settings-row-name {
+    color: #ffb4b4;
+}
+
+.danger-zone .settings-row-desc {
+    color: rgba(255, 180, 180, 0.72);
+}
+
+.danger-button,
+.danger-button:hover {
+    background-image: linear-gradient(180deg, #dc5a5a 0%, #8f1f1f 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 0.7px 2.7px -1.2px rgba(143, 31, 31, 0.4),
+        0 2.7px 10.4px -2.3px rgba(143, 31, 31, 0.34),
+        0 12px 45px -3.5px rgba(143, 31, 31, 0.22);
 }
 
 /* Membership section: the 3D card + wallet badge, centered. */
@@ -1522,46 +1657,17 @@ body:has(.account-main) .site-header:not(.is-open) {
     margin-top: -3.25rem;
 }
 
-/* Official "Add to Google Wallet" badge — a bare button wrapping the SVG, sized
-   to the same 2.75rem height as the Apple badge. Presentational only for now. */
-.wallet-badge-google {
-    display: inline-block;
-    padding: 0;
-    border: none;
-    background: none;
-    line-height: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-}
-
-.wallet-badge-google img {
-    height: 2.25rem;
-    width: auto;
-    display: block;
-    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
-    transition: filter 0.15s ease;
-}
-
-.wallet-badge-google:hover {
-    transform: translateY(-1px);
-}
-
-.wallet-badge-google:hover img {
-    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
-}
-
-.wallet-badge-google:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 3px;
-}
-
 @media (max-width: 640px) {
     /* Stack each row: label above its control. */
     .settings-row {
         grid-template-columns: 1fr;
         gap: 0.4rem;
         align-items: stretch;
+    }
+
+    .settings-row-inline-mobile {
+        grid-template-columns: 1fr auto;
+        align-items: center;
     }
 }
 
@@ -1572,7 +1678,8 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 0;
+        row-gap: 1.5rem;
     }
 
     .account-nav {
@@ -1582,10 +1689,16 @@ body:has(.account-main) .site-header:not(.is-open) {
     .account-tabs {
         order: 1;
         flex-direction: row;
-        flex-wrap: wrap;
-        width: fit-content;
-        max-width: 100%;
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.35rem;
         background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Tabs share the full switcher width evenly. */
+    .account-tabs .account-tab {
+        flex: 1;
+        text-align: center;
     }
 
     .account-panel {

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getOrCreateAuthMember } from "@/lib/members";
-import { setSessionCookie } from "@/lib/session";
+import { readSession, setSessionCookie } from "@/lib/session";
 import { createOAuthClient, OAUTH_CODE_VERIFIER_KEY } from "@/lib/supabase";
 
 const MODE_COOKIE = "aiyara_google_oauth_mode";
@@ -18,10 +18,12 @@ function clearOAuthCookies(response: NextResponse) {
 }
 
 function redirectToAuth(request: Request, mode: string | undefined) {
+  // Connecting Google from the account page: the member is already signed in,
+  // so send them back to the dashboard rather than a login screen.
+  const path =
+    mode === "link" ? "/dashboard" : mode === "signup" ? "/join" : "/login";
   return clearOAuthCookies(
-    NextResponse.redirect(
-      new URL(mode === "signup" ? "/join" : "/login", getBaseUrl(request))
-    )
+    NextResponse.redirect(new URL(path, getBaseUrl(request)))
   );
 }
 
@@ -31,6 +33,8 @@ export async function GET(request: Request) {
   const cookieStore = await cookies();
   const mode = cookieStore.get(MODE_COOKIE)?.value;
   const verifier = cookieStore.get(VERIFIER_COOKIE)?.value;
+  // Who is already signed in (used to guard the "link Google" flow).
+  const currentUserId = await readSession();
 
   if (!code || !verifier) {
     return redirectToAuth(request, mode);
@@ -55,6 +59,21 @@ export async function GET(request: Request) {
   const email = data.user.email;
   if (!email) {
     return redirectToAuth(request, mode);
+  }
+
+  // Connecting Google from the account page. Only succeed if Google resolved to
+  // the SAME signed-in user — i.e. Supabase linked the identity (which requires
+  // "Link accounts with the same email" enabled). If it came back as a different
+  // user, never switch the session or we'd sign them into a separate account;
+  // report it and leave them on their existing account.
+  if (mode === "link") {
+    const dest =
+      currentUserId && data.user.id === currentUserId
+        ? "/dashboard?connected=google"
+        : "/dashboard?error=google-link";
+    return clearOAuthCookies(
+      NextResponse.redirect(new URL(dest, getBaseUrl(request)))
+    );
   }
 
   const name =
