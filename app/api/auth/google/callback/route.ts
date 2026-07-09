@@ -18,10 +18,12 @@ function clearOAuthCookies(response: NextResponse) {
 }
 
 function redirectToAuth(request: Request, mode: string | undefined) {
+  // Connecting Google from the account page: the member is already signed in,
+  // so send them back to the dashboard rather than a login screen.
+  const path =
+    mode === "link" ? "/dashboard" : mode === "signup" ? "/join" : "/login";
   return clearOAuthCookies(
-    NextResponse.redirect(
-      new URL(mode === "signup" ? "/join" : "/login", getBaseUrl(request))
-    )
+    NextResponse.redirect(new URL(path, getBaseUrl(request)))
   );
 }
 

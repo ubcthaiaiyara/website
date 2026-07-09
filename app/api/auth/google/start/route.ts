@@ -25,7 +25,11 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url);
-  const mode = url.searchParams.get("mode") === "signup" ? "signup" : "login";
+  const modeParam = url.searchParams.get("mode");
+  // "link" is used from the account page to connect Google to an existing,
+  // signed-in member; login/signup are the unauthenticated entry points.
+  const mode =
+    modeParam === "signup" || modeParam === "link" ? modeParam : "login";
   const redirectTo = `${getBaseUrl(request)}/api/auth/google/callback`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({

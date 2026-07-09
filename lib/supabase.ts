@@ -26,6 +26,21 @@ export function isSupabaseConfigured(): boolean {
 let cachedClient: SupabaseClient | null = null;
 let cachedAuthClient: SupabaseClient | null = null;
 
+/**
+ * The auth providers linked to a user (e.g. ["email"], ["google"], or both).
+ * Used by the account page to show whether Google is connected. Returns [] when
+ * Supabase isn't configured or the lookup fails.
+ */
+export async function getUserProviders(userId: string): Promise<string[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase.auth.admin.getUserById(userId);
+  if (error || !data.user) return [];
+
+  return (data.user.identities ?? []).map((identity) => identity.provider);
+}
+
 export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) {
     return null;

@@ -14,6 +14,7 @@ type Props = {
     memberSince: string;
     serial: string;
     hasPassword: boolean;
+    hasGoogle: boolean;
 };
 
 const TABS = [
