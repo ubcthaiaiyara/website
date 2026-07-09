@@ -668,16 +668,11 @@ export default function AccountView(props: Props) {
                         </p>
 
                         <div className="settings-rows">
-                            <div className="settings-row">
+                            <div className="settings-row settings-row-inline-mobile">
                                 <span className="settings-row-info">
                                     <span className="settings-row-name">
                                         Google
                                     </span>
-                                    {props.hasGoogle && (
-                                        <span className="settings-row-desc">
-                                            Google sign-in is connected.
-                                        </span>
-                                    )}
                                 </span>
                                 <div className="settings-row-control settings-inline-action">
                                     {props.hasGoogle ? (

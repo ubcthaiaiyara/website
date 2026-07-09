@@ -1594,8 +1594,9 @@ body:has(.account-main) .site-header:not(.is-open) {
         align-items: stretch;
     }
 
-    .settings-inline-action {
-        justify-content: flex-start;
+    .settings-row-inline-mobile {
+        grid-template-columns: 1fr auto;
+        align-items: center;
     }
 }
 
