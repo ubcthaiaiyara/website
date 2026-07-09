@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 import MembershipCard from "../components/MembershipCard";
 import EyeIcon from "../components/EyeIcon";
@@ -122,6 +123,29 @@ export default function AccountView(props: Props) {
     const [showDeletePassword, setShowDeletePassword] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+
+    // Result of the Google connect round trip (redirected back with a query).
+    // Held in state (not read live) and dismissable; the query is stripped on
+    // mount so a refresh doesn't re-show it.
+    const searchParams = useSearchParams();
+    const [googleNotice, setGoogleNotice] = useState<
+        "success" | "error" | null
+    >(
+        searchParams.get("connected") === "google"
+            ? "success"
+            : searchParams.get("error") === "google-link"
+              ? "error"
+              : null,
+    );
+    const [googleNoticeReason] = useState(searchParams.get("reason"));
+
+    useEffect(() => {
+        if (searchParams.get("connected") || searchParams.get("error")) {
+            window.history.replaceState(null, "", window.location.pathname);
+        }
+        // Run once on mount to clear the one-time result query.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function onChange<T>(setter: (v: T) => void) {
         return (value: T) => {
@@ -493,6 +517,25 @@ export default function AccountView(props: Props) {
 
                 {tab === "security" && (
                     <>
+                    {googleNotice && (
+                        <div
+                            className={`settings-notice ${googleNotice === "success" ? "is-success" : "is-error"}`}
+                        >
+                            <span>
+                                {googleNotice === "success"
+                                    ? "Google connected."
+                                    : `Couldn't connect Google${googleNoticeReason ? `: ${googleNoticeReason}` : "."}`}
+                            </span>
+                            <button
+                                type="button"
+                                className="settings-notice-dismiss"
+                                onClick={() => setGoogleNotice(null)}
+                                aria-label="Dismiss"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                    )}
                     <section className="settings-section">
                         <h2 className="settings-section-title">Email</h2>
                         <p className="settings-row-desc">
@@ -725,7 +768,7 @@ export default function AccountView(props: Props) {
                                     ) : (
                                         <a
                                             className="button button-ghost settings-action-button"
-                                            href="/api/auth/google/start?mode=link"
+                                            href="/api/account/providers/google/link/start"
                                         >
                                             <svg
                                                 className="oauth-icon"
