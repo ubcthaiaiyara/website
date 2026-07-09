@@ -44,6 +44,7 @@ export default async function DashboardPage() {
         year={member.year ?? ""}
         memberSince={memberSince}
         serial={member.serial_number}
+        hasPassword={Boolean(member.password_hash)}
       />
     </main>
   );

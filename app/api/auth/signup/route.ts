@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { DuplicateEmailError, getOrCreateAuthMember } from "@/lib/members";
+import {
+  DuplicateEmailError,
+  getOrCreateAuthMember,
+  setMemberPasswordHash,
+} from "@/lib/members";
+import { hashPassword } from "@/lib/password";
 import { setSessionCookie } from "@/lib/session";
 import { getSupabaseAuth } from "@/lib/supabase";
 
@@ -73,6 +78,10 @@ export async function POST(request: Request) {
       trimmedName,
       data.user.email || trimmedEmail
     );
+
+    // Record that this member has a password (used by the account page to know
+    // whether to require the current password on change).
+    await setMemberPasswordHash(data.user.id, hashPassword(password));
 
     if (!data.session) {
       return NextResponse.json(

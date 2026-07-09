@@ -299,3 +299,35 @@ export async function updateMemberProfile(
   membersBySerial.set(serial, member);
   return member;
 }
+
+/**
+ * Store the scrypt password hash for a member (looked up by auth user id). We
+ * keep this alongside the Supabase Auth password so the app can tell whether a
+ * member has set a password yet and verify the current one on change, without
+ * an extra Supabase round-trip.
+ */
+export async function setMemberPasswordHash(
+  userId: string,
+  passwordHash: string
+): Promise<void> {
+  const supabase = getSupabase();
+  if (supabase) {
+    const { error } = await supabase
+      .from("members")
+      .update({ password_hash: passwordHash })
+      .eq("user_id", userId);
+
+    if (error) {
+      throw new Error(`Failed to update password hash: ${error.message}`);
+    }
+    return;
+  }
+
+  for (const member of membersBySerial.values()) {
+    if (member.user_id === userId) {
+      member.password_hash = passwordHash;
+      membersBySerial.set(member.serial_number, member);
+      return;
+    }
+  }
+}

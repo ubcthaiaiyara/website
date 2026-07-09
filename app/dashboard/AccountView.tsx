@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import LogoutButton from "./LogoutButton";
 import MembershipCard from "../components/MembershipCard";
+import EyeIcon from "../components/EyeIcon";
 
 type Props = {
     name: string;
@@ -12,6 +13,7 @@ type Props = {
     year: string;
     memberSince: string;
     serial: string;
+    hasPassword: boolean;
 };
 
 const TABS = [
@@ -97,6 +99,19 @@ export default function AccountView(props: Props) {
     const [saved, setSaved] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Set / change password. Members who signed in with an email code or Google
+    // have no password yet; this lets them add one. If one already exists
+    // (props.hasPassword), the current password is required to change it.
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [pwSaving, setPwSaving] = useState(false);
+    const [pwSaved, setPwSaved] = useState(false);
+    const [pwError, setPwError] = useState<string | null>(null);
+
     function onChange<T>(setter: (v: T) => void) {
         return (value: T) => {
             setter(value);
@@ -135,6 +150,52 @@ export default function AccountView(props: Props) {
             setError(err instanceof Error ? err.message : "Unexpected error.");
         } finally {
             setSaving(false);
+        }
+    }
+
+    async function handlePasswordSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setPwError(null);
+
+        if (props.hasPassword && currentPassword.length === 0) {
+            setPwError("Enter your current password.");
+            return;
+        }
+        if (newPassword.length < 8) {
+            setPwError("Password must be at least 8 characters.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPwError("Passwords don't match.");
+            return;
+        }
+
+        setPwSaving(true);
+        try {
+            const res = await fetch("/api/account/password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    password: newPassword,
+                    currentPassword,
+                }),
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(
+                    data.error ?? "Couldn't update password. Please try again.",
+                );
+            }
+
+            setPwSaved(true);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } catch (err) {
+            setPwError(err instanceof Error ? err.message : "Unexpected error.");
+        } finally {
+            setPwSaving(false);
         }
     }
 
@@ -252,6 +313,7 @@ export default function AccountView(props: Props) {
                 )}
 
                 {tab === "account" && (
+                    <>
                     <form onSubmit={handleSubmit}>
                         <h2 className="settings-section-title">
                             Personal details
@@ -389,6 +451,176 @@ export default function AccountView(props: Props) {
                             </button>
                         </div>
                     </form>
+
+                    <form
+                        className="settings-subsection"
+                        onSubmit={handlePasswordSubmit}
+                    >
+                        <h2 className="settings-section-title">Password</h2>
+                        <p className="settings-row-desc">
+                            {props.hasPassword
+                                ? "Change your password. Enter your current one to confirm."
+                                : "Set a password to sign in without an emailed code."}
+                        </p>
+
+                        <div className="settings-rows">
+                            {props.hasPassword && (
+                                <div className="settings-row">
+                                    <label
+                                        className="settings-row-name"
+                                        htmlFor="current-password"
+                                    >
+                                        Current password
+                                    </label>
+                                    <div className="settings-row-control">
+                                        <div className="password-field">
+                                            <input
+                                                id="current-password"
+                                                type={
+                                                    showCurrent
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                                value={currentPassword}
+                                                onChange={(e) => {
+                                                    setCurrentPassword(
+                                                        e.target.value,
+                                                    );
+                                                    setPwSaved(false);
+                                                    setPwError(null);
+                                                }}
+                                                autoComplete="current-password"
+                                                placeholder="Current password"
+                                                aria-label="Current password"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="password-toggle"
+                                                onClick={() =>
+                                                    setShowCurrent((v) => !v)
+                                                }
+                                                aria-label={
+                                                    showCurrent
+                                                        ? "Hide password"
+                                                        : "Show password"
+                                                }
+                                                aria-pressed={showCurrent}
+                                            >
+                                                <EyeIcon open={showCurrent} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="settings-row">
+                                <label
+                                    className="settings-row-name"
+                                    htmlFor="new-password"
+                                >
+                                    New password
+                                </label>
+                                <div className="settings-row-control">
+                                    <div className="password-field">
+                                        <input
+                                            id="new-password"
+                                            type={showNew ? "text" : "password"}
+                                            value={newPassword}
+                                            onChange={(e) => {
+                                                setNewPassword(e.target.value);
+                                                setPwSaved(false);
+                                                setPwError(null);
+                                            }}
+                                            autoComplete="new-password"
+                                            placeholder="At least 8 characters"
+                                            aria-label="New password"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() =>
+                                                setShowNew((v) => !v)
+                                            }
+                                            aria-label={
+                                                showNew
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
+                                            aria-pressed={showNew}
+                                        >
+                                            <EyeIcon open={showNew} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="settings-row">
+                                <label
+                                    className="settings-row-name"
+                                    htmlFor="confirm-password"
+                                >
+                                    Confirm
+                                </label>
+                                <div className="settings-row-control">
+                                    <div className="password-field">
+                                        <input
+                                            id="confirm-password"
+                                            type={
+                                                showConfirm
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            value={confirmPassword}
+                                            onChange={(e) => {
+                                                setConfirmPassword(
+                                                    e.target.value,
+                                                );
+                                                setPwSaved(false);
+                                                setPwError(null);
+                                            }}
+                                            autoComplete="new-password"
+                                            placeholder="Re-enter password"
+                                            aria-label="Confirm password"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() =>
+                                                setShowConfirm((v) => !v)
+                                            }
+                                            aria-label={
+                                                showConfirm
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
+                                            aria-pressed={showConfirm}
+                                        >
+                                            <EyeIcon open={showConfirm} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {pwError && <p className="error">{pwError}</p>}
+
+                        <div className="settings-actions">
+                            <button
+                                className="button"
+                                type="submit"
+                                disabled={pwSaving}
+                            >
+                                {pwSaving
+                                    ? "Saving…"
+                                    : pwSaved
+                                      ? "Saved ✓"
+                                      : props.hasPassword
+                                        ? "Update password"
+                                        : "Set password"}
+                            </button>
+                        </div>
+                    </form>
+                    </>
                 )}
             </section>
         </div>

@@ -7,7 +7,7 @@ export default function EyeIcon({ open }: { open: boolean }) {
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"
-          fill="#fff"
+          fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
           strokeLinejoin="round"

@@ -1414,6 +1414,15 @@ body:has(.account-main) .site-header:not(.is-open) {
     color: #fff;
 }
 
+/* Second settings block (e.g. Password) under the personal-details form,
+   separated by a hairline. */
+.settings-subsection {
+    display: block;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-dark);
+}
+
 .settings-rows {
     display: flex;
     flex-direction: column;
@@ -1491,6 +1500,16 @@ body:has(.account-main) .site-header:not(.is-open) {
     background-repeat: no-repeat;
     background-position: right 0.85rem center;
     background-size: 1.1rem;
+}
+
+/* On the dark settings panel, match the reveal icon to the select chevron
+   (#a8aab0) instead of the light-form muted tone. */
+.settings-row-control .password-toggle {
+    color: #a8aab0;
+}
+
+.settings-row-control .password-toggle:hover {
+    color: #fff;
 }
 
 /* Dropdown list items render on the system (light) popup, so keep them dark. */
