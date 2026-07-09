@@ -45,47 +45,62 @@ export async function unlinkUserIdentityProvider(
   userId: string,
   provider: string
 ): Promise<void> {
-  const supabase = getSupabase();
-  if (!supabase || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  const admin = getSupabase();
+  if (!admin) {
     throw new Error("Supabase Auth is not configured.");
   }
 
-  const { data, error } = await supabase.auth.admin.getUserById(userId);
-  if (error || !data.user) {
-    throw new Error(error?.message ?? "Account not found.");
+  const { data: userData, error: userErr } =
+    await admin.auth.admin.getUserById(userId);
+  const email = userData?.user?.email;
+  if (userErr || !email) {
+    throw new Error(userErr?.message ?? "Account not found.");
   }
 
-  const identity = data.user.identities?.find(
-    (item) => item.provider === provider
-  );
+  // Unlinking hits the user-scoped identities endpoint, which requires the
+  // member's own token (the service-role key has no `sub` claim). So mint a
+  // short-lived session for them and run unlinkIdentity as that user.
+  const { data: linkData, error: genErr } = await admin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+  });
+  const tokenHash = linkData?.properties?.hashed_token;
+  if (genErr || !tokenHash) {
+    throw new Error(genErr?.message ?? "Could not disconnect Google.");
+  }
+
+  const store: Record<string, string> = {};
+  const client = createOAuthClient(store);
+  if (!client) {
+    throw new Error("Supabase Auth is not configured.");
+  }
+
+  const { error: verifyErr } = await client.auth.verifyOtp({
+    type: "magiclink",
+    token_hash: tokenHash,
+  });
+  if (verifyErr) {
+    throw new Error(verifyErr.message);
+  }
+
+  const { data: identData, error: identErr } =
+    await client.auth.getUserIdentities();
+  if (identErr) {
+    throw new Error(identErr.message);
+  }
+
+  const identities = identData?.identities ?? [];
+  const identity = identities.find((item) => item.provider === provider);
   if (!identity) {
-    return;
+    return; // already not linked
   }
-
-  if ((data.user.identities?.length ?? 0) <= 1) {
+  if (identities.length <= 1) {
     throw new Error("Add another sign-in method before disconnecting Google.");
   }
 
-  const res = await fetch(
-    `${SUPABASE_URL}/auth/v1/user/identities/${identity.identity_id}`,
-    {
-      method: "DELETE",
-      headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      },
-    }
-  );
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(
-      typeof body.msg === "string"
-        ? body.msg
-        : typeof body.error_description === "string"
-          ? body.error_description
-          : "Could not disconnect Google."
-    );
+  const { error: unlinkErr } = await client.auth.unlinkIdentity(identity);
+  if (unlinkErr) {
+    throw new Error(unlinkErr.message);
   }
 }
 
