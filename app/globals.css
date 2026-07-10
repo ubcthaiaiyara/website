@@ -2522,6 +2522,30 @@ html:has(body .auth-split) {
         linear-gradient(145deg, #f4f6ff 0%, #ddd9ec 52%, #5b6198 100%);
 }
 
+/* Hover: lift the whole card. */
+.culture-card {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.culture-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 30px 60px -24px rgba(16, 24, 48, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .culture-card {
+        transition: none;
+    }
+
+    .culture-card:hover {
+        transform: none;
+    }
+}
+
 /* Testimonial card: serif italic pull-quote over an attribution. */
 .voices-section {
     max-width: none;
@@ -2541,7 +2565,7 @@ html:has(body .auth-split) {
 .voice-scroll {
     display: flex;
     gap: 1.5rem;
-    margin-top: 1.5rem;
+    margin-top: 3rem;
     margin-left: -1.75rem;
     margin-right: -1.75rem;
     padding: 1rem max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem)) 2.5rem;
@@ -3159,7 +3183,8 @@ html:has(body .auth-split) {
    <details>/<summary>, no JS. */
 #faq {
     text-align: center;
-    padding-bottom: 13rem;
+    padding-top: 7rem;
+    padding-bottom: 17rem;
 }
 
 #faq > .section-label,
@@ -3396,11 +3421,14 @@ body:has(.hero) .page-body {
    content changes the page height enough that a heading lands on the wrong side
    of the transition, move it into the light-ink list below or nudge the stops. */
 body:has(.hero) .page-body {
+    /* Hold the hero's exact cream (#fffbec) through the hero region so the point
+       where the hero ends meets the same cream — no seam — then descend to
+       midnight over the rest of the content. */
     background: linear-gradient(
         180deg,
         #fffbec 0%,
-        #fffbec 12%,
-        #f7f3f0 28%,
+        #fffbec 22%,
+        #f7f3f0 38%,
         #ddd9ec 62%,
         #5b6198 82%,
         #2d315d 93%,
