@@ -2522,16 +2522,15 @@ html:has(body .auth-split) {
         linear-gradient(145deg, #f4f6ff 0%, #ddd9ec 52%, #5b6198 100%);
 }
 
-/* Hover: tilt the card a few degrees, pivoting around its bottom-left corner. */
+/* Hover: lift the whole card. */
 .culture-card {
-    transform-origin: bottom left;
     transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.35s ease;
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .culture-card:hover {
-    transform: rotate(-4deg);
+    transform: translateY(-6px);
     box-shadow:
         0 1px 2px rgba(16, 24, 48, 0.05),
         0 30px 60px -24px rgba(16, 24, 48, 0.4);
@@ -2588,6 +2587,29 @@ html:has(body .auth-split) {
     gap: 1.25rem;
     flex: 0 0 min(22rem, calc(100vw - 3.5rem));
     transform: rotate(var(--card-rotate)) skewY(var(--card-skew));
+    /* Pivot from the bottom-left corner so the hover spin swings from there. */
+    transform-origin: bottom left;
+    transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease;
+}
+
+/* Hover: spin a few degrees around the bottom-left corner. */
+.voice-card:hover {
+    transform: rotate(calc(var(--card-rotate) - 6deg)) skewY(var(--card-skew));
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 30px 60px -24px rgba(16, 24, 48, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .voice-card {
+        transition: none;
+    }
+
+    .voice-card:hover {
+        transform: rotate(var(--card-rotate)) skewY(var(--card-skew));
+    }
 }
 
 .voice-card-0 {
