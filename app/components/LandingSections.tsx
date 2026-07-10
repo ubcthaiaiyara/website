@@ -377,28 +377,20 @@ export function FaqSection() {
     // ask"), with the questions rewritten for club membership.
     const faqs = [
         {
-            q: "How do I join?",
-            a: "Create an account, confirm your email, and add your pass to Apple Wallet. The whole thing takes about a minute.",
+            q: "How can I become a member?",
+            a: "There are three ways: message our executives on social media or by email, find us at the AMS Campus Base to pay the fee in person, or come say hi at campus events like Imagine Day and Club Day.",
         },
         {
-            q: "Is there a membership fee?",
-            a: "[TODO: membership fee details.]",
+            q: "How much does the membership fee cost?",
+            a: "Our annual membership fee is $15 for current students and $20 for alumni. It covers discounts at events, a club t-shirt, and your very own membership card!",
         },
         {
-            q: "Do I need to be Thai to join?",
-            a: "Not at all — everyone who loves Thai culture is welcome here.",
+            q: "Do I have to be Thai to join?",
+            a: "No, absolutely not! We welcome anyone interested in Thai culture, whatever your background, though many of our members are Thai or went to international schools in Thailand.",
         },
         {
-            q: "Can I bring friends?",
-            a: "Absolutely. The more the merrier — anyone at UBC can sign up.",
-        },
-        {
-            q: "Is my information secure?",
-            a: "Yes. We only use your details to manage your membership, and never share them.",
-        },
-        {
-            q: "What if I have a question?",
-            a: "Reach out on Instagram or email contact@ubcthaiaiyara.com — we're happy to help.",
+            q: "What are the perks of becoming a member?",
+            a: "Sponsor discounts and promotions, member pricing for events, a complimentary club shirt and membership card, and a community of friends to share it all with.",
         },
     ];
     return (
