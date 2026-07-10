@@ -802,6 +802,29 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
     margin-bottom: 1.25rem;
 }
 
+/* Homepage section eyebrows sit in compact pills above their headings. */
+body:has(.hero) .section > .section-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.4rem 0.75rem;
+    color: var(--accent);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    background: rgba(139, 143, 192, 0.13);
+    border: 1px solid rgba(91, 97, 152, 0.2);
+    border-radius: 999px;
+}
+
+/* The voices section is full-bleed, so keep its pill inside the shared gutter. */
+body:has(.hero) .voices-section > .section-label {
+    max-width: calc(100% - 3.5rem);
+    margin-right: 0;
+    margin-left: max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem));
+    padding: 0.4rem 0.75rem;
+}
+
 .section h2 {
     font-family: var(--font-serif), Georgia, serif;
     font-size: clamp(2rem, 4vw, 3.25rem);
