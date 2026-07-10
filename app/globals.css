@@ -3059,6 +3059,16 @@ html:has(body .auth-split) {
     }
 }
 
+@media (max-width: 720px) {
+    .feature-stack {
+        height: 20rem;
+    }
+
+    .feature-stack-card {
+        padding: 1.75rem;
+    }
+}
+
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
