@@ -2565,10 +2565,12 @@ html:has(body .auth-split) {
 .voice-scroll {
     display: flex;
     gap: 1.5rem;
-    margin-top: 3rem;
+    margin-top: 1rem;
     margin-left: -1.75rem;
     margin-right: -1.75rem;
-    padding: 1rem max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem)) 2.5rem;
+    /* Generous top/bottom padding so the tilted + hover-spun cards have room and
+       aren't clipped by the scroll container. */
+    padding: 3rem max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem)) 3rem;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
