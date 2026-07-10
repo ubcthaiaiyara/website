@@ -2922,6 +2922,143 @@ html:has(body .auth-split) {
 
 /* Bento grid — mixed-size feature cards. Four-column base; a couple of cards
    span extra tracks for the bento rhythm. */
+.feature-stack-wrap {
+    width: min(100%, 42rem);
+    margin: 5rem auto 0;
+}
+
+#perks {
+    padding-bottom: 10rem;
+    text-align: center;
+}
+
+#perks > .section-label,
+#perks > h2 {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.feature-stack {
+    position: relative;
+    height: 23rem;
+    isolation: isolate;
+}
+
+.feature-stack-card {
+    position: absolute;
+    inset: 0;
+    z-index: calc(10 - var(--stack-index));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 100%;
+    padding: 2.25rem;
+    overflow: hidden;
+    color: var(--fg);
+    text-align: left;
+    cursor: pointer;
+    background:
+        radial-gradient(circle at top right, rgba(139, 143, 192, 0.22), transparent 42%),
+        var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    box-shadow: 0 24px 56px -26px rgba(16, 24, 48, 0.38);
+    opacity: 1;
+    pointer-events: none;
+    transform: translateY(calc(var(--stack-index) * 1.1rem))
+        scale(calc(1 - var(--stack-index) * 0.035)) rotate(var(--stack-rotation));
+    transform-origin: bottom center;
+    transition:
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.feature-stack-card[aria-hidden="false"] {
+    pointer-events: auto;
+}
+
+.feature-stack-card[aria-hidden="false"]:hover,
+.feature-stack-card[aria-hidden="false"]:focus-visible {
+    box-shadow: 0 30px 62px -24px rgba(16, 24, 48, 0.48);
+    outline: none;
+}
+
+.feature-stack-number {
+    color: var(--accent);
+    font-family: var(--font-sans), sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.feature-stack-content {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 29rem;
+}
+
+.feature-stack-content strong {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    line-height: 1.05;
+}
+
+.feature-stack-content span {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.55;
+}
+
+.feature-stack-card[aria-hidden="true"] .feature-stack-number,
+.feature-stack-card[aria-hidden="true"] .feature-stack-content {
+    opacity: 0;
+}
+
+.feature-stack-number,
+.feature-stack-content {
+    transition: opacity 0.2s ease;
+}
+
+.feature-stack-hint {
+    align-self: flex-end;
+    font-family: var(--font-sans), sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: transparent;
+    background-image: linear-gradient(
+        110deg,
+        var(--accent) 38%,
+        #fffbec 50%,
+        var(--accent) 62%
+    );
+    background-position: 150% 0;
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: feature-stack-hint-shine 3.5s ease-in-out infinite;
+}
+
+@keyframes feature-stack-hint-shine {
+    0%,
+    35% {
+        background-position: 150% 0;
+    }
+
+    70%,
+    100% {
+        background-position: -50% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .feature-stack-hint {
+        animation: none;
+    }
+}
+
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
