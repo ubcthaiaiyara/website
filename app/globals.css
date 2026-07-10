@@ -3444,6 +3444,11 @@ body:has(.hero) .page-body {
         #2d315d 93%,
         #050115 100%
     );
+    /* Keep the gradient's stops independent of accordion content height. Extra
+       space below the gradient uses the same midnight tone as its final stop. */
+    background-color: #050115;
+    background-repeat: no-repeat;
+    background-size: 100% 5400px;
 }
 
 /* The content holds on light tones until ~70%, so only the bottom sections
