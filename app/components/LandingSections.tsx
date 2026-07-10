@@ -42,19 +42,21 @@ export function StorySection() {
             <h2>How Thai Aiyara began.</h2>
             <div className="float-card story-card">
                 <p className="lead">
-                    {/* TODO: real founding story — year, founders, the why. */}
-                    Founded in{" "}
-                    <strong>[TODO: year]</strong> by a small group of Thai
-                    students who wanted a place to feel at home while studying
-                    thousands of kilometres away, UBC Thai Aiyara grew from a
-                    handful of friends into a community that now welcomes anyone
-                    who loves Thai culture at UBC.
+                    UBC Thai Aiyara is a social and cultural club under the Alma
+                    Mater Society at the University of British Columbia. It was
+                    founded over 6 years ago and has since been a family and a
+                    second &quot;home away from home&quot; for Thai students
+                    studying at UBC.
                 </p>
                 <p>
-                    {/* TODO: mission in one or two sentences. */}
-                    Our mission is simple: keep Thai culture close, help new
-                    students find their footing, and make sure no one has to feel
-                    far from home.
+                    Thai Aiyara aims to promote Thai culture as well as bring
+                    together the community of Thai students at UBC through hosting
+                    a variety of amusing social and cultural activities during the
+                    academic year, along with casual hangouts, retreats, and
+                    everything in between! We also partner with other Southeast
+                    Asian (SEA) groups to host events throughout the year, such as
+                    Taste of SEA. Feel free to contact any of our executives or
+                    members if you&apos;re interested in getting involved!
                 </p>
             </div>
         </FloatingSection>
