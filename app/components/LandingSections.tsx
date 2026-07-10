@@ -138,8 +138,10 @@ export function VoicesSection() {
     ];
     return (
         <FloatingSection id="voices" className="section voices-section">
-            <span className="section-label">Voices</span>
-            <h2>A home away from home.</h2>
+            <div className="voices-heading">
+                <span className="section-label">Voices</span>
+                <h2>A home away from home.</h2>
+            </div>
             <VoiceCarousel quotes={quotes} />
         </FloatingSection>
     );

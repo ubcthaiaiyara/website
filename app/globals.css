@@ -803,7 +803,8 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 }
 
 /* Homepage section eyebrows sit in compact pills above their headings. */
-body:has(.hero) .section > .section-label {
+body:has(.hero) .section > .section-label,
+body:has(.hero) .voices-heading > .section-label {
     display: inline-flex;
     align-items: center;
     width: fit-content;
@@ -815,14 +816,6 @@ body:has(.hero) .section > .section-label {
     background: rgba(139, 143, 192, 0.13);
     border: 1px solid rgba(91, 97, 152, 0.2);
     border-radius: 999px;
-}
-
-/* The voices section is full-bleed, so keep its pill inside the shared gutter. */
-body:has(.hero) .voices-section > .section-label {
-    max-width: calc(100% - 3.5rem);
-    margin-right: 0;
-    margin-left: max(3.5rem, calc((100vw - var(--max)) / 2 + 1.75rem));
-    padding: 0.4rem 0.75rem;
 }
 
 .section h2 {
@@ -2592,14 +2585,15 @@ html:has(body .auth-split) {
     max-width: none;
 }
 
-.voices-section > .section-label,
-.voices-section > h2 {
+.voices-heading {
     width: min(100%, var(--max));
     max-width: var(--max);
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.75rem;
-    padding-right: 1.75rem;
+}
+
+.voices-heading > .section-label,
+.voices-heading > h2 {
     text-align: left;
 }
 
@@ -3667,8 +3661,7 @@ body:has(.hero) .page-body {
    (#join-steps, #faq) land on the dark descent and need light ink for their
    out-of-card headers. (Card contents stay dark on their white surface.) If you
    add/remove sections and a heading lands on the wrong side, update this list. */
-body:has(.hero) #join-steps > .section-label,
-body:has(.hero) #faq > .section-label {
+body:has(.hero) #join-steps > .section-label {
     color: rgba(255, 251, 236, 0.72);
 }
 
@@ -3676,4 +3669,23 @@ body:has(.hero) #join-steps > h2,
 body:has(.hero) #faq > h2 {
     color: #fffbec;
     text-shadow: 0 1px 24px rgba(5, 1, 21, 0.35);
+}
+
+/* Keep the FAQ eyebrow identical to the homepage section-label pill. */
+body:has(.hero) #faq > .section-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.4rem 0.75rem;
+    color: #fffbec;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    background: rgba(255, 251, 236, 0.16);
+    border: 1px solid rgba(255, 251, 236, 0.45);
+    border-radius: 999px;
+    box-shadow: 0 8px 22px -12px rgba(5, 1, 21, 0.65);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    backdrop-filter: blur(12px) saturate(1.2);
 }
