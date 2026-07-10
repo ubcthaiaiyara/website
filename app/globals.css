@@ -2339,10 +2339,123 @@ html:has(body .auth-split) {
     margin-top: 2.5rem;
     width: 100%;
     max-width: none;
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 28rem);
+    gap: 3.5rem;
+    align-items: stretch;
+}
+
+.story-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Auto-cycling, clickable image gallery in the story card. */
+.story-gallery {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.story-gallery-viewport {
+    position: relative;
+    flex: 1;
+    min-height: 20rem;
+    border: none;
+    padding: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+}
+
+.story-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.story-slide.is-active {
+    opacity: 1;
+}
+
+/* Placeholder tints — swap each for a real photo. */
+.story-slide-0 {
+    background: #e6e0d7;
+}
+.story-slide-1 {
+    background: linear-gradient(155deg, #565b96 0%, #2d315d 100%);
+}
+.story-slide-2 {
+    background: linear-gradient(155deg, #3a6ea5 0%, #1c3a5e 100%);
+}
+.story-slide-3 {
+    background: linear-gradient(155deg, #f0c674 0%, #d98b48 100%);
+}
+.story-slide-4 {
+    background: linear-gradient(155deg, #b06a9e 0%, #6d3f6b 100%);
+}
+
+/* Overlaid on the image, bottom-centre. */
+.story-dots {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0.9rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.story-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 1px 3px rgba(5, 1, 21, 0.4);
+    cursor: pointer;
+    transition:
+        width 0.25s ease,
+        background 0.25s ease;
+}
+
+.story-dot.is-active {
+    width: 1.35rem;
+    background: #fff;
+}
+
+@media (max-width: 760px) {
+    .story-card {
+        grid-template-columns: 1fr;
+    }
+
+    .story-gallery {
+        order: -1;
+    }
+
+    .story-gallery-viewport {
+        min-height: 12rem;
+    }
 }
 
 .story-card .lead {
     margin: 0 0 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--muted); /* #6f6a63 */
+    /* Fill the card instead of the base .lead 44rem cap. */
+    max-width: none;
+}
+
+/* Drop the trailing paragraph margin so the card's inner padding is even top
+   and bottom. */
+.story-card .lead:last-child {
+    margin-bottom: 0;
 }
 
 /* Event tile: image band on top, then title + blurb. */
