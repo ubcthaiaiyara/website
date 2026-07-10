@@ -2564,13 +2564,12 @@ html:has(body .auth-split) {
 
 .voice-scroll {
     display: flex;
-    gap: 1.5rem;
+    gap: 2.5rem;
     margin-top: 1rem;
     margin-left: -1.75rem;
     margin-right: -1.75rem;
-    /* Generous top/bottom padding so the tilted + hover-spun cards and their
-       drop shadow aren't clipped by the scroll container. */
-    padding: 3rem max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem)) 5rem;
+    /* Extra room on every edge keeps rotated cards and their shadows visible. */
+    padding: 4.5rem max(3.5rem, calc((100vw - var(--max)) / 2 + 3.5rem)) 6.5rem;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
@@ -2589,16 +2588,16 @@ html:has(body .auth-split) {
     gap: 1.25rem;
     flex: 0 0 min(22rem, calc(100vw - 3.5rem));
     transform: rotate(var(--card-rotate)) skewY(var(--card-skew));
-    /* Pivot from the bottom-left corner so the hover spin swings from there. */
-    transform-origin: bottom left;
+    /* Pivot every card from its bottom-right corner. */
+    transform-origin: bottom right;
     transition:
         transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
         box-shadow 0.35s ease;
 }
 
-/* Hover: spin a few degrees around the bottom-left corner. */
-.voice-card:hover {
-    transform: rotate(calc(var(--card-rotate) - 6deg)) skewY(var(--card-skew));
+/* Hover: spin a few degrees around the bottom-right corner. */
+.voice-card.is-hovered {
+    transform: rotate(calc(var(--card-rotate) + 6deg)) skewY(var(--card-skew));
     box-shadow:
         0 1px 2px rgba(16, 24, 48, 0.05),
         0 30px 60px -24px rgba(16, 24, 48, 0.4);
@@ -2609,25 +2608,11 @@ html:has(body .auth-split) {
         transition: none;
     }
 
-    .voice-card:hover {
+    .voice-card.is-hovered {
         transform: rotate(var(--card-rotate)) skewY(var(--card-skew));
     }
 }
 
-.voice-card-0 {
-    --card-rotate: -3.4deg;
-    --card-skew: -1.1deg;
-}
-
-.voice-card-1 {
-    --card-rotate: 2.8deg;
-    --card-skew: 0.9deg;
-}
-
-.voice-card-2 {
-    --card-rotate: -2.2deg;
-    --card-skew: 1.2deg;
-}
 
 .voice-card-3 {
     --card-rotate: 3.6deg;
