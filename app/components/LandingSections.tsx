@@ -215,7 +215,7 @@ export function HighlightSection() {
                     <p className="insight-copy">
                         Every event, social, and festival in one place. Get
                         reminders, RSVP in a tap, and keep your membership pass
-                        close — so you&apos;re always part of what&apos;s
+                        close, so you&apos;re always part of what&apos;s
                         happening.
                     </p>
                     <Link className="insight-cta" href="/join">
@@ -242,7 +242,7 @@ export function HighlightSection() {
                         <h3>Songkran is this Saturday</h3>
                         <p>
                             Water fights, Thai food, and music at the AMS Nest.
-                            Doors at 5 — bring friends and your membership pass.
+                            Doors at 5. Bring friends and your membership pass.
                         </p>
                         <div className="insight-tags">
                             <span className="insight-tag">Apr 13</span>
@@ -270,8 +270,8 @@ export function BentoSection() {
                     {/* TODO: real perk copy. */}
                     <h3>Events all year round</h3>
                     <p>
-                        Songkran, Loy Krathong, food nights, socials, and more —
-                        there&apos;s always something happening.
+                        Songkran, Loy Krathong, food nights, socials, and more.
+                        There&apos;s always something happening.
                     </p>
                 </article>
                 <article className="float-card bento-card">
@@ -300,7 +300,7 @@ export function JoinStepsSection() {
             <span className="section-label">Getting started</span>
             <h2>Membership is minutes away.</h2>
             <p className="win-intro">
-                No long forms, no hassle. Sign up, confirm, and you&apos;re in —
+                No long forms, no hassle. Sign up, confirm, and you&apos;re in,
                 with your pass ready in Apple Wallet.
             </p>
 
@@ -317,7 +317,7 @@ export function JoinStepsSection() {
                     <div className="win-body">
                         <h3>Create your account</h3>
                         <p>
-                            Enter your name and email. That&apos;s it — you&apos;re
+                            Enter your name and email. That&apos;s it, you&apos;re
                             a member in seconds.
                         </p>
                     </div>
