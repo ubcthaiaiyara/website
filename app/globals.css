@@ -2351,6 +2351,20 @@ html:has(body .auth-split) {
     justify-content: center;
 }
 
+.story-copy-stack {
+    height: 23rem;
+}
+
+.story-copy-stack .feature-stack-content {
+    width: 100%;
+    max-width: none;
+}
+
+.story-copy-stack .feature-stack-content > span {
+    display: block;
+    width: 100%;
+}
+
 /* Auto-cycling, clickable image gallery in the story card. */
 .story-gallery {
     position: relative;
@@ -2440,6 +2454,10 @@ html:has(body .auth-split) {
 
     .story-gallery-viewport {
         min-height: 12rem;
+    }
+
+    .story-copy-stack {
+        height: 20rem;
     }
 }
 
@@ -3062,6 +3080,10 @@ html:has(body .auth-split) {
 @media (max-width: 720px) {
     .feature-stack {
         height: 17rem;
+    }
+
+    .story-copy-stack {
+        height: 21rem;
     }
 
     .feature-stack-card {

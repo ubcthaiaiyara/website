@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FloatingSection from "./FloatingSection";
 import MembershipFeatureStack from "./MembershipFeatureStack";
+import StoryCopyStack from "./StoryCopyStack";
 import VoiceCarousel from "./VoiceCarousel";
 import StoryGallery from "./StoryGallery";
 
@@ -42,27 +43,8 @@ export function StorySection() {
         <FloatingSection id="about" className="section">
             <span className="section-label">Our story</span>
             <h2>How Thai Aiyara began.</h2>
-            <div className="float-card story-card">
-                <div className="story-text">
-                    <p className="lead">
-                        UBC Thai Aiyara is a social and cultural club under the
-                        Alma Mater Society at the University of British Columbia.
-                        It was founded over 10 years ago and has since been a
-                        family and a second &quot;home away from home&quot; for
-                        Thai students studying at UBC.
-                    </p>
-                    <p className="lead">
-                        Thai Aiyara aims to promote Thai culture as well as bring
-                        together the community of Thai students at UBC through
-                        hosting a variety of amusing social and cultural
-                        activities during the academic year, along with casual
-                        hangouts, retreats, and everything in between! We also
-                        partner with other Southeast Asian (SEA) groups to host
-                        events throughout the year, such as Taste of SEA. Feel
-                        free to contact any of our executives or members if
-                        you&apos;re interested in getting involved!
-                    </p>
-                </div>
+            <div className="story-card">
+                <StoryCopyStack />
 
                 <StoryGallery />
             </div>
