@@ -3061,11 +3061,11 @@ html:has(body .auth-split) {
 
 @media (max-width: 720px) {
     .feature-stack {
-        height: 20rem;
+        height: 17rem;
     }
 
     .feature-stack-card {
-        padding: 1.75rem;
+        padding: 1.5rem;
     }
 }
 
