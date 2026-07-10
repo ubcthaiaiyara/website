@@ -9,7 +9,6 @@ import {
     BentoSection,
     VoicesSection,
     FaqSection,
-    JoinCtaSection,
 } from "./components/LandingSections";
 
 // Fireflies drifting over the dark upper sky of the hero. Fixed (deterministic)
@@ -118,7 +117,6 @@ export default async function HomePage() {
             <VoicesSection />
             <BentoSection />
             <HighlightSection />
-            <JoinCtaSection />
             <FaqSection />
         </>
     );

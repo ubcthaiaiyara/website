@@ -417,35 +417,3 @@ export function FaqSection() {
     );
 }
 
-// 5. Join CTA — points at the real membership funnel, not just a social link.
-export function JoinCtaSection() {
-    return (
-        <FloatingSection id="join-cta" className="section billow-cta-section">
-            <div className="billow-cta-card">
-                <div className="billow-cta-content">
-                    <div className="billow-cta-copy">
-                        <h2>Stop missing out.</h2>
-                        <p>
-                            Join UBC Thai Aiyara in minutes. Get your member
-                            pass, hear about events first, and stay close to the
-                            community.
-                        </p>
-                    </div>
-
-                    <Link className="billow-cta-button" href="/join">
-                        Join today
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M9 6l6 6-6 6" />
-                        </svg>
-                    </Link>
-                </div>
-
-                <div className="billow-cta-clouds" aria-hidden="true">
-                    <span className="billow-cloud billow-cloud-one" />
-                    <span className="billow-cloud billow-cloud-two" />
-                    <span className="billow-cloud billow-cloud-three" />
-                </div>
-            </div>
-        </FloatingSection>
-    );
-}
