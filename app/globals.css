@@ -821,7 +821,7 @@ body:has(.hero) .section > .section-label {
 body:has(.hero) .voices-section > .section-label {
     max-width: calc(100% - 3.5rem);
     margin-right: 0;
-    margin-left: max(1.75rem, calc((100vw - var(--max)) / 2 + 1.75rem));
+    margin-left: max(3.5rem, calc((100vw - var(--max)) / 2 + 1.75rem));
     padding: 0.4rem 0.75rem;
 }
 
