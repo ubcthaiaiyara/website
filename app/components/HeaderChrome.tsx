@@ -1,16 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-// Covers the sheet's slide-up exit animation in globals.css (sheet-slide-up).
-const MENU_EXIT_MS = 300;
-const AUTH_TO_HOME_KEY = "aiyara-auth-to-home";
-
-// Client shell for the site header: swaps the chrome from fully transparent
-// (blended into the page background / hero) to a frosted translucent bar once
-// the page is scrolled, and owns the mobile hamburger menu state. Presentation
-// only — the nav content itself stays in the server-rendered SiteHeader.
+// Client shell for the site header. Two bits of state:
+//   • scrolled — frosts the bar once the page is scrolled past the hero (or a
+//     few px on pages without a hero); over the hero the bar stays transparent.
+//   • open     — toggles the mobile dropdown menu.
+// The nav content itself is server-rendered in SiteHeader and passed as
+// children.
 export default function HeaderChrome({
   children,
 }: {
@@ -18,99 +16,30 @@ export default function HeaderChrome({
 }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const [overFooter, setOverFooter] = useState(false);
+  // Collapsed hides the nav content (not the blur) when scrolling down; any
+  // upward scroll brings it back.
+  const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
-  const [fromAuth, setFromAuth] = useState(false);
-  // True while the overlay is playing its exit animation — the menu stays
-  // mounted (still .is-open) so it can fade out before actually closing.
-  const [closing, setClosing] = useState(false);
-  const exitTimer = useRef<number | undefined>(undefined);
-  const fromAuthTimer = useRef<number | undefined>(undefined);
-
-  const closeMenu = () => {
-    setClosing(true);
-    window.clearTimeout(exitTimer.current);
-    exitTimer.current = window.setTimeout(() => {
-      setOpen(false);
-      setClosing(false);
-    }, MENU_EXIT_MS);
-  };
-
-  const openMenu = () => {
-    window.clearTimeout(exitTimer.current);
-    setClosing(false);
-    setOpen(true);
-  };
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(exitTimer.current);
-      window.clearTimeout(fromAuthTimer.current);
-    },
-    [],
-  );
 
   useEffect(() => {
-    if (pathname !== "/") {
-      return;
-    }
-
-    try {
-      if (
-        sessionStorage.getItem(AUTH_TO_HOME_KEY) !== "1" ||
-        !document.querySelector(".hero")
-      ) {
-        return;
-      }
-
-      sessionStorage.removeItem(AUTH_TO_HOME_KEY);
-    } catch {
-      return;
-    }
-
-    setFromAuth(true);
-    window.clearTimeout(fromAuthTimer.current);
-    fromAuthTimer.current = window.setTimeout(() => setFromAuth(false), 520);
-    return () => window.clearTimeout(fromAuthTimer.current);
-  }, [pathname]);
-
-  useEffect(() => {
-    // The nav text flips from light to dark when the background behind it
-    // actually turns light — i.e. once the cream lower band of the hero
-    // gradient (~62% of its height) reaches the top of the viewport. On
-    // pages without a hero the text is dark from the start anyway.
+    // Over a hero, content flips to dark once its cream lower band (~62% down)
+    // reaches the top of the viewport; elsewhere, after a few pixels.
     let threshold = 24;
-    // Last scroll position, to derive direction. Scrolling down past a small
-    // buffer hides the bar; any upward movement brings it back.
     let lastY = window.scrollY;
-    // How tall the bar is, so we know when the dark footer has scrolled up
-    // behind it — at which point the bar flips to its midnight treatment.
-    let headerH = 72;
-
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > threshold);
-      // Ignore tiny jitter and the elastic top of the page. Only hide once
-      // we're comfortably below the header's own height.
+      // Ignore jitter and the elastic top; collapse only once past the bar.
       if (Math.abs(y - lastY) > 6) {
-        setHidden(y > lastY && y > 96);
+        setCollapsed(y > lastY && y > 96);
         lastY = y;
       }
-      const footer = document.querySelector<HTMLElement>(".site-footer");
-      setOverFooter(
-        !!footer && footer.getBoundingClientRect().top < headerH
-      );
     };
-
     const measure = () => {
       const hero = document.querySelector<HTMLElement>(".hero");
       threshold = hero ? hero.offsetHeight * 0.62 : 24;
-      const header = document.querySelector<HTMLElement>(".site-header");
-      if (header) headerH = header.offsetHeight;
       onScroll();
     };
-
     measure();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", measure);
@@ -120,29 +49,22 @@ export default function HeaderChrome({
     };
   }, []);
 
-  // Lock scrolling on the page behind the full-screen overlay menu.
-  useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = open ? "hidden" : prev;
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [open]);
+  // Close the menu whenever the route changes.
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
     <header
       className={`site-header${scrolled ? " is-scrolled" : ""}${
         open ? " is-open" : ""
-      }${closing ? " is-closing" : ""}${hidden && !open ? " is-hidden" : ""}${
-        overFooter && !open ? " over-footer" : ""
-      }${fromAuth ? " from-auth" : ""}`}
+      }${collapsed && !open ? " is-collapsed" : ""}`}
+      // Following any link inside the header closes the mobile menu.
       onClick={(e) => {
-        // Following any nav link should collapse the mobile menu.
-        if ((e.target as HTMLElement).closest("a")) closeMenu();
+        if ((e.target as HTMLElement).closest("a")) setOpen(false);
       }}
     >
-      {/* Progressive blur stack: eight bands with doubling blur strength,
-          masked so the diffusion ramps from nothing to full at the top edge. */}
+      {/* Progressive blur (newgenre.studio): eight backdrop-filter bands with
+          doubling blur strength, each masked to a 12.5% slice so page content
+          diffuses gradually as it scrolls up under the bar. */}
       <div className="nav-blur" aria-hidden="true">
         <div />
         <div />
@@ -160,7 +82,7 @@ export default function HeaderChrome({
           className="nav-toggle"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          onClick={() => (open ? closeMenu() : openMenu())}
+          onClick={() => setOpen((o) => !o)}
         >
           <span />
           <span />

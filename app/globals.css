@@ -184,303 +184,164 @@ p {
 }
 
 /* ---------- Header / nav ---------- */
-/* Transparent bar over an always-on progressive blur: page content diffuses
-   as it approaches the top edge of the viewport. Replicated from the
-   reference site — eight stacked backdrop-filter bands whose blur doubles
-   step by step (0.078px → 10px), each masked to a 12.5% band so the ramp is
-   continuous. No tint, no border, no scroll toggle. */
+/* ---------- Site header ---------- */
+/* Fixed bar, transparent over the hero (light content) and frosted once the
+   page is scrolled (dark content). The frosted fill lives on ::before so it can
+   fade in/out independently of the content. */
 .site-header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0 0 auto 0;
     z-index: 20;
     isolation: isolate;
     background: transparent;
-    transition:
-        background-color 0.3s ease,
-        transform 0.4s ease,
-        opacity 0.4s ease;
 }
 
 .site-header::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4.25rem;
+    inset: 0;
     z-index: 0;
     background: transparent;
-    mask-image: none;
-    -webkit-mask-image: none;
+    box-shadow: none;
     pointer-events: none;
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease,
+        backdrop-filter 0.3s ease,
+        -webkit-backdrop-filter 0.3s ease;
 }
 
-/* Near the bottom of the page the dark footer scrolls up behind the bar. Give
-   it the same midnight fill + light content as the hero top so it blends with
-   the footer instead of showing the light frosted treatment against it. */
-.site-header.over-footer {
-    background: #050115;
+/* Solid fill only while the mobile menu is open, so the toggle/logo stay
+   legible against it. The scrolled look is handled by the progressive blur. */
+/* Solid bar fill only (no second backdrop-filter) — the open menu panel below
+   extends up over this area and provides the single blur, so the bar and menu
+   are one continuous surface. This solid fill just prevents a flash while the
+   panel slides down over it. */
+.site-header.is-open::before {
+    background: rgba(5, 1, 21, 0.72);
 }
 
-.site-header.over-footer .brand,
-.site-header.over-footer .nav-login,
-.site-header.over-footer .nav-toggle,
-.site-header.over-footer .nav-links a {
+/* Open menu: hide the brand mark and keep the toggle (X) light on the dark
+   blurred panel. */
+.site-header.is-open .brand-logo {
+    opacity: 0;
+}
+
+.site-header.is-open .nav-toggle {
+    position: relative;
+    z-index: 1;
     color: #fff;
 }
 
-.site-header.over-footer .brand-logo {
-    filter: none;
-}
-
-.site-header.over-footer .button {
-    background-image: none;
-    background-color: #fff;
-    color: var(--accent);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 1px 3px -1px rgba(5, 1, 21, 0.4),
-        0 4px 14px -2px rgba(5, 1, 21, 0.3),
-        0 12px 40px -3px rgba(5, 1, 21, 0.22);
-}
-
-/* Scrolling down slides the bar up out of view and fades it; scrolling up (or
-   opening the mobile menu) removes .is-hidden, sliding it back in. */
-.site-header.is-hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .site-header {
-        transition: background-color 0.3s ease;
-    }
-    .site-header.is-hidden {
-        transform: none;
-        opacity: 1;
-        pointer-events: auto;
-    }
-}
-
+/* Progressive blur (newgenre.studio): a tall region at the top of the page whose
+   eight stacked bands each blur the backdrop a little more than the last, masked
+   to overlapping 12.5% slices so the diffusion ramps smoothly from sharp at the
+   bottom edge to fully blurred at the very top. Always on; no tint. */
 .nav-blur {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 9rem;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .nav-blur > div {
     position: absolute;
     inset: 0;
+    /* A hair of background so the backdrop-filter is honoured everywhere. */
     background: rgba(255, 255, 255, 0.001);
     will-change: backdrop-filter;
 }
 
 .nav-blur > div:nth-child(1) {
-    backdrop-filter: blur(0.078125px);
     -webkit-backdrop-filter: blur(0.078125px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 0%,
-        #000 12.5%,
-        #000 25%,
-        transparent 37.5%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 0%,
-        #000 12.5%,
-        #000 25%,
-        transparent 37.5%
-    );
+    backdrop-filter: blur(0.078125px);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
 }
 
 .nav-blur > div:nth-child(2) {
-    backdrop-filter: blur(0.15625px);
     -webkit-backdrop-filter: blur(0.15625px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 12.5%,
-        #000 25%,
-        #000 37.5%,
-        transparent 50%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 12.5%,
-        #000 25%,
-        #000 37.5%,
-        transparent 50%
-    );
+    backdrop-filter: blur(0.15625px);
+    -webkit-mask-image: linear-gradient(to top, transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
+    mask-image: linear-gradient(to top, transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
 }
 
 .nav-blur > div:nth-child(3) {
-    backdrop-filter: blur(0.3125px);
     -webkit-backdrop-filter: blur(0.3125px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 25%,
-        #000 37.5%,
-        #000 50%,
-        transparent 62.5%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 25%,
-        #000 37.5%,
-        #000 50%,
-        transparent 62.5%
-    );
+    backdrop-filter: blur(0.3125px);
+    -webkit-mask-image: linear-gradient(to top, transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
+    mask-image: linear-gradient(to top, transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
 }
 
 .nav-blur > div:nth-child(4) {
-    backdrop-filter: blur(0.625px);
     -webkit-backdrop-filter: blur(0.625px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 37.5%,
-        #000 50%,
-        #000 62.5%,
-        transparent 75%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 37.5%,
-        #000 50%,
-        #000 62.5%,
-        transparent 75%
-    );
+    backdrop-filter: blur(0.625px);
+    -webkit-mask-image: linear-gradient(to top, transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
+    mask-image: linear-gradient(to top, transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
 }
 
 .nav-blur > div:nth-child(5) {
-    backdrop-filter: blur(1.25px);
     -webkit-backdrop-filter: blur(1.25px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 50%,
-        #000 62.5%,
-        #000 75%,
-        transparent 87.5%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 50%,
-        #000 62.5%,
-        #000 75%,
-        transparent 87.5%
-    );
+    backdrop-filter: blur(1.25px);
+    -webkit-mask-image: linear-gradient(to top, transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
+    mask-image: linear-gradient(to top, transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
 }
 
 .nav-blur > div:nth-child(6) {
-    backdrop-filter: blur(2.5px);
     -webkit-backdrop-filter: blur(2.5px);
-    mask-image: linear-gradient(
-        to top,
-        transparent 62.5%,
-        #000 75%,
-        #000 87.5%,
-        transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 62.5%,
-        #000 75%,
-        #000 87.5%,
-        transparent 100%
-    );
+    backdrop-filter: blur(2.5px);
+    -webkit-mask-image: linear-gradient(to top, transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
+    mask-image: linear-gradient(to top, transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
 }
 
 .nav-blur > div:nth-child(7) {
-    backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    -webkit-mask-image: linear-gradient(to top, transparent 75%, #000 87.5%, #000 100%);
     mask-image: linear-gradient(to top, transparent 75%, #000 87.5%, #000 100%);
-    -webkit-mask-image: linear-gradient(
-        to top,
-        transparent 75%,
-        #000 87.5%,
-        #000 100%
-    );
 }
 
 .nav-blur > div:nth-child(8) {
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
+    backdrop-filter: blur(10px);
     -webkit-mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
+    mask-image: linear-gradient(to top, transparent 87.5%, #000 100%);
 }
 
-/* Keep the nav content above the blur stack. */
-.site-header .nav-inner {
-    position: relative;
-    z-index: 2;
-}
-
-/* The open mobile menu needs solid legibility rather than diffusion. */
-.site-header.is-open {
-    background: rgba(247, 243, 240, 0.88);
-    border-bottom: 1px solid var(--border);
-}
-
-/* Over the dark hero (home page top), flip the nav to light so it reads
-   against the espresso gradient. Auth pages have no .hero, so they keep the
-   default dark text on the paper background. The open mobile menu always sits
-   on the frosted bar, so it keeps dark text too. */
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand,
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-login,
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
-    color: #fff;
-}
-
-/* The artwork is already white — show it as-is over the dark hero. */
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand-logo {
-    filter: none;
-}
-
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open)::before,
-body:has(.account-main) .site-header:not(.is-open)::before,
-.site-header.over-footer::before {
-    background: rgba(255, 255, 255, 0.001);
-}
-
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-blur > div,
-body:has(.account-main) .site-header:not(.is-open) .nav-blur > div,
-.site-header.over-footer .nav-blur > div {
-    background: rgba(255, 255, 255, 0.001);
-}
-
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a {
-    color: #fff;
-}
-
-/* Over the dark hero, the primary button becomes a white pill so it pops. */
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
-    background-image: none;
-    background-color: #fff;
-    color: var(--accent);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 1px 3px -1px rgba(5, 1, 21, 0.4),
-        0 4px 14px -2px rgba(5, 1, 21, 0.3),
-        0 12px 40px -3px rgba(5, 1, 21, 0.22);
-}
-
-body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
-    background-image: none;
-    background-color: #fff;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 2px 5px -1px rgba(5, 1, 21, 0.42),
-        0 6px 18px -2px rgba(5, 1, 21, 0.34),
-        0 16px 48px -4px rgba(5, 1, 21, 0.26);
+/* The blur is meaningless behind the solid open mobile menu. */
+.site-header.is-open .nav-blur {
+    display: none;
 }
 
 .nav-inner {
+    position: relative;
+    z-index: 1;
     max-width: var(--max);
     margin: 0 auto;
     padding: 1rem 1.75rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    transition:
+        transform 0.35s ease,
+        opacity 0.3s ease;
+}
+
+/* Scrolling down hides the nav content (it slides up and fades); scrolling up
+   brings it back. The progressive-blur band stays put either way. */
+.site-header.is-collapsed .nav-inner {
+    transform: translateY(-115%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header.is-collapsed .nav-inner {
+        transform: none;
+    }
 }
 
 .brand {
@@ -491,38 +352,20 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
 }
 
-/* Transparent to layout by default — nav-links and nav-actions behave as direct
-   children of .nav-inner. Becomes a real box only in the mobile overlay. */
-.nav-menu {
-    display: contents;
-}
-
 .brand-logo {
     height: 1.5rem;
     width: auto;
     display: block;
-    /* The artwork is white-on-transparent; invert it to dark for light
-     backgrounds (the over-hero state removes the filter). */
+    /* White-on-transparent artwork; invert to dark for the light bar. The
+       over-hero rule below removes the filter so it stays white on the hero. */
     filter: invert(1);
-    transition:
-        filter 0.3s ease,
-        opacity 0.3s ease;
+    transition: filter 0.3s ease;
 }
 
-.site-header.from-auth .brand-logo {
-    transform-origin: top left;
-    animation: nav-brand-from-auth 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes nav-brand-from-auth {
-    from {
-        transform: translate(0.25rem, 1rem) scale(1.333);
-        opacity: 0.92;
-    }
-    to {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
+/* display:contents on desktop so the links + actions lay out as direct flex
+   children of .nav-inner; becomes a real dropdown box on mobile. */
+.nav-menu {
+    display: contents;
 }
 
 .nav-links {
@@ -535,7 +378,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 400;
     transition: opacity 0.15s ease;
 }
 
@@ -547,8 +389,6 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     display: flex;
     align-items: center;
     gap: 1.1rem;
-    /* Preserves the whitespace the old dash divider used to occupy
-     (1.5rem rule + 1.1rem gap). */
     margin-left: 2.6rem;
 }
 
@@ -556,39 +396,55 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
     color: var(--fg);
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 400;
 }
 
 .nav-login:hover {
     opacity: 0.7;
 }
 
-/* The account button greets by first name on desktop, but reads "My account"
-   in the mobile menu (where a personal greeting is redundant). */
+/* Account button greets by first name on desktop, "My account" on mobile. */
 .nav-account-label {
     display: none;
 }
 
-@media (max-width: 768px) {
-    .nav-greeting {
-        display: none;
-    }
-
-    .nav-account-label {
-        display: inline;
-    }
+/* Over the dark hero, before scrolling: flip content to light and swap the
+   primary button to a white pill so it pops. */
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand,
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-links a,
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-login,
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .nav-toggle {
+    color: #fff;
 }
 
-/* Hamburger — hidden on desktop, shown by the mobile media query below. The
-   three bars draw with currentColor so the over-hero light/dark flip applies. */
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .brand-logo {
+    filter: none;
+}
+
+body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
+    background-image: none;
+    background-color: #fff;
+    color: var(--accent);
+    box-shadow:
+        0 1px 3px -1px rgba(5, 1, 21, 0.4),
+        0 8px 24px -4px rgba(5, 1, 21, 0.28);
+}
+
+/* Hamburger — hidden on desktop, shown on mobile. Bars use currentColor so the
+   over-hero light flip applies. */
+/* Three-line hamburger. The bars form a square icon (equal width and the same
+   total stack height) centred in a larger tap target. */
 .nav-toggle {
     display: none;
     flex-direction: column;
+    /* Right-align the bars so the icon's right edge sits on the page's right
+       gutter, flush with the content margin. */
+    align-items: flex-end;
     justify-content: center;
-    gap: 0.32rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0.55rem;
+    gap: 0.43rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-left: auto;
+    padding: 0;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -597,7 +453,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 
 .nav-toggle span {
     display: block;
-    width: 100%;
+    /* Width == the stack height (3 bars + 2 gaps) so the icon is an exact
+       square. */
+    width: calc(3 * 1.5px + 2 * 0.43rem);
     height: 1.5px;
     border-radius: 1px;
     background: currentColor;
@@ -606,10 +464,11 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
         opacity 0.2s ease;
 }
 
-/* Offset = bar gap (0.32rem) + bar height (1.5px ≈ 0.094rem) so the two diagonals
-   cross exactly at the middle bar's center for a symmetrical X. */
+/* Bars morph into an X when open (offset = gap + bar height). The arms are
+   scaled by √2 so the rotated X spans the same box as the closed square icon
+   (rotating a bar shrinks its footprint by √2). */
 .site-header.is-open .nav-toggle span:nth-child(1) {
-    transform: translateY(0.414rem) rotate(45deg);
+    transform: translateY(0.524rem) rotate(45deg) scaleX(1.4142);
 }
 
 .site-header.is-open .nav-toggle span:nth-child(2) {
@@ -617,184 +476,137 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button:hover {
 }
 
 .site-header.is-open .nav-toggle span:nth-child(3) {
-    transform: translateY(-0.414rem) rotate(-45deg);
+    transform: translateY(-0.524rem) rotate(-45deg) scaleX(1.4142);
 }
 
-/* Mobile nav: collapse the links and actions behind the hamburger. */
+/* ---------- Mobile: hamburger + dropdown ---------- */
 @media (max-width: 768px) {
-    .nav-inner {
-        flex-wrap: wrap;
-        /* Horizontal padding matches the hero/section gutter (1.75rem) so the
-           logo and menu button line up with the paragraph text. */
-        padding: 0.75rem 1.75rem;
-        row-gap: 0;
+    .nav-greeting {
+        display: none;
     }
 
-    .nav-links,
-    .nav-actions {
-        display: none;
+    .nav-account-label {
+        display: inline;
     }
 
     .nav-toggle {
         display: flex;
-        order: 2;
-        margin-left: auto;
-        /* Drop the right inset so the icon lines up flush with the gutter. */
-        padding-right: 0;
-        /* Narrower icon bars. */
-        width: 2rem;
     }
 
-    .brand {
-        order: 1;
-    }
-
-    /* Apple-style full-screen takeover: the slim top bar (brand + toggle) stays
-       put so the hamburger morphs into the X in place, while the gradient sheet
-       and links slide down behind it to cover the screen. */
-    .site-header.is-open {
-        /* The header itself becomes the full-screen fixed container. The sheet
-           inside is then a plain absolutely-positioned child — Safari animates
-           absolute-inside-fixed reliably, whereas a nested position:fixed sheet
-           animating transform renders incorrectly on iOS. */
-        position: fixed;
-        inset: 0;
-        border-bottom: none;
-        /* Override the light frosted fill inherited from the desktop .is-open
-           rule. That cream background sits behind the sheet and was revealed as
-           a white flash when the sheet slid up on close — match it to the
-           midnight sheet so the reveal is seamless. */
-        background: #050115;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-    }
-
-    /* The progressive-blur stack is meaningless over the solid sheet. */
-    .site-header.is-open .nav-blur {
+    /* Hide the desktop links/actions; the dropdown re-shows them when open. */
+    .nav-menu {
         display: none;
     }
 
-    /* The bar row keeps brand + toggle pinned to the top of the full-screen
-       header (out of the sheet's flow, above it) so the hamburger→X morphs in
-       place while the sheet slides behind. */
-    .site-header.is-open .nav-inner {
-        height: 100%;
-        align-items: flex-start;
-    }
-
-    .site-header.is-open .brand {
-        position: relative;
-        z-index: 2;
-    }
-
-    /* The elephant fades out as the menu opens, leaving the corner clear, and
-       fades back in on close (transitions run both ways). */
-    .site-header.is-open .brand-logo {
-        opacity: 0;
-    }
-
-    .site-header.is-open .brand-logo {
-        filter: none;
-    }
-
-    .site-header.is-open .nav-toggle {
-        position: relative;
-        z-index: 2;
-        color: #fff;
-    }
-
-    /* The gradient sheet: an absolute layer filling the full-screen header,
-       sitting behind the bar and sliding down from the top edge on open, back
-       up on close. Same midnight→cream gradient as the hero. */
+    /* Dropdown panel dropping from under the bar. */
     .site-header.is-open .nav-menu {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
         position: absolute;
+        /* Start at the top of the header so this one panel (with the blur)
+           covers both the bar area and the menu — no seam between them. Top
+           padding clears the bar so the links sit below it. */
         top: 0;
         left: 0;
         right: 0;
         z-index: 0;
-        /* Overshoot the bottom so the sheet bleeds behind Safari's floating tab
-           bar. Plain inset:0 stops at the layout-viewport bottom; the extra
-           height keeps the midnight fill continuous through the safe area. */
-        height: calc(100vh + 8rem);
-        height: calc(100lvh + 8rem);
-        /* Solid midnight — matches the html canvas so the whole view, including
-           the bottom toolbar, reads as one seamless dark surface. */
-        background: #050115;
-        /* Top padding clears the bar; the links sit well below it. */
-        padding: 6.5rem 1.75rem calc(1.75rem + env(safe-area-inset-bottom));
-        animation: sheet-slide-down 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
+        padding: 5rem 1.75rem 1.25rem;
+        background: rgba(5, 1, 21, 0.72);
+        -webkit-backdrop-filter: blur(18px) saturate(1.1);
+        backdrop-filter: blur(18px) saturate(1.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 26px 44px -26px rgba(5, 1, 21, 0.6);
+        /* Slide down: the panel unrolls from under the bar (clip reveal from top
+           to bottom); the links then cascade in (staggered below). */
+        animation: nav-slide-down 0.34s cubic-bezier(0.32, 0.72, 0, 1) both;
     }
 
-    @keyframes sheet-slide-down {
+    @keyframes nav-slide-down {
         from {
-            transform: translateY(-100%);
+            -webkit-clip-path: inset(0 0 100% 0);
+            clip-path: inset(0 0 100% 0);
         }
         to {
-            transform: translateY(0);
+            -webkit-clip-path: inset(0 0 0 0);
+            clip-path: inset(0 0 0 0);
         }
     }
 
-    /* Exit: the sheet slides back up off the top edge (it stays mounted for the
-       animation via .is-closing; matches MENU_EXIT_MS). */
-    .site-header.is-open.is-closing .nav-menu {
-        animation: sheet-slide-up 0.3s ease both;
-    }
-
-    @keyframes sheet-slide-up {
-        from {
-            transform: translateY(0);
-        }
-        to {
-            transform: translateY(-100%);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .site-header.is-open .nav-menu,
-        .site-header.is-open.is-closing .nav-menu {
-            animation: none;
-        }
-    }
-
-    /* Links and auth actions collapse into one stacked list. */
     .site-header.is-open .nav-links,
     .site-header.is-open .nav-actions {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        width: 100%;
         gap: 0;
         margin: 0;
-        padding: 0;
-        border: none;
+        width: 100%;
     }
 
+    /* Every menu row reads as a plain left-aligned link. */
     .site-header.is-open .nav-links a,
-    .site-header.is-open .nav-actions .button,
-    .site-header.is-open .nav-login {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
+    .site-header.is-open .nav-login,
+    .site-header.is-open .nav-actions .button {
         width: 100%;
-        padding: 1.05rem 0;
+        padding: 0.9rem 0;
+        justify-content: flex-start;
+        text-align: left;
+        color: rgba(255, 251, 236, 0.92);
+        font-size: 1.05rem;
+        font-weight: 400;
         border-radius: 0;
         background: none;
         background-image: none;
         box-shadow: none;
-        color: #fff;
-        font-family:
-            var(--font-sans),
-            -apple-system,
-            sans-serif;
-        font-size: 1.0625rem;
-        font-weight: 400;
-        letter-spacing: -0.01em;
-        text-align: left;
+    }
+
+    .site-header.is-open .nav-actions {
+        margin-top: 0.25rem;
+        padding-top: 0.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Staggered reveal: each row fades and rises with a small incremental
+       delay and an accelerate/decelerate easing. */
+    .site-header.is-open .nav-links a,
+    .site-header.is-open .nav-login,
+    .site-header.is-open .nav-actions .button {
+        animation: menu-item-in 0.3s cubic-bezier(0.4, 0, 0.6, 1) both;
+    }
+
+    .site-header.is-open .nav-links a:nth-child(1) {
+        animation-delay: 0.05s;
+    }
+    .site-header.is-open .nav-links a:nth-child(2) {
+        animation-delay: 0.09s;
+    }
+    .site-header.is-open .nav-links a:nth-child(3) {
+        animation-delay: 0.13s;
+    }
+    .site-header.is-open .nav-login {
+        animation-delay: 0.17s;
+    }
+    .site-header.is-open .nav-actions .button {
+        animation-delay: 0.21s;
+    }
+
+    @keyframes menu-item-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-header.is-open .nav-menu,
+    .site-header.is-open .nav-links a,
+    .site-header.is-open .nav-login,
+    .site-header.is-open .nav-actions .button {
+        animation: none;
     }
 }
 
@@ -1799,7 +1611,6 @@ html:has(body .auth-split) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .site-header.from-auth .brand-logo,
     .auth-brand {
         animation: none;
     }
