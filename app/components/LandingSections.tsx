@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FloatingSection from "./FloatingSection";
+import MembershipFeatureStack from "./MembershipFeatureStack";
 import VoiceCarousel from "./VoiceCarousel";
 import StoryGallery from "./StoryGallery";
 
@@ -265,28 +266,7 @@ export function BentoSection() {
         <FloatingSection id="perks" className="section">
             <span className="section-label">Membership</span>
             <h2>What you get.</h2>
-            <div className="bento-grid">
-                <article className="float-card bento-card bento-lg">
-                    {/* TODO: real perk copy. */}
-                    <h3>Events all year round</h3>
-                    <p>
-                        Songkran, Loy Krathong, food nights, socials, and more.
-                        There&apos;s always something happening.
-                    </p>
-                </article>
-                <article className="float-card bento-card">
-                    <h3>Apple Wallet pass</h3>
-                    <p>Your membership, always in your pocket.</p>
-                </article>
-                <article className="float-card bento-card">
-                    <h3>Mentorship</h3>
-                    <p>Roon Pee–Roon Norng guidance from those who&apos;ve been there.</p>
-                </article>
-                <article className="float-card bento-card bento-wide">
-                    <h3>A community that feels like family</h3>
-                    <p>Friends who make being far from home feel a little closer.</p>
-                </article>
-            </div>
+            <MembershipFeatureStack />
         </FloatingSection>
     );
 }
@@ -416,4 +396,3 @@ export function FaqSection() {
         </FloatingSection>
     );
 }
-
