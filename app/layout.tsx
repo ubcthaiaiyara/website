@@ -50,7 +50,7 @@ const lastik = localFont({
 
 export const metadata: Metadata = {
     title: "UBC Thai Aiyara",
-    description: "Club membership for the UBC Thai Aiyara club.",
+    description: "Home for UBC Thai Aiyara members.",
 };
 
 // Tints the iOS Safari toolbars. Safari samples this meta tag (or the <body>
