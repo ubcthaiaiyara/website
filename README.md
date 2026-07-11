@@ -1,8 +1,16 @@
-# UBC Thai Aiyara: Membership
+# UBC Thai Aiyara Website
 
-- Next.js (App router + TS)
-- Supabase
-- passkit-generator
+The public website and membership platform for UBC Thai Aiyara.
+
+[![License](https://img.shields.io/badge/license-MIT-5B6198?style=flat-square)](./LICENSE)
+[![pnpm](https://img.shields.io/badge/pnpm-11.6.0-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io)
+[![Build](https://github.com/ubcthaiaiyara/website/actions/workflows/build.yml/badge.svg)](https://github.com/ubcthaiaiyara/website/actions/workflows/build.yml)
+[![Site status](https://img.shields.io/badge/site-maintenance-6E73BC?style=flat-square)](https://ubcthaiaiyara.com)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)](https://nextjs.org)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
+
+**Live site:** [ubcthaiaiyara.com](https://ubcthaiaiyara.com) (currently in maintenance mode).
 
 ## Supabase Auth
 
