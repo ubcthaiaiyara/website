@@ -802,6 +802,22 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
     margin-bottom: 1.25rem;
 }
 
+/* Homepage section eyebrows sit in compact pills above their headings. */
+body:has(.hero) .section > .section-label,
+body:has(.hero) .voices-heading > .section-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.4rem 0.75rem;
+    color: var(--accent);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    background: rgba(139, 143, 192, 0.13);
+    border: 1px solid rgba(91, 97, 152, 0.2);
+    border-radius: 999px;
+}
+
 .section h2 {
     font-family: var(--font-serif), Georgia, serif;
     font-size: clamp(2rem, 4vw, 3.25rem);
@@ -2351,6 +2367,20 @@ html:has(body .auth-split) {
     justify-content: center;
 }
 
+.story-copy-stack {
+    height: 23rem;
+}
+
+.story-copy-stack .feature-stack-content {
+    width: 100%;
+    max-width: none;
+}
+
+.story-copy-stack .feature-stack-content > span {
+    display: block;
+    width: 100%;
+}
+
 /* Auto-cycling, clickable image gallery in the story card. */
 .story-gallery {
     position: relative;
@@ -2440,6 +2470,10 @@ html:has(body .auth-split) {
 
     .story-gallery-viewport {
         min-height: 12rem;
+    }
+
+    .story-copy-stack {
+        height: 20rem;
     }
 }
 
@@ -2551,14 +2585,15 @@ html:has(body .auth-split) {
     max-width: none;
 }
 
-.voices-section > .section-label,
-.voices-section > h2 {
+.voices-heading {
     width: min(100%, var(--max));
     max-width: var(--max);
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.75rem;
-    padding-right: 1.75rem;
+}
+
+.voices-heading > .section-label,
+.voices-heading > h2 {
     text-align: left;
 }
 
@@ -3062,6 +3097,10 @@ html:has(body .auth-split) {
 @media (max-width: 720px) {
     .feature-stack {
         height: 17rem;
+    }
+
+    .story-copy-stack {
+        height: 21rem;
     }
 
     .feature-stack-card {
@@ -3622,8 +3661,7 @@ body:has(.hero) .page-body {
    (#join-steps, #faq) land on the dark descent and need light ink for their
    out-of-card headers. (Card contents stay dark on their white surface.) If you
    add/remove sections and a heading lands on the wrong side, update this list. */
-body:has(.hero) #join-steps > .section-label,
-body:has(.hero) #faq > .section-label {
+body:has(.hero) #join-steps > .section-label {
     color: rgba(255, 251, 236, 0.72);
 }
 
@@ -3631,4 +3669,23 @@ body:has(.hero) #join-steps > h2,
 body:has(.hero) #faq > h2 {
     color: #fffbec;
     text-shadow: 0 1px 24px rgba(5, 1, 21, 0.35);
+}
+
+/* Keep the FAQ eyebrow identical to the homepage section-label pill. */
+body:has(.hero) #faq > .section-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.4rem 0.75rem;
+    color: #fffbec;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    background: rgba(255, 251, 236, 0.16);
+    border: 1px solid rgba(255, 251, 236, 0.45);
+    border-radius: 999px;
+    box-shadow: 0 8px 22px -12px rgba(5, 1, 21, 0.65);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    backdrop-filter: blur(12px) saturate(1.2);
 }
