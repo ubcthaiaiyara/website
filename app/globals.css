@@ -91,7 +91,7 @@ body:has(.maintenance-page) .page-body {
         radial-gradient(circle at 86% 82%, #343963 0%, transparent 42%),
         linear-gradient(135deg, #050115 12%, #24294f 52%, #0c1028 100%);
     background-size: 150% 150%;
-    animation: maintenance-gradient 16s ease-in-out infinite alternate;
+    animation: maintenance-gradient 9s ease-in-out infinite alternate;
 }
 
 @keyframes maintenance-gradient {
@@ -106,13 +106,13 @@ body:has(.maintenance-page) .page-body {
 
 .maintenance-page::before {
     position: absolute;
-    z-index: -1;
+    z-index: 0;
     inset: 0;
     content: "";
     pointer-events: none;
-    opacity: 0.14;
+    opacity: 0.26;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.7'/%3E%3C/svg%3E");
-    background-size: 11rem 11rem;
+    background-size: 14rem 14rem;
     mix-blend-mode: soft-light;
 }
 
@@ -121,12 +121,14 @@ body:has(.maintenance-page) .page-body {
     width: min(100%, 39rem);
     padding: clamp(2.5rem, 7vw, 5rem);
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .maintenance-logo {
     display: block;
-    width: min(100%, 7rem);
-    height: 3.5rem;
+    width: min(100%, 5rem);
+    height: auto;
     margin: 0 auto var(--maintenance-gap);
     object-fit: cover;
     object-position: center;
@@ -135,18 +137,41 @@ body:has(.maintenance-page) .page-body {
 .maintenance-card h1 {
     max-width: 32rem;
     margin: 0 auto;
-    color: #fffbec;
+    padding: 0.05em 0 0.18em;
+    color: transparent;
     font-family: var(--font-serif), Georgia, serif;
     font-size: clamp(2.75rem, 7vw, 5.25rem);
     font-weight: 400;
     letter-spacing: -0.04em;
-    line-height: 0.98;
+    line-height: 1.08;
+    background: linear-gradient(
+        110deg,
+        #f4f5f8 42%,
+        #b9bdc7 48%,
+        #ffffff 50%,
+        #b9bdc7 52%,
+        #f4f5f8 58%
+    );
+    background-size: 180% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: maintenance-title-shimmer 7s ease-in-out infinite;
+}
+
+@keyframes maintenance-title-shimmer {
+    from {
+        background-position: 140% 0;
+    }
+
+    to {
+        background-position: -40% 0;
+    }
 }
 
 .maintenance-copy {
     max-width: 32rem;
     margin: var(--maintenance-gap) auto 0;
-    color: rgba(255, 251, 236, 0.7);
+    color: #b0b6c0;
     font-size: clamp(0.8rem, 1.4vw, 0.9rem);
     line-height: 1.65;
 }
@@ -163,7 +188,7 @@ body:has(.maintenance-page) .page-body {
     width: 2.5rem;
     height: 2.5rem;
     place-items: center;
-    color: rgba(255, 251, 236, 0.76);
+    color: #b0b6c0;
     border-radius: 50%;
     transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
@@ -212,6 +237,10 @@ body:has(.maintenance-page) .page-body {
 
 @media (prefers-reduced-motion: reduce) {
     .maintenance-page {
+        animation: none;
+    }
+
+    .maintenance-card h1 {
         animation: none;
     }
 }
