@@ -48,9 +48,31 @@ const lastik = localFont({
     ],
 });
 
+const description = "Home for UBC Thai Aiyara members.";
+
 export const metadata: Metadata = {
-    title: "UBC Thai Aiyara",
-    description: "Home for UBC Thai Aiyara members.",
+    metadataBase: new URL(
+        process.env.NEXT_PUBLIC_SITE_URL ?? "https://ubcthaiaiyara.com",
+    ),
+    title: {
+        default: "UBC Thai Aiyara",
+        template: "%s · UBC Thai Aiyara",
+    },
+    description,
+    alternates: { canonical: "/" },
+    openGraph: {
+        type: "website",
+        siteName: "UBC Thai Aiyara",
+        title: "UBC Thai Aiyara",
+        description,
+        url: "/",
+        locale: "en_CA",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "UBC Thai Aiyara",
+        description,
+    },
 };
 
 // Tints the iOS Safari toolbars. Safari samples this meta tag (or the <body>
