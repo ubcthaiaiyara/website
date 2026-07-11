@@ -12,44 +12,53 @@ The public website and membership platform for UBC Thai Aiyara.
 
 **Live site:** [ubcthaiaiyara.com](https://ubcthaiaiyara.com) (currently in maintenance mode).
 
-## Supabase Auth
-
-Set these environment variables to enable Supabase-backed email/password and
-Google auth:
+## Getting started
 
 ```bash
-SUPABASE_URL=...
-SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-SESSION_SECRET=...
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+pnpm install
+cp .env.example .env.local
+pnpm dev
 ```
 
-Configure Google as a Supabase Auth provider, then add this redirect URL in the
-Supabase Auth redirect allow list:
+Open [http://localhost:3000](http://localhost:3000).
+
+```bash
+pnpm build
+pnpm start
+```
+
+## Configuration
+
+Set the values in `.env.local`. See [`.env.example`](./.env.example) for all
+variables.
+
+- Supabase handles authentication and member data. Run
+  [`supabase/schema.sql`](./supabase/schema.sql) before using it.
+- Resend is configured as Supabase custom SMTP for OTP and confirmation email.
+- Apple certificate variables are needed only to generate live Wallet passes.
+- Set `SITE_MODE=maintenance` to show the maintenance page; leave it unset for
+  the standard landing page.
+
+## Deployment
+
+Deploy on Vercel with the production environment variables configured. Set
+`NEXT_PUBLIC_SITE_URL` to the deployed URL and add that URL to Supabase Auth
+redirect settings.
+
+## Project structure
 
 ```text
-http://localhost:3000/api/auth/google/callback
+├── app/
+│   ├── api/                Auth, account, and Wallet pass route handlers
+│   ├── components/         Reusable interface and landing-page components
+│   ├── dashboard/          Member account dashboard
+│   ├── join/ and login/    Membership registration and sign-in flows
+│   └── page.tsx            Selects the landing or maintenance page
+├── lib/                    Server-side member, session, Supabase, and pass logic
+├── models/aiyara.pass/     Apple Wallet pass model and visual assets
+├── public/                 Static assets
+└── supabase/               Database schema and Auth email templates
 ```
-
-Email auth uses one-time passcodes. Ready-made templates live in
-[`supabase/emails/`](./supabase/emails) — paste them into Dashboard →
-Authentication → Email Templates:
-
-- [`otp.html`](./supabase/emails/otp.html) → **Magic Link** (existing-user login)
-- [`confirm-signup.html`](./supabase/emails/confirm-signup.html) → **Confirm signup** (new members)
-
-Each offers both the 6-digit code (`{{ .Token }}`) and a one-click link that
-points at `/api/auth/confirm`. The two differ only in the link's `type`
-(`email` for login, `signup` for confirmation):
-
-```text
-{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email
-```
-
-For the link to resolve to the app, `{{ .SiteURL }}` (Supabase's Site URL) must
-match `NEXT_PUBLIC_SITE_URL`, and the app must be reached on that same host
-(cookies are host-bound).
 
 ## License
 
