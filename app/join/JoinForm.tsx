@@ -288,7 +288,7 @@ export default function JoinForm() {
   if (step === "password") {
     return (
       <>
-        <h1>Create account</h1>
+        <h1>Create your account</h1>
         <p className="auth-subtext">Creating your account as {email}</p>
         <form className="card" onSubmit={handlePassword}>
           <div className="field">
@@ -362,7 +362,7 @@ export default function JoinForm() {
 
   return (
     <>
-      <h1>Create account</h1>
+      <h1>Create your account</h1>
       <form className="card" onSubmit={handleDetails}>
         <div className="name-row">
           <div className="field">
