@@ -20,6 +20,7 @@ export default function HeaderChrome({
   // upward scroll brings it back.
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
+  const [returningFromAuth, setReturningFromAuth] = useState(false);
 
   useEffect(() => {
     // Over a hero, content flips to dark once its cream lower band (~62% down)
@@ -55,11 +56,44 @@ export default function HeaderChrome({
     return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
+  // AuthBrand marks an intentional return to the homepage. Animate the nav
+  // wordmark only for that transition, never while moving between auth pages.
+  useEffect(() => {
+    // Leaving home clears the flag state. Landing on home consumes a one-shot
+    // flag. setState is deferred to rAF (lint: no setState in effect body); the
+    // flag is removed inside the callback so React StrictMode's second dev pass
+    // — whose predecessor's cleanup cancelled the first frame — still re-sees
+    // "1" and re-schedules the update rather than reading null and no-op'ing.
+    if (pathname !== "/") {
+      const frame = window.requestAnimationFrame(() =>
+        setReturningFromAuth(false),
+      );
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    let frame: number | undefined;
+    try {
+      if (sessionStorage.getItem("aiyara-auth-to-home") === "1") {
+        frame = window.requestAnimationFrame(() => {
+          sessionStorage.removeItem("aiyara-auth-to-home");
+          setReturningFromAuth(true);
+        });
+      }
+    } catch {
+      // Storage can be unavailable in restricted browsing modes.
+    }
+    return () => {
+      if (frame !== undefined) window.cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
+
   return (
     <header
       className={`site-header${scrolled ? " is-scrolled" : ""}${
         open ? " is-open" : ""
-      }${collapsed && !open ? " is-collapsed" : ""}`}
+      }${collapsed && !open ? " is-collapsed" : ""}${
+        returningFromAuth ? " is-returning-from-auth" : ""
+      }`}
       // Following any link inside the header closes the mobile menu.
       onClick={(e) => {
         if ((e.target as HTMLElement).closest("a")) setOpen(false);
