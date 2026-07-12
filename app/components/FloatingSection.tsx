@@ -31,8 +31,8 @@ export default function FloatingSection({
             "(prefers-reduced-motion: reduce)",
         ).matches;
         if (reduce) {
-            setVisible(true);
-            return;
+            const frame = window.requestAnimationFrame(() => setVisible(true));
+            return () => window.cancelAnimationFrame(frame);
         }
 
         const observer = new IntersectionObserver(
