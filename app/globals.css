@@ -529,6 +529,10 @@ p {
     .site-header.is-collapsed .nav-inner {
         transform: none;
     }
+
+    .site-header.is-returning-from-auth .brand-logo {
+        animation: none;
+    }
 }
 
 .brand {
@@ -547,6 +551,24 @@ p {
        over-hero rule below removes the filter so it stays white on the hero. */
     filter: invert(1);
     transition: filter 0.3s ease;
+}
+
+/* AuthBrand marks returns from login or sign-up in session storage. Give the
+   matching nav wordmark a single entrance animation on arrival at the home
+   page, without animating between the two auth screens. */
+.site-header.is-returning-from-auth .brand-logo {
+    animation: brand-return-home 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes brand-return-home {
+    from {
+        transform: translate(0.25rem, 0.5rem) scale(1.13);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
 }
 
 /* display:contents on desktop so the links + actions lay out as direct flex
@@ -1791,21 +1813,25 @@ html:has(body .auth-split) {
     letter-spacing: -0.01em;
     color: var(--fg);
     text-decoration: none;
-    transform-origin: top left;
-    animation: auth-brand-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .auth-brand img {
     height: 1.7rem;
     width: auto;
-    /* The elephant art is white; darken it for the light column. */
+    /* The white wordmark is darkened for the light column. */
     filter: invert(1);
+}
+
+/* Applied only after a homepage → login/sign-up navigation. */
+.auth-brand.is-entering-from-home {
+    transform-origin: top left;
+    animation: auth-brand-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes auth-brand-enter {
     from {
-        transform: translate(-0.25rem, -1rem) scale(0.75);
-        opacity: 0.88;
+        transform: translate(-0.25rem, -1rem) scale(0.87);
+        opacity: 0;
     }
     to {
         transform: translate(0, 0) scale(1);
@@ -1814,7 +1840,7 @@ html:has(body .auth-split) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-brand {
+    .auth-brand.is-entering-from-home {
         animation: none;
     }
 }
