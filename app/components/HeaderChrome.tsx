@@ -50,7 +50,10 @@ export default function HeaderChrome({
   }, []);
 
   // Close the menu whenever the route changes.
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setOpen(false));
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
 
   return (
     <header
