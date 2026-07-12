@@ -2799,9 +2799,12 @@ html:has(body .auth-split) {
 }
 
 .voices-heading {
-    width: min(100%, var(--max));
     max-width: var(--max);
-    margin-left: auto;
+    /* The voices-section is full-width so the carousel can bleed edge to edge,
+       which would otherwise center this heading in the wrong box. Offset it to
+       the standard content column instead (0 on narrow screens, where the
+       section's own 1.75rem gutter already handles alignment). */
+    margin-left: max(0px, calc((100vw - var(--max)) / 2));
     margin-right: auto;
 }
 
