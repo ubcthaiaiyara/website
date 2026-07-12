@@ -1,8 +1,10 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { readSession } from "@/lib/session";
 import { getMemberByUserId } from "@/lib/members";
+import AuthEntryLink from "./AuthEntryLink";
 import HeaderChrome from "./HeaderChrome";
+import HomeLink from "./HomeLink";
 
 // Server component: reads the session so the header can show either the
 // signed-out (Log in / Join) or signed-in actions. Rendered globally from
@@ -17,16 +19,16 @@ export default async function SiteHeader() {
 
   return (
     <HeaderChrome>
-      <Link href="/" className="brand">
+      <HomeLink>
         <Image
-          src="/elephant.png"
+          src="/thai-aiyara-wordmark.png"
           alt="UBC Thai Aiyara"
-          width={81}
-          height={109}
+          width={764}
+          height={317}
           className="brand-logo"
           priority
         />
-      </Link>
+      </HomeLink>
 
       {/* Wrapper is display:contents normally (so the desktop bar lays the nav
           links and actions out as direct flex children); on the mobile overlay
@@ -46,12 +48,12 @@ export default async function SiteHeader() {
             </Link>
           ) : (
             <>
-              <Link className="nav-login" href="/login">
+              <AuthEntryLink className="nav-login" href="/login">
                 Log in
-              </Link>
-              <Link className="button button-sm" href="/join">
+              </AuthEntryLink>
+              <AuthEntryLink className="button button-sm" href="/join">
                 Join Now
-              </Link>
+              </AuthEntryLink>
             </>
           )}
         </div>

@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { readSession } from "@/lib/session";
+import AuthEntryLink from "./AuthEntryLink";
 import Fireflies from "./Fireflies";
 import {
     StorySection,
@@ -81,12 +82,12 @@ export default async function LandingPage() {
                                 </Link>
                             ) : (
                                 <>
-                                    <Link className="button" href="/join">
+                                    <AuthEntryLink className="button" href="/join">
                                         Join us
-                                    </Link>
-                                    <Link className="button button-ghost" href="/login">
+                                    </AuthEntryLink>
+                                    <AuthEntryLink className="button button-ghost" href="/login">
                                         Member login
-                                    </Link>
+                                    </AuthEntryLink>
                                 </>
                             )}
                         </div>
