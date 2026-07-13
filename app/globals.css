@@ -1954,8 +1954,8 @@ html:has(body .subpage) {
     filter: invert(1);
 }
 
-/* Applied only after a homepage → login/sign-up navigation. */
-.auth-brand.is-entering-from-home {
+/* Applied after navigating into login/sign-up from any page. */
+.auth-brand.is-entering-auth {
     transform-origin: top left;
     animation: auth-brand-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -1972,7 +1972,7 @@ html:has(body .subpage) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-brand.is-entering-from-home {
+    .auth-brand.is-entering-auth {
         animation: none;
     }
 }

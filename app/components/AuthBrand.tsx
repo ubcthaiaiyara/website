@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const AUTH_TO_HOME_KEY = "aiyara-auth-to-home";
-const HOME_TO_AUTH_KEY = "aiyara-home-to-auth";
+const TO_AUTH_KEY = "aiyara-page-to-auth";
 
 export default function AuthBrand() {
-    const [enteringFromHome, setEnteringFromHome] = useState(false);
+    const [enteringAuth, setEnteringAuth] = useState(false);
 
     useEffect(() => {
         // One-shot flag consumed on entry. Two constraints combine here:
@@ -20,10 +20,10 @@ export default function AuthBrand() {
         //     the second pass re-see "1" and re-schedule the update.
         let frame: number | undefined;
         try {
-            if (sessionStorage.getItem(HOME_TO_AUTH_KEY) === "1") {
+            if (sessionStorage.getItem(TO_AUTH_KEY) === "1") {
                 frame = window.requestAnimationFrame(() => {
-                    sessionStorage.removeItem(HOME_TO_AUTH_KEY);
-                    setEnteringFromHome(true);
+                    sessionStorage.removeItem(TO_AUTH_KEY);
+                    setEnteringAuth(true);
                 });
             }
         } catch {
@@ -37,7 +37,7 @@ export default function AuthBrand() {
     return (
         <Link
             href="/"
-            className={`auth-brand${enteringFromHome ? " is-entering-from-home" : ""}`}
+            className={`auth-brand${enteringAuth ? " is-entering-auth" : ""}`}
             onClick={() => {
                 try {
                     sessionStorage.setItem(AUTH_TO_HOME_KEY, "1");
