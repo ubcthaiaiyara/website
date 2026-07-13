@@ -3,6 +3,8 @@
     --bg: #f7f3f0;
     --fg: #16130f;
     --muted: #6f6a63;
+    /* Softer than --fg but more readable than --muted; used for subpage body. */
+    --muted-strong: #4a453e;
     --accent: #1c2644;
     --accent-dark: #101830;
     --danger: #b3261e;
@@ -1066,7 +1068,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 .page-prose p {
     margin: 0 0 1rem;
-    color: var(--fg);
+    color: var(--muted-strong);
     font-size: 1rem;
     line-height: 1.7;
 }
@@ -1078,7 +1080,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 .page-prose li {
     margin-bottom: 0.5rem;
-    color: var(--fg);
+    color: var(--muted-strong);
     font-size: 1rem;
     line-height: 1.65;
 }
@@ -1099,9 +1101,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 /* Lead-in paragraph: slightly larger than body, sets the page tone. */
 .page-prose .lead-p {
-    font-size: 1.15rem;
-    line-height: 1.6;
-    color: var(--fg);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted-strong);
     margin-bottom: 1.75rem;
 }
 
