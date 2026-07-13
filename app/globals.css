@@ -2167,8 +2167,10 @@ html:has(body .auth-split) {
     background: linear-gradient(
         180deg,
         #050115 0%,
-        #2b2f57 35%,
-        #4a4f82 60%,
+        #2b2f57 40%,
+        #4a4f82 62%,
+        #7a7791 78%,
+        #b3a99f 92%,
         #ddd2b2 100%
     );
     /* Inner rim + soft inset shadow for depth around the panel edge. */
@@ -2196,7 +2198,7 @@ html:has(body .auth-split) {
             transparent 68%
         ),
         radial-gradient(
-            50% 50% at 46% 80%,
+            50% 50% at 46% 96%,
             rgba(234, 222, 188, 0.55),
             transparent 70%
         );
