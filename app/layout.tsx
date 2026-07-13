@@ -120,8 +120,8 @@ export default function RootLayout({
                                 <h4>Explore</h4>
                                 <Link href="/about">About</Link>
                                 <Link href="/events">Events</Link>
+                                <Link href="/team">Team</Link>
                                 <Link href="/sponsors">Sponsors</Link>
-                                <Link href="/contact">Socials</Link>
                             </nav>
 
                             <nav className="footer-col">

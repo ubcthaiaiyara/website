@@ -1043,7 +1043,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
     padding-top: 2.5rem;
 }
 
-/* Shared long-form prose for subpages (About, Sponsors, Socials, Events, and
+/* Shared long-form prose for subpages (About, Sponsors, Team, Events, and
    the Terms / Privacy legal pages) so their typography stays consistent. */
 .page-prose {
     max-width: 44rem;
@@ -1936,7 +1936,7 @@ html:has(body .auth-split) {
     background: #fff;
 }
 
-/* Cream subpages (About, Events, Sponsors, Socials, Terms, Privacy) start on
+/* Cream subpages (About, Events, Sponsors, Team, Terms, Privacy) start on
    the cream page background, so the overscroll bounce should be cream rather
    than the global midnight canvas. */
 html:has(body .subpage) {
