@@ -28,6 +28,11 @@ export default function MaintenancePage() {
                             <circle cx="17.5" cy="6.5" r="1" className="maintenance-social-dot" />
                         </svg>
                     </a>
+                    <a href="https://www.facebook.com/ubcthai.aiyara.9" target="_blank" rel="noreferrer" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5Z" />
+                        </svg>
+                    </a>
                     <a href="https://www.tiktok.com/@ubc.thaiaiyara" target="_blank" rel="noreferrer" aria-label="TikTok">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M14.3 3c.2 1.9 1.3 3.5 3.7 3.7v3.1c-1.4 0-2.7-.4-3.7-1.2v6.5a5.1 5.1 0 1 1-4.4-5.1v3.1a2 2 0 1 0 1.3 1.9V3h3.1Z" />

@@ -129,6 +129,9 @@ export default function RootLayout({
                                 <a href="https://www.instagram.com/ubcthaiaiyara">
                                     Instagram
                                 </a>
+                                <a href="https://www.facebook.com/ubcthai.aiyara.9">
+                                    Facebook
+                                </a>
                                 <a href="https://www.tiktok.com/@ubc.thaiaiyara">
                                     TikTok
                                 </a>
