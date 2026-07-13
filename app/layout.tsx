@@ -49,6 +49,7 @@ const lastik = localFont({
 });
 
 const description = "Home for UBC Thai Aiyara members.";
+const isMaintenance = process.env.SITE_MODE === "maintenance";
 
 export const metadata: Metadata = {
     metadataBase: new URL(
@@ -77,9 +78,11 @@ export const metadata: Metadata = {
 
 // Tints the iOS Safari toolbars. Safari samples this meta tag (or the <body>
 // background as a fallback) — never the <html> background — so the midnight
-// html color alone can't reach the chrome. Match the top of the hero gradient.
+// html color alone can't reach the chrome. The maintenance screen uses a
+// different indigo canvas, so select its matching tint at startup.
 export const viewport: Viewport = {
-    themeColor: "#050115",
+    themeColor: isMaintenance ? "#262b51" : "#050115",
+    viewportFit: isMaintenance ? "cover" : "auto",
 };
 
 export default function RootLayout({
@@ -116,6 +119,7 @@ export default function RootLayout({
                             <nav className="footer-col">
                                 <h4>Explore</h4>
                                 <Link href="/about">About</Link>
+                                <Link href="/events">Events</Link>
                                 <Link href="/sponsors">Sponsors</Link>
                                 <Link href="/contact">Socials</Link>
                             </nav>

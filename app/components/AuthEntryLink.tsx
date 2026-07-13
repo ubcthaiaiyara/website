@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-const HOME_TO_AUTH_KEY = "aiyara-home-to-auth";
+const TO_AUTH_KEY = "aiyara-page-to-auth";
 
 export default function AuthEntryLink({
     href,
@@ -19,8 +19,13 @@ export default function AuthEntryLink({
             href={href}
             className={className}
             onClick={(event) => {
+                // Animate the auth wordmark for any plain left-click navigation
+                // into auth, from any page. Skip modified clicks (new tab, etc.)
+                // and the auth pages themselves (moving between login and join).
+                const path = window.location.pathname;
                 if (
-                    window.location.pathname !== "/" ||
+                    path === "/login" ||
+                    path === "/join" ||
                     event.button !== 0 ||
                     event.metaKey ||
                     event.ctrlKey ||
@@ -31,7 +36,7 @@ export default function AuthEntryLink({
                 }
 
                 try {
-                    sessionStorage.setItem(HOME_TO_AUTH_KEY, "1");
+                    sessionStorage.setItem(TO_AUTH_KEY, "1");
                 } catch {
                     // Storage can be unavailable in restricted browsing modes.
                 }
