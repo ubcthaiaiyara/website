@@ -1,7 +1,6 @@
 import Link from "next/link";
 import FloatingSection from "./FloatingSection";
 import MembershipFeatureStack from "./MembershipFeatureStack";
-import StoryCopyStack from "./StoryCopyStack";
 import VoiceCarousel from "./VoiceCarousel";
 import StoryGallery from "./StoryGallery";
 
@@ -36,17 +35,51 @@ export function StatsSection() {
     );
 }
 
-// 1. Our Story — founding + mission. A dated origin paragraph builds trust
-//    cheaply; fill in the real year, founders, and "why".
+// 1. Our Story — founding + mission, in a calm two-column editorial layout
+//    (text left, photos right) inspired by SFU Surge's "What's SFU Surge?".
+//    A bold tagline sets the tone; the body teases and the CTA sends readers to
+//    the full About page.
 export function StorySection() {
     return (
-        <FloatingSection id="about" className="section">
-            <span className="section-label">Our story</span>
-            <h2>How Thai Aiyara began.</h2>
-            <div className="story-card">
-                <StoryCopyStack />
+        <FloatingSection id="about" className="section story-section">
+            <div className="insight-panel">
+                <div className="insight-left">
+                    <span className="insight-badge">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 11l8-7 8 7" />
+                            <path d="M6 10v9h12v-9" />
+                        </svg>
+                        Our story
+                    </span>
+                    <h2 className="insight-title">
+                        <span>A decade</span>
+                        <span className="insight-title-alt">
+                            of belonging.
+                        </span>
+                    </h2>
+                    <p className="insight-copy">
+                        UBC Thai Aiyara is a social and cultural club under the{" "}
+                        <a
+                            href="https://www.ams.ubc.ca/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Alma Mater Society (AMS)
+                        </a>{" "}
+                        at UBC. For over a decade, it has been a second home for
+                        Thai students. We promote Thai culture
+                        and bring the community together through cultural
+                        celebrations, socials, retreats, and collaborations with
+                        other Southeast Asian groups, like Taste of SEA.
+                    </p>
+                    <Link className="insight-cta" href="/about">
+                        Read our full story
+                    </Link>
+                </div>
 
-                <StoryGallery />
+                <div className="insight-visual">
+                    <StoryGallery />
+                </div>
             </div>
         </FloatingSection>
     );
@@ -75,7 +108,15 @@ export function WhatWeDoSection() {
     ];
     return (
         <FloatingSection id="what-we-do" className="section win-section culture-section">
-            <span className="section-label">What we do</span>
+            <span className="section-label">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="17" rx="2" />
+                    <path d="M3 9h18" />
+                    <path d="M8 2v4" />
+                    <path d="M16 2v4" />
+                </svg>
+                What we do
+            </span>
             <h2>Culture, food, and friends.</h2>
             <p className="win-intro">
                 {/* TODO: one-line intro to the kinds of things you run. */}
@@ -139,8 +180,13 @@ export function VoicesSection() {
     return (
         <FloatingSection id="voices" className="section voices-section">
             <div className="voices-heading">
-                <span className="section-label">Voices</span>
-                <h2>A home away from home.</h2>
+                <span className="section-label">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 4H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3v4l5-4h8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1Z" />
+                    </svg>
+                    Voices
+                </span>
+                <h2>In their own words.</h2>
             </div>
             <VoiceCarousel quotes={quotes} />
         </FloatingSection>
@@ -159,7 +205,14 @@ export function TeamSection() {
     ];
     return (
         <FloatingSection id="team" className="section">
-            <span className="section-label">Meet the team</span>
+            <span className="section-label">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+                    <circle cx="10" cy="8" r="4" />
+                    <path d="M21 21v-2a4 4 0 0 0-3-3.87" />
+                </svg>
+                Meet the team
+            </span>
             <h2>The people behind it.</h2>
             <div className="float-grid team-grid">
                 {team.map((member, i) => (
@@ -205,9 +258,6 @@ export function HighlightSection() {
                     </p>
                     <Link className="insight-cta" href="/join">
                         Join us
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M9 6l6 6-6 6" />
-                        </svg>
                     </Link>
                 </div>
 
@@ -248,7 +298,12 @@ export function HighlightSection() {
 export function BentoSection() {
     return (
         <FloatingSection id="perks" className="section">
-            <span className="section-label">Membership</span>
+            <span className="section-label">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9Z" />
+                </svg>
+                Membership
+            </span>
             <h2>What you get.</h2>
             <MembershipFeatureStack />
         </FloatingSection>
@@ -261,7 +316,13 @@ export function BentoSection() {
 export function JoinStepsSection() {
     return (
         <FloatingSection id="join-steps" className="section win-section">
-            <span className="section-label">Getting started</span>
+            <span className="section-label">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M8.5 12l2.5 2.5 4.5-5" />
+                </svg>
+                Getting started
+            </span>
             <h2>Membership is minutes away.</h2>
             <p className="win-intro">
                 No long forms, no hassle. Sign up, confirm, and you&apos;re in,
@@ -359,7 +420,14 @@ export function FaqSection() {
     ];
     return (
         <FloatingSection id="faq" className="section">
-            <span className="section-label">FAQ</span>
+            <span className="section-label">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M9.5 9.5a2.5 2.5 0 0 1 4.5 1.5c0 1.7-2.5 2-2.5 3.5" />
+                    <path d="M12 17h.01" />
+                </svg>
+                FAQ
+            </span>
             <h2>Totally fair to ask.</h2>
             <p className="faq-intro">
                 Answers to common questions about joining.
