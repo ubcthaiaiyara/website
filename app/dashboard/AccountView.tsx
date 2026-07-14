@@ -99,21 +99,31 @@ export default function AccountView(props: Props) {
     // Light/dark theme for the account page. Persisted per-device in
     // localStorage and applied via a class on <html> the account CSS keys off.
     // A beforeInteractive script in the root layout applies it pre-hydration to
-    // avoid a flash; this keeps it in sync and cleans it up on unmount.
-    const [theme, setTheme] = useState<AccountTheme>("dark");
+    // avoid a flash. Read once lazily; no theme-dependent markup is in the
+    // initial render (the toggle only shows on the Appearance tab and the card
+    // SSRs a theme-independent placeholder), so this can't mismatch hydration.
+    const [theme, setTheme] = useState<AccountTheme>(() => {
+        if (typeof window === "undefined") return "dark";
+        try {
+            return localStorage.getItem("account-theme") === "light"
+                ? "light"
+                : "dark";
+        } catch {
+            return "dark";
+        }
+    });
 
+    // Keep <html> in sync with the current theme, and clear the class on
+    // unmount so it never leaks to other pages.
     useEffect(() => {
-        const stored = localStorage.getItem("account-theme");
-        const initial: AccountTheme = stored === "light" ? "light" : "dark";
-        setTheme(initial);
         document.documentElement.classList.toggle(
             "account-theme-light",
-            initial === "light",
+            theme === "light",
         );
         return () => {
             document.documentElement.classList.remove("account-theme-light");
         };
-    }, []);
+    }, [theme]);
 
     function applyTheme(next: AccountTheme) {
         setTheme(next);
@@ -122,10 +132,7 @@ export default function AccountView(props: Props) {
         } catch {
             // Private mode / storage disabled: keep the in-memory choice only.
         }
-        document.documentElement.classList.toggle(
-            "account-theme-light",
-            next === "light",
-        );
+        // The class is applied by the theme effect above.
     }
 
     const [initialFirst, initialLast] = splitName(props.name);

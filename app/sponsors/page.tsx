@@ -244,6 +244,7 @@ export default function SponsorsPage() {
                                         </svg>
                                     </span>
                                     {partner.logo ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                             className="sponsor-logo-img"
                                             src={partner.logo}
