@@ -10,7 +10,45 @@ type Props = {
     since?: string;
     /** Small org/label at the top-left. */
     label?: string;
+    /** Page theme the card sits on: "dark" → light-purple card, "light" →
+     *  black card. */
+    theme?: "light" | "dark";
 };
+
+// Card face colors keyed off the surrounding page theme. On the dark page the
+// card is light purple with dark ink; on the light page it's black with light
+// ink. `body` is the extruded metallic edge; `sheen` the diagonal highlight.
+type CardPalette = {
+    base: string;
+    baseEnd: string;
+    ink: string;
+    inkStrong: string;
+    body: number;
+    sheen: string;
+};
+
+function paletteFor(theme: "light" | "dark"): CardPalette {
+    if (theme === "light") {
+        // Black card for the light page.
+        return {
+            base: "#18181e",
+            baseEnd: "#050507",
+            ink: "#e9e7f2",
+            inkStrong: "#ffffff",
+            body: 0x2b2b32,
+            sheen: "rgba(255,255,255,0.20)",
+        };
+    }
+    // Light-purple card for the dark page.
+    return {
+        base: "#e6e1fb",
+        baseEnd: "#cec5f1",
+        ink: "#3f4650",
+        inkStrong: "#2f3540",
+        body: 0xd7d1ef,
+        sheen: "rgba(255,255,255,0.42)",
+    };
+}
 
 // Physical-ish card aspect (ISO 7810 ID-1 is ~1.586). We draw the face onto a
 // 2D canvas at high resolution, wrap it as a texture on a plane, and tilt the
@@ -24,65 +62,6 @@ const CARD_H = 1;
 const CARD_W = CARD_ASPECT;
 const CARD_R = 0.05; // matches the printed face's corner radius (h * 0.05)
 const CARD_DEPTH = 0.026;
-
-const HOLO_VERTEX_SHADER = `
-varying vec2 vUv;
-
-void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const HOLO_FRAGMENT_SHADER = `
-precision highp float;
-
-varying vec2 vUv;
-
-uniform vec2 uTilt;
-uniform float uTime;
-uniform float uSuppressSignatureStrip;
-
-float roundedCardAlpha(vec2 uv) {
-    vec2 size = vec2(${CARD_ASPECT.toFixed(3)}, 1.0);
-    vec2 p = (uv - 0.5) * size;
-    vec2 halfSize = size * 0.5;
-    float radius = ${CARD_R.toFixed(3)};
-    vec2 q = abs(p) - (halfSize - vec2(radius));
-    float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - radius;
-    return 1.0 - smoothstep(-0.006, 0.006, d);
-}
-
-vec3 spectral(float t) {
-    return 0.5 + 0.5 * cos(6.28318 * (vec3(0.0, 0.33, 0.67) + t));
-}
-
-float rectMask(vec2 uv, vec2 minUv, vec2 maxUv) {
-    vec2 feather = vec2(0.006, 0.01);
-    vec2 inMin = smoothstep(minUv, minUv + feather, uv);
-    vec2 inMax = 1.0 - smoothstep(maxUv - feather, maxUv, uv);
-    return inMin.x * inMin.y * inMax.x * inMax.y;
-}
-
-void main() {
-    float mask = roundedCardAlpha(vUv);
-    if (mask <= 0.001) discard;
-
-    vec2 tilt = uTilt;
-    vec2 shiftedUv = vUv + tilt * vec2(0.32, -0.22);
-    float band = shiftedUv.x * 1.8 + shiftedUv.y * 1.2;
-    vec3 rainbow = spectral(fract(band));
-
-    float fineLines = pow(0.5 + 0.5 * sin((vUv.x - vUv.y) * 95.0 + tilt.x * 18.0), 10.0);
-    float glint = smoothstep(0.94, 1.0, 1.0 - abs(fract(band * 2.2 + tilt.y * 0.8) - 0.5) * 2.0);
-    float falloff = smoothstep(0.0, 0.22, vUv.x) * smoothstep(1.0, 0.78, vUv.x);
-    float alpha = (0.025 + fineLines * 0.018 + glint * 0.035) * falloff * mask;
-    float signatureStrip = rectMask(vUv, vec2(0.055, 0.16), vec2(0.945, 0.30));
-    alpha *= mix(1.0, 1.0 - signatureStrip, uSuppressSignatureStrip);
-
-    gl_FragColor = vec4(rainbow, alpha);
-}
-`;
 
 /** A centered rounded-rectangle THREE.Shape for extruding the card body. */
 function roundedRectShape(w: number, h: number, r: number): THREE.Shape {
@@ -101,60 +80,43 @@ function roundedRectShape(w: number, h: number, r: number): THREE.Shape {
   return s;
 }
 
-function drawHolographicFoil(
+/** Brushed-metal texture: fine horizontal hairline streaks with a faint
+ *  anisotropic sheen, giving the card face a grained metallic finish. */
+function drawBrushedMetal(
     ctx: CanvasRenderingContext2D,
     w: number,
     h: number,
 ) {
     ctx.save();
 
-    const rainbow = ctx.createLinearGradient(w * -0.08, h * 0.18, w, h * 0.82);
-    rainbow.addColorStop(0, "rgba(255, 96, 170, 0)");
-    rainbow.addColorStop(0.18, "rgba(255, 96, 170, 0.035)");
-    rainbow.addColorStop(0.34, "rgba(255, 214, 92, 0.032)");
-    rainbow.addColorStop(0.5, "rgba(82, 220, 255, 0.035)");
-    rainbow.addColorStop(0.66, "rgba(154, 116, 255, 0.032)");
-    rainbow.addColorStop(0.84, "rgba(103, 255, 184, 0.03)");
-    rainbow.addColorStop(1, "rgba(103, 255, 184, 0)");
-    ctx.globalCompositeOperation = "multiply";
-    ctx.fillStyle = rainbow;
-    ctx.fillRect(0, 0, w, h);
-
-    const flare = ctx.createRadialGradient(
-        w * 0.72,
-        h * 0.18,
-        0,
-        w * 0.72,
-        h * 0.18,
-        w * 0.48,
-    );
-    flare.addColorStop(0, "rgba(255,255,255,0.18)");
-    flare.addColorStop(0.38, "rgba(170,220,255,0.07)");
-    flare.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.globalCompositeOperation = "screen";
-    ctx.fillStyle = flare;
-    ctx.fillRect(0, 0, w, h);
-
-    const stripe = ctx.createLinearGradient(0, h * 0.08, w, h * 0.58);
-    stripe.addColorStop(0, "rgba(255,255,255,0)");
-    stripe.addColorStop(0.46, "rgba(255,255,255,0)");
-    stripe.addColorStop(0.5, "rgba(255,255,255,0.18)");
-    stripe.addColorStop(0.54, "rgba(255,255,255,0)");
-    stripe.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.globalCompositeOperation = "screen";
-    ctx.fillStyle = stripe;
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.globalCompositeOperation = "soft-light";
-    ctx.strokeStyle = "rgba(120, 128, 140, 0.06)";
-    ctx.lineWidth = h * 0.002;
-    const step = h * 0.085;
-    for (let x = -w; x < w * 1.4; x += step) {
+    // Fine horizontal streaks. Alternating faint light/dark lines at
+    // pseudo-random opacities read as a directional brushed grain.
+    const lines = 320;
+    ctx.lineWidth = Math.max(1, h * 0.0018);
+    for (let i = 0; i < lines; i++) {
+        const y = (i / lines) * h;
+        const seed = Math.sin(i * 12.9898) * 43758.5453;
+        const rnd = seed - Math.floor(seed); // 0..1
+        const a = 0.01 + rnd * 0.035;
+        ctx.strokeStyle =
+            rnd > 0.5
+                ? `rgba(255,255,255,${a})`
+                : `rgba(0,0,0,${a * 0.6})`;
         ctx.beginPath();
-        ctx.moveTo(x, h);
-        ctx.lineTo(x + w * 0.42, 0);
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
         ctx.stroke();
     }
+
+    // Broad horizontal sheen sweep to sell the anisotropic reflection.
+    const sweep = ctx.createLinearGradient(0, 0, w, 0);
+    sweep.addColorStop(0, "rgba(255,255,255,0)");
+    sweep.addColorStop(0.4, "rgba(255,255,255,0.05)");
+    sweep.addColorStop(0.55, "rgba(255,255,255,0.09)");
+    sweep.addColorStop(0.7, "rgba(255,255,255,0.05)");
+    sweep.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = sweep;
+    ctx.fillRect(0, 0, w, h);
 
     ctx.restore();
 }
@@ -164,7 +126,9 @@ function drawCardFace(
     ctx: CanvasRenderingContext2D,
     w: number,
     h: number,
-    { name, since, label }: Required<Props>,
+    { name, since, label }: { name: string; since: string; label: string },
+    palette: CardPalette,
+    wordmark?: HTMLImageElement | null,
 ) {
     const r = h * 0.05; // corner radius
 
@@ -180,24 +144,24 @@ function drawCardFace(
     ctx.closePath();
     ctx.clip();
 
-    // White card base with a subtle print-like sheen.
+    // Card base with a subtle print-like sheen.
     const g = ctx.createLinearGradient(0, 0, w, h);
-    g.addColorStop(0, "#ffffff");
-    g.addColorStop(0.55, "#ffffff");
-    g.addColorStop(0.8, "#ffffff");
-    g.addColorStop(1, "#ffffff");
+    g.addColorStop(0, palette.base);
+    g.addColorStop(0.55, palette.base);
+    g.addColorStop(0.8, palette.baseEnd);
+    g.addColorStop(1, palette.baseEnd);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
 
     // Soft diagonal sheen band for a subtle metallic reflection.
     const sheen = ctx.createLinearGradient(w * 0.1, 0, w * 0.7, h);
     sheen.addColorStop(0, "rgba(255,255,255,0)");
-    sheen.addColorStop(0.5, "rgba(255,255,255,0.38)");
+    sheen.addColorStop(0.5, palette.sheen);
     sheen.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = sheen;
     ctx.fillRect(0, 0, w, h);
 
-    drawHolographicFoil(ctx, w, h);
+    drawBrushedMetal(ctx, w, h);
 
     const padX = w * 0.055;
     const padY = h * 0.13;
@@ -207,37 +171,59 @@ function drawCardFace(
     ctx.font = `600 ${h * 0.052}px system-ui, -apple-system, Segoe UI, sans-serif`;
     ctx.letterSpacing = `${h * 0.012}px`;
     ctx.textAlign = "left";
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     ctx.fillText(label.toUpperCase(), padX, padY);
 
     // Top-right "SINCE YYYY".
     ctx.textAlign = "right";
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     ctx.fillText(`SINCE ${since}`, w - padX, padY);
 
     // Member name, large.
     ctx.letterSpacing = "0px";
     ctx.textAlign = "left";
     ctx.font = `500 ${h * 0.14}px system-ui, -apple-system, Segoe UI, sans-serif`;
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     ctx.fillText(name, padX, padY + h * 0.2);
 
-    // Bottom-left wordmark: a filled dot + AIYARA.
+    // Bottom-left brand wordmark. Uses the wordmark artwork tinted to the card
+    // ink; falls back to a dot + AIYARA text until the image loads.
     const markY = h - padY * 0.7;
-    ctx.beginPath();
-    ctx.arc(padX + h * 0.045, markY - h * 0.02, h * 0.045, 0, Math.PI * 2);
-    ctx.fillStyle = "#3f4650";
-    ctx.fill();
-    ctx.font = `700 ${h * 0.07}px system-ui, -apple-system, Segoe UI, sans-serif`;
-    ctx.letterSpacing = `${h * 0.004}px`;
-    ctx.fillStyle = "#2f3540";
-    ctx.fillText("AIYARA", padX + h * 0.12, markY + h * 0.005);
-    ctx.letterSpacing = "0px";
+    if (wordmark && wordmark.width > 0) {
+        const wmH = h * 0.1;
+        const wmW = wmH * (wordmark.width / wordmark.height);
+        // The wordmark PNG is white artwork — tint it to the card ink via an
+        // offscreen source-in fill before drawing it onto the face.
+        const tint = document.createElement("canvas");
+        tint.width = wordmark.width;
+        tint.height = wordmark.height;
+        const tctx = tint.getContext("2d")!;
+        tctx.drawImage(wordmark, 0, 0);
+        tctx.globalCompositeOperation = "source-in";
+        tctx.fillStyle = palette.inkStrong;
+        tctx.fillRect(0, 0, tint.width, tint.height);
+        ctx.drawImage(tint, padX, markY - wmH * 0.78, wmW, wmH);
+    } else {
+        ctx.beginPath();
+        ctx.arc(padX + h * 0.045, markY - h * 0.02, h * 0.045, 0, Math.PI * 2);
+        ctx.fillStyle = palette.ink;
+        ctx.fill();
+        ctx.font = `700 ${h * 0.07}px system-ui, -apple-system, Segoe UI, sans-serif`;
+        ctx.letterSpacing = `${h * 0.004}px`;
+        ctx.fillStyle = palette.inkStrong;
+        ctx.fillText("AIYARA", padX + h * 0.12, markY + h * 0.005);
+        ctx.letterSpacing = "0px";
+    }
 
     ctx.restore();
 }
 
-function drawCardBack(ctx: CanvasRenderingContext2D, w: number, h: number) {
+function drawCardBack(
+    ctx: CanvasRenderingContext2D,
+    w: number,
+    h: number,
+    palette: CardPalette,
+) {
     const r = h * 0.05;
 
     ctx.clearRect(0, 0, w, h);
@@ -251,14 +237,16 @@ function drawCardBack(ctx: CanvasRenderingContext2D, w: number, h: number) {
     ctx.closePath();
     ctx.clip();
 
-    // Same white card base.
+    // Same card base as the face.
     const g = ctx.createLinearGradient(0, 0, w, h);
-    g.addColorStop(0, "#ffffff");
-    g.addColorStop(0.55, "#ffffff");
-    g.addColorStop(0.8, "#ffffff");
-    g.addColorStop(1, "#ffffff");
+    g.addColorStop(0, palette.base);
+    g.addColorStop(0.55, palette.base);
+    g.addColorStop(0.8, palette.baseEnd);
+    g.addColorStop(1, palette.baseEnd);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
+
+    drawBrushedMetal(ctx, w, h);
 
     const padX = w * 0.055;
     const sigY = h * 0.72;
@@ -270,11 +258,11 @@ function drawCardBack(ctx: CanvasRenderingContext2D, w: number, h: number) {
     ctx.textBaseline = "alphabetic";
     ctx.font = `500 ${h * 0.038}px system-ui, -apple-system, Segoe UI, sans-serif`;
     ctx.letterSpacing = `${h * 0.008}px`;
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     ctx.fillText("AUTHORIZED SIGNATURE", padX, sigY - h * 0.02);
 
     // Signature strip.
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     const stripR = h * 0.01;
     ctx.beginPath();
     ctx.moveTo(padX + stripR, sigY);
@@ -286,7 +274,7 @@ function drawCardBack(ctx: CanvasRenderingContext2D, w: number, h: number) {
     ctx.fill();
 
     // Thin border around strip.
-    ctx.strokeStyle = "#3f4650";
+    ctx.strokeStyle = palette.ink;
     ctx.lineWidth = h * 0.002;
     ctx.stroke();
 
@@ -295,7 +283,7 @@ function drawCardBack(ctx: CanvasRenderingContext2D, w: number, h: number) {
     ctx.font = `${h * 0.03}px system-ui, -apple-system, Segoe UI, sans-serif`;
     ctx.letterSpacing = `${h * 0.003}px`;
     ctx.textAlign = "center";
-    ctx.fillStyle = "#3f4650";
+    ctx.fillStyle = palette.ink;
     ctx.fillText(
         "This card is the property of UBC Thai Aiyara. If found, please return.",
         w / 2,
@@ -309,12 +297,15 @@ export default function MembershipCard({
     name,
     since = "2025",
     label = "Aiyara Member",
+    theme = "dark",
 }: Props) {
     const mountRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const mount = mountRef.current;
         if (!mount) return;
+
+        const palette = paletteFor(theme);
 
         const prefersReduced = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
@@ -325,22 +316,39 @@ export default function MembershipCard({
         faceCanvas.width = TEX_W;
         faceCanvas.height = TEX_H;
         const faceCtx = faceCanvas.getContext("2d")!;
-        drawCardFace(faceCtx, TEX_W, TEX_H, {
+        const faceContent = {
             name: name || "Member",
             since,
             label,
-        });
+        };
+        drawCardFace(faceCtx, TEX_W, TEX_H, faceContent, palette);
 
         const texture = new THREE.CanvasTexture(faceCanvas);
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.anisotropy = 8;
+
+        // Load the brand wordmark, then repaint the face with it in place of the
+        // AIYARA text fallback.
+        const wordmarkImage = new Image();
+        wordmarkImage.onload = () => {
+            drawCardFace(
+                faceCtx,
+                TEX_W,
+                TEX_H,
+                faceContent,
+                palette,
+                wordmarkImage,
+            );
+            texture.needsUpdate = true;
+        };
+        wordmarkImage.src = "/thai-aiyara-wordmark.png";
 
         // --- Card back texture -------------------------------------------------
         const backCanvas = document.createElement("canvas");
         backCanvas.width = TEX_W;
         backCanvas.height = TEX_H;
         const backCtx = backCanvas.getContext("2d")!;
-        drawCardBack(backCtx, TEX_W, TEX_H);
+        drawCardBack(backCtx, TEX_W, TEX_H, palette);
 
         const backTexture = new THREE.CanvasTexture(backCanvas);
         backTexture.colorSpace = THREE.SRGBColorSpace;
@@ -408,23 +416,6 @@ export default function MembershipCard({
         mesh.position.z = CARD_DEPTH / 2 + 0.001;
         card.add(mesh);
 
-        const holoGeometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 1, 1);
-        const holoMaterial = new THREE.ShaderMaterial({
-            vertexShader: HOLO_VERTEX_SHADER,
-            fragmentShader: HOLO_FRAGMENT_SHADER,
-            uniforms: {
-                uTilt: { value: new THREE.Vector2(0, 0) },
-                uTime: { value: 0 },
-                uSuppressSignatureStrip: { value: 0 },
-            },
-            transparent: true,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-        });
-        const holoMesh = new THREE.Mesh(holoGeometry, holoMaterial);
-        holoMesh.position.z = CARD_DEPTH / 2 + 0.003;
-        card.add(holoMesh);
-
         // Back face: same plane geometry, on the reverse side, flipped so the
         // texture reads correctly when the card is rotated 180° around Y.
         const backGeometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 1, 1);
@@ -440,24 +431,6 @@ export default function MembershipCard({
         backMesh.rotation.y = Math.PI;
         card.add(backMesh);
 
-        const backHoloGeometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 1, 1);
-        const backHoloMaterial = new THREE.ShaderMaterial({
-            vertexShader: HOLO_VERTEX_SHADER,
-            fragmentShader: HOLO_FRAGMENT_SHADER,
-            uniforms: {
-                uTilt: { value: new THREE.Vector2(0, 0) },
-                uTime: { value: 0 },
-                uSuppressSignatureStrip: { value: 1 },
-            },
-            transparent: true,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-        });
-        const backHoloMesh = new THREE.Mesh(backHoloGeometry, backHoloMaterial);
-        backHoloMesh.position.z = -CARD_DEPTH / 2 - 0.003;
-        backHoloMesh.rotation.y = Math.PI;
-        card.add(backHoloMesh);
-
         // Body: a rounded, extruded slab that gives the card real thickness so its
         // metallic edge catches light when tilted.
         const bodyGeometry = new THREE.ExtrudeGeometry(
@@ -466,7 +439,7 @@ export default function MembershipCard({
         );
         bodyGeometry.center(); // center the extrusion depth on z = 0
         const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0xf2f4f7,
+            color: palette.body,
             metalness: 1,
             roughness: 0.08,
             envMapIntensity: 2.6,
@@ -582,17 +555,6 @@ export default function MembershipCard({
             // Smooth flip animation, with tilt layered on top.
             flipCurrent += (flipTarget - flipCurrent) * 0.09;
             card.rotation.y = flipCurrent + targetY;
-            holoMaterial.uniforms.uTilt.value.set(
-                THREE.MathUtils.clamp(card.rotation.y, -0.55, 0.55),
-                THREE.MathUtils.clamp(card.rotation.x, -0.4, 0.4),
-            );
-            holoMaterial.uniforms.uTime.value = performance.now() / 1000;
-            backHoloMaterial.uniforms.uTilt.value.set(
-                THREE.MathUtils.clamp(-card.rotation.y, -0.55, 0.55),
-                THREE.MathUtils.clamp(card.rotation.x, -0.4, 0.4),
-            );
-            backHoloMaterial.uniforms.uTime.value =
-                holoMaterial.uniforms.uTime.value;
 
             // Only the pointer hover lifts the card — device-orientation tilt keeps
             // a continuous non-zero target, which would otherwise pin it scaled up.
@@ -605,6 +567,7 @@ export default function MembershipCard({
 
         return () => {
             cancelAnimationFrame(raf);
+            wordmarkImage.onload = null;
             ro.disconnect();
             mount.removeEventListener("pointermove", onMove);
             mount.removeEventListener("pointerleave", onLeave);
@@ -612,12 +575,8 @@ export default function MembershipCard({
             window.removeEventListener("deviceorientation", onOrient);
             geometry.dispose();
             material.dispose();
-            holoGeometry.dispose();
-            holoMaterial.dispose();
             backGeometry.dispose();
             backMaterial.dispose();
-            backHoloGeometry.dispose();
-            backHoloMaterial.dispose();
             bodyGeometry.dispose();
             bodyMaterial.dispose();
             texture.dispose();
@@ -629,7 +588,7 @@ export default function MembershipCard({
                 mount.removeChild(renderer.domElement);
             }
         };
-    }, [name, since, label]);
+    }, [name, since, label, theme]);
 
     return (
         <div
