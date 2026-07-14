@@ -37,8 +37,8 @@ export default async function SiteHeader() {
         <nav className="nav-links">
           <Link href="/about">About</Link>
           <Link href="/events">Events</Link>
+          <Link href="/team">Team</Link>
           <Link href="/sponsors">Sponsors</Link>
-          <Link href="/contact">Socials</Link>
         </nav>
 
         <div className="nav-actions">

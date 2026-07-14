@@ -22,7 +22,10 @@ const TABS = [
     { id: "membership", label: "Membership" },
     { id: "account", label: "Profile" },
     { id: "security", label: "Security" },
+    { id: "appearance", label: "Appearance" },
 ] as const;
+
+type AccountTheme = "light" | "dark";
 
 type TabId = (typeof TABS)[number]["id"];
 
@@ -85,6 +88,7 @@ export default function AccountView(props: Props) {
         account: null,
         security: null,
         membership: null,
+        appearance: null,
     });
     const [tabIndicator, setTabIndicator] = useState<TabIndicator>({
         x: 0,
@@ -92,6 +96,45 @@ export default function AccountView(props: Props) {
         width: 0,
         height: 0,
     });
+    // Light/dark theme for the account page. Persisted per-device in
+    // localStorage and applied via a class on <html> the account CSS keys off.
+    // A beforeInteractive script in the root layout applies it pre-hydration to
+    // avoid a flash. Read once lazily; no theme-dependent markup is in the
+    // initial render (the toggle only shows on the Appearance tab and the card
+    // SSRs a theme-independent placeholder), so this can't mismatch hydration.
+    const [theme, setTheme] = useState<AccountTheme>(() => {
+        if (typeof window === "undefined") return "dark";
+        try {
+            return localStorage.getItem("account-theme") === "light"
+                ? "light"
+                : "dark";
+        } catch {
+            return "dark";
+        }
+    });
+
+    // Keep <html> in sync with the current theme, and clear the class on
+    // unmount so it never leaks to other pages.
+    useEffect(() => {
+        document.documentElement.classList.toggle(
+            "account-theme-light",
+            theme === "light",
+        );
+        return () => {
+            document.documentElement.classList.remove("account-theme-light");
+        };
+    }, [theme]);
+
+    function applyTheme(next: AccountTheme) {
+        setTheme(next);
+        try {
+            localStorage.setItem("account-theme", next);
+        } catch {
+            // Private mode / storage disabled: keep the in-memory choice only.
+        }
+        // The class is applied by the theme effect above.
+    }
+
     const [initialFirst, initialLast] = splitName(props.name);
     const [firstName, setFirstName] = useState(initialFirst);
     const [lastName, setLastName] = useState(initialLast);
@@ -378,6 +421,7 @@ export default function AccountView(props: Props) {
                                     "2025"
                                 }
                                 label="Membership"
+                                theme={theme}
                             />
                             <div className="wallet-badges">
                                 <a
@@ -918,6 +962,45 @@ export default function AccountView(props: Props) {
                         </div>
                     </form>
                     </>
+                )}
+
+                {tab === "appearance" && (
+                    <section className="settings-section">
+                        <h2 className="settings-section-title">Appearance</h2>
+                        <p className="settings-row-desc">
+                            Choose how your account page looks on this device.
+                        </p>
+
+                        <div className="settings-rows">
+                            <div className="settings-row">
+                                <span className="settings-row-name">Theme</span>
+                                <div className="settings-row-control">
+                                    <div
+                                        className={`account-theme-toggle${theme === "dark" ? " is-dark" : " is-light"}`}
+                                        role="group"
+                                        aria-label="Account page theme"
+                                    >
+                                        <button
+                                            type="button"
+                                            className={`account-theme-option${theme === "light" ? " is-active" : ""}`}
+                                            aria-pressed={theme === "light"}
+                                            onClick={() => applyTheme("light")}
+                                        >
+                                            Light
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`account-theme-option${theme === "dark" ? " is-active" : ""}`}
+                                            aria-pressed={theme === "dark"}
+                                            onClick={() => applyTheme("dark")}
+                                        >
+                                            Dark
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 )}
             </section>
         </div>

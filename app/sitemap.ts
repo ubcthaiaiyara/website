@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const now = new Date();
 
     // Public, indexable routes only (dashboard/join/login are private).
-    const routes = ["", "/about", "/sponsors", "/contact"];
+    const routes = ["", "/about", "/events", "/team", "/sponsors"];
 
     return routes.map((path) => ({
         url: `${base}${path}`,

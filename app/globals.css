@@ -3,6 +3,8 @@
     --bg: #f7f3f0;
     --fg: #16130f;
     --muted: #6f6a63;
+    /* Softer than --fg but more readable than --muted; used for subpage body. */
+    --muted-strong: #4a453e;
     --accent: #1c2644;
     --accent-dark: #101830;
     --danger: #b3261e;
@@ -1043,7 +1045,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
     padding-top: 2.5rem;
 }
 
-/* Shared long-form prose for subpages (About, Sponsors, Socials, Events, and
+/* Shared long-form prose for subpages (About, Sponsors, Team, Events, and
    the Terms / Privacy legal pages) so their typography stays consistent. */
 .page-prose {
     max-width: 44rem;
@@ -1066,7 +1068,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 .page-prose p {
     margin: 0 0 1rem;
-    color: var(--fg);
+    color: var(--muted-strong);
     font-size: 1rem;
     line-height: 1.7;
 }
@@ -1078,7 +1080,7 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 .page-prose li {
     margin-bottom: 0.5rem;
-    color: var(--fg);
+    color: var(--muted-strong);
     font-size: 1rem;
     line-height: 1.65;
 }
@@ -1099,9 +1101,9 @@ body:has(.hero) .site-header:not(.is-scrolled):not(.is-open) .button {
 
 /* Lead-in paragraph: slightly larger than body, sets the page tone. */
 .page-prose .lead-p {
-    font-size: 1.15rem;
-    line-height: 1.6;
-    color: var(--fg);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted-strong);
     margin-bottom: 1.75rem;
 }
 
@@ -1239,7 +1241,7 @@ body:has(.hero) .voices-heading > .section-label svg {
     background: var(--paper);
     border: 1px solid var(--border);
     border-radius: 1rem;
-    padding: 2rem;
+    padding: 3rem;
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
@@ -1271,6 +1273,697 @@ body:has(.hero) .voices-heading > .section-label svg {
 .sponsor-card p {
     margin: 0;
     font-size: 0.95rem;
+}
+
+/* Sponsor page: homepage-inspired content sections. */
+.sponsor-why,
+.sponsor-tiers,
+.sponsor-partners,
+.sponsor-contact-panel {
+    margin-top: clamp(6rem, 12vw, 9.5rem);
+}
+
+.sponsor-section-intro {
+    max-width: 42rem;
+    margin: -0.5rem auto 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+}
+
+.win-section.sponsor-why {
+    text-align: left;
+}
+
+.win-section.sponsor-why > .section-label,
+.win-section.sponsor-why > h2,
+.win-section.sponsor-why .sponsor-section-intro {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+}
+
+.win-grid.sponsor-reason-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    text-align: left;
+}
+
+.sponsor-reason-grid .win-visual {
+    height: 9rem;
+}
+
+.sponsor-reason-visual::before,
+.sponsor-reason-visual::after {
+    position: absolute;
+    border-radius: 999px;
+    content: "";
+}
+
+.sponsor-reason-visual::before {
+    width: 3.75rem;
+    height: 3.75rem;
+    background: radial-gradient(circle at 32% 26%, #afb6ea, #737bb8);
+    box-shadow: 0 16px 28px -14px rgba(57, 67, 137, 0.9);
+}
+
+.sponsor-reason-visual::after {
+    width: 5.25rem;
+    height: 5.25rem;
+    border: 1px solid rgba(104, 114, 179, 0.2);
+}
+
+.sponsor-reason-visual span {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.sponsor-reason-grid .win-card:nth-child(2) .sponsor-reason-visual::before {
+    background: radial-gradient(circle at 32% 26%, #edc996, #bd8153);
+    box-shadow: 0 16px 28px -14px rgba(142, 82, 42, 0.72);
+}
+
+.sponsor-reason-grid .win-card:nth-child(3) .sponsor-reason-visual::before {
+    background: radial-gradient(circle at 32% 26%, #a6d7c1, #5b9c85);
+    box-shadow: 0 16px 28px -14px rgba(50, 118, 91, 0.72);
+}
+
+.sponsor-reason-grid .win-card:nth-child(4) .sponsor-reason-visual::before {
+    background: radial-gradient(circle at 32% 26%, #d0b2d9, #90709d);
+    box-shadow: 0 16px 28px -14px rgba(111, 72, 122, 0.72);
+}
+
+.sponsor-section-heading {
+    max-width: 43rem;
+}
+
+.sponsor-section-heading h2 {
+    max-width: 18ch;
+    margin: 0 0 1rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+}
+
+.sponsor-section-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.float-grid.sponsor-tier-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    box-shadow: 0 16px 38px -30px rgba(16, 24, 48, 0.28);
+}
+
+.sponsor-tier-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 13.5rem;
+    padding: 0.5rem;
+}
+
+.sponsor-tier-card::before {
+    display: none;
+}
+
+.sponsor-tier-card::after {
+    display: none;
+}
+
+.sponsor-tier-card h3 {
+    margin: 0 0 1rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--fg);
+}
+
+.sponsor-tier-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.sponsor-tier-card .tier-more {
+    margin-top: auto;
+    padding-top: 1rem;
+    color: var(--muted);
+}
+
+.sponsor-tier-card .tier-more:hover {
+    color: var(--accent);
+}
+
+.sponsor-logo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+.sponsor-logo-card {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 12.5rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sponsor-logo-card:hover {
+    border-color: color-mix(in srgb, var(--fg) 22%, transparent);
+    box-shadow: 0 14px 32px -26px rgba(16, 24, 48, 0.22);
+}
+
+.sponsor-logo-card .sponsor-logo {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.sponsor-logo-card .sponsor-logo-img {
+    max-width: 78%;
+    max-height: 62%;
+    object-fit: contain;
+}
+
+/* Medal tab hanging from the card's top edge, tier-colored with a white icon. */
+.sponsor-tier-badge {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 2.5rem;
+    overflow: hidden;
+    color: #fff;
+    background: var(--tier-badge-bg, var(--muted));
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    box-shadow: inset 0 0 0 1px var(--tier-badge-edge, rgba(255, 255, 255, 0.28));
+}
+
+.sponsor-tier-badge svg {
+    position: relative;
+    z-index: 1;
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.9;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.22));
+}
+
+/* Animated sheen sweeping diagonally across the medal for a metallic shimmer. */
+.sponsor-tier-badge::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.55) 48%,
+        rgba(255, 255, 255, 0.75) 50%,
+        rgba(255, 255, 255, 0.55) 52%,
+        transparent 70%
+    );
+    transform: translateX(-120%);
+}
+
+.sponsor-logo-card:hover .sponsor-tier-badge::after {
+    animation: tier-badge-sheen 2.4s ease-in-out infinite;
+}
+
+@keyframes tier-badge-sheen {
+    0% {
+        transform: translateX(-120%);
+    }
+    55%,
+    100% {
+        transform: translateX(120%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sponsor-tier-badge::after {
+        animation: none;
+    }
+}
+
+.sponsor-tier-badge-diamond {
+    /* Iridescent holo blend. */
+    --tier-badge-bg: linear-gradient(
+        135deg,
+        #4f8be8 0%,
+        #6ad0e0 30%,
+        #7a86e6 55%,
+        #4f8bc8 78%,
+        #35b6c9 100%
+    );
+    --tier-badge-edge: rgba(255, 255, 255, 0.4);
+}
+
+.sponsor-tier-badge-gold {
+    /* Bright metallic gold, warm highlight to deep amber. */
+    --tier-badge-bg: linear-gradient(
+        135deg,
+        #fbe38a 0%,
+        #f6c445 32%,
+        #e0a11c 60%,
+        #c8880c 100%
+    );
+    --tier-badge-edge: rgba(255, 245, 210, 0.55);
+}
+
+.sponsor-tier-badge-silver {
+    /* Brushed silver. */
+    --tier-badge-bg: linear-gradient(
+        135deg,
+        #eef2f6 0%,
+        #c3ccd6 34%,
+        #9aa6b3 64%,
+        #b6c0cc 100%
+    );
+    --tier-badge-edge: rgba(255, 255, 255, 0.6);
+}
+
+.sponsor-contact-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3rem);
+    overflow: hidden;
+    text-align: center;
+    /* Brand Aiyara purple gradient, faint. */
+    background: linear-gradient(135deg, #f7f6fb 0%, #efeef7 50%, #e6e6f2 100%);
+    border: 1px solid var(--border);
+    border-radius: 1.75rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 24px 56px -32px rgba(16, 24, 48, 0.14);
+}
+
+.sponsor-contact-copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 43rem;
+}
+
+.sponsor-contact-copy h2 {
+    margin: 0;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+    color: var(--fg);
+}
+
+.sponsor-contact-copy > p {
+    max-width: 34rem;
+    margin: 1.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.sponsor-contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+}
+
+.sponsor-contact-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.72rem 1.5rem;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: linear-gradient(135deg, #8b8fc0 0%, #1c2644 100%);
+    border-radius: 999px;
+    box-shadow:
+        0 1px 3px -1px rgba(28, 38, 68, 0.3),
+        0 12px 34px -8px rgba(28, 38, 68, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sponsor-contact-cta:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 2px 5px -1px rgba(28, 38, 68, 0.32),
+        0 18px 40px -10px rgba(28, 38, 68, 0.3);
+}
+
+.sponsor-contact-cta svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    transition: transform 0.2s ease;
+}
+
+.sponsor-contact-cta:hover svg {
+    transform: translate(0.15rem, -0.15rem);
+}
+
+.sponsor-contact-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.72rem 1.5rem;
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 8px 22px -16px rgba(28, 38, 68, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sponsor-contact-secondary:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--fg) 22%, transparent);
+    box-shadow: 0 16px 30px -16px rgba(28, 38, 68, 0.28);
+}
+
+@media (max-width: 960px) {
+    .win-grid.sponsor-reason-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .float-grid.sponsor-tier-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sponsor-logo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sponsor-tier-card:last-child {
+        grid-column: span 2;
+        min-height: 14rem;
+    }
+
+    .sponsor-contact-panel {
+        gap: 0;
+    }
+
+    .sponsor-contact-actions {
+        max-width: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .sponsor-why,
+    .sponsor-tiers,
+    .sponsor-partners,
+    .sponsor-contact-panel {
+        margin-top: 4.5rem;
+    }
+
+    .float-grid.sponsor-tier-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sponsor-tier-card,
+    .sponsor-tier-card:last-child {
+        grid-column: auto;
+        min-height: 18rem;
+    }
+
+    .win-grid.sponsor-reason-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sponsor-logo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sponsor-contact-panel {
+        padding: 2rem;
+        border-radius: 1.35rem;
+    }
+
+    .sponsor-contact-copy h2 {
+        font-size: clamp(2.35rem, 11vw, 3.25rem);
+    }
+
+    .sponsor-contact-actions {
+        padding-left: 0;
+    }
+
+}
+
+/* Sponsor page: reach stats row. */
+.sponsor-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    margin: 2.25rem 0 0.5rem;
+}
+
+.sponsor-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.sponsor-stat-value {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2.25rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--fg);
+}
+
+.sponsor-stat-label {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* Sponsor page: sponsorship tiers in a light panel (à la SFU Robot Soccer) — a
+   row of columns, each with a name, a short description, and a "more info" link. */
+.tier-panel {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 2rem 2.5rem;
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 24px 56px -24px rgba(5, 1, 21, 0.22);
+}
+
+.tier-name {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+}
+
+.tier-desc {
+    margin: 0 0 0.9rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.tier-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.tier-more svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+}
+
+.tier-more:hover {
+    color: var(--accent);
+    gap: 0.5rem;
+}
+
+.tier-more:hover svg {
+    transform: translate(2px, -2px);
+}
+
+/* Sponsor page: reuse the homepage story card's split-panel treatment for the
+   sponsorship pitch and its downloadable package. */
+.sponsor-package-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 40rem) minmax(15rem, 1fr);
+    align-items: stretch;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    margin-top: 0.75rem;
+}
+
+.insight-panel.sponsor-package-panel {
+    align-self: center;
+    display: block;
+    width: 100%;
+    margin-top: 0;
+    padding: 1.5rem 2.5rem;
+    border-radius: 1.25rem;
+}
+
+.sponsor-package-panel .sponsor-package-copy {
+    margin-top: 0.25rem;
+    font-size: 0.94rem;
+}
+
+.sponsor-package-panel .sponsor-stats {
+    align-self: stretch;
+    display: grid;
+    width: 100%;
+    margin: 2.25rem 0 0.75rem;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    gap: clamp(1.25rem, 4vw, 3rem);
+}
+
+.sponsor-package-panel .sponsor-stat {
+    align-items: center;
+    text-align: center;
+}
+
+.sponsor-package-layout .sponsor-package-visual {
+    position: relative;
+    align-self: end;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+    transform: none;
+}
+
+.sponsor-package-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.sponsorship-book-3d {
+    width: min(100%, 15rem);
+    height: 17rem;
+    cursor: grab;
+    touch-action: pan-y;
+    filter: drop-shadow(0 18px 20px rgba(16, 24, 48, 0.24));
+}
+
+.sponsor-package-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+}
+
+.sponsorship-book-3d:active {
+    cursor: grabbing;
+}
+
+.sponsor-package-download svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 960px) {
+    .sponsor-package-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .insight-panel.sponsor-package-panel {
+        display: block;
+        width: 100%;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .sponsor-package-layout .sponsor-package-visual {
+        position: static;
+        width: 100%;
+        min-height: 19rem;
+        padding: 1rem 1.25rem;
+        transform: none;
+    }
+
+    .sponsorship-book-3d {
+        height: 15rem;
+    }
 }
 
 /* Events */
@@ -1493,10 +2186,11 @@ body:has(.hero) .voices-heading > .section-label svg {
 .account-main {
     max-width: var(--max);
     padding-top: 8rem;
+    padding-bottom: 6rem;
 }
 
-.account-page-title {
-    margin: 0 0 4rem;
+.auth-main h1.account-page-title {
+    margin: 0 0 1.25rem;
     padding-bottom: 0.5rem;
     font-family: var(--font-sans), sans-serif;
     font-size: clamp(2rem, 4vw, 3rem);
@@ -1530,7 +2224,8 @@ body:has(.account-main) .site-header:not(.is-open) {
 /* Left category nav + right content panel. */
 .account {
     display: grid;
-    grid-template-columns: 13rem 1fr;
+    /* Left nav matches the width of the "My account" title above it. */
+    grid-template-columns: 16rem 1fr;
     gap: 3rem;
     align-items: start;
 }
@@ -1820,13 +2515,194 @@ body:has(.account-main) .site-header:not(.is-open) {
     color: #ffb4b4;
 }
 
+/* Appearance tab: segmented light/dark theme control. Styled for the default
+   dark panel; the light theme block below re-tones it. */
+.account-theme-toggle {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+/* Sliding thumb that highlights the active option; it translates between the
+   two equal-width cells when the mode switches. */
+.account-theme-toggle::before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    width: calc(50% - 0.25rem);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    transition: transform 0.25s ease;
+}
+
+.account-theme-toggle.is-dark::before {
+    transform: translateX(100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .account-theme-toggle::before {
+        transition: none;
+    }
+}
+
+.account-theme-option {
+    position: relative;
+    z-index: 1;
+    padding: 0.4rem 1.1rem;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.account-theme-option:hover,
+.account-theme-option.is-active {
+    color: #fff;
+}
+
+/* ---- Account page: opt-in light theme (Appearance tab) ---------------- */
+html.account-theme-light:has(.account-main) .page-body {
+    background: var(--paper);
+    color: var(--fg);
+}
+
+html.account-theme-light:has(.account-main) .account-page-title,
+html.account-theme-light:has(.account-main) .settings-section-title,
+html.account-theme-light:has(.account-main) .settings-row-name {
+    color: var(--fg);
+}
+
+/* Revert the forced white-on-midnight header to the default dark-on-light bar. */
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) .brand,
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) .nav-login,
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) .nav-toggle,
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) .nav-links a {
+    color: var(--fg);
+}
+
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) .brand-logo {
+    filter: invert(1);
+}
+
+html.account-theme-light:has(.account-main) .site-header:not(.is-open) {
+    background: var(--paper);
+}
+
+html.account-theme-light:has(.account-main) .account-nav {
+    background: var(--paper);
+}
+
+html.account-theme-light:has(.account-main) .account-tab {
+    color: var(--muted);
+}
+
+html.account-theme-light:has(.account-main) .account-tab:hover,
+html.account-theme-light:has(.account-main) .account-tab.is-active {
+    color: var(--fg);
+}
+
+html.account-theme-light:has(.account-main) .account-tab:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+html.account-theme-light:has(.account-main) .account-tab-indicator {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html.account-theme-light:has(.account-main) .account-nav-foot,
+html.account-theme-light:has(.account-main) .settings-subsection {
+    border-color: var(--border);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-desc {
+    color: var(--muted);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control input,
+html.account-theme-light:has(.account-main) .settings-row-control select {
+    background-color: #fff;
+    border-color: var(--border);
+    color: var(--fg);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control input:focus,
+html.account-theme-light:has(.account-main) .settings-row-control select:focus {
+    border-color: var(--accent);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control input:disabled {
+    background-color: #f1ece5;
+    color: var(--muted);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control input::placeholder {
+    color: var(--muted);
+}
+
+/* Darken the select chevron so it reads on the light control. */
+html.account-theme-light:has(.account-main) .settings-row-control select {
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%236f6a63'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M6%209l6%206l6%20-6'/%3E%3C/svg%3E");
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control .password-toggle {
+    color: var(--muted);
+}
+
+html.account-theme-light:has(.account-main) .settings-row-control .password-toggle:hover {
+    color: var(--fg);
+}
+
+html.account-theme-light:has(.account-main) .danger-zone .settings-section-title,
+html.account-theme-light:has(.account-main) .danger-zone .settings-row-name {
+    color: var(--danger);
+}
+
+html.account-theme-light:has(.account-main) .danger-zone .settings-row-desc {
+    color: color-mix(in srgb, var(--danger) 82%, transparent);
+}
+
+/* The "Connected" pill's light green washes out on the cream panel — deepen it. */
+html.account-theme-light:has(.account-main) .settings-status {
+    color: #12a552;
+    background: rgba(18, 165, 82, 0.14);
+    border-color: rgba(18, 165, 82, 0.4);
+}
+
+html.account-theme-light:has(.account-main) .account-theme-toggle {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+html.account-theme-light:has(.account-main) .account-theme-toggle::before {
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+html.account-theme-light:has(.account-main) .account-theme-option {
+    color: var(--muted);
+}
+
+html.account-theme-light:has(.account-main) .account-theme-option:hover,
+html.account-theme-light:has(.account-main) .account-theme-option.is-active {
+    color: var(--fg);
+}
+
 .danger-zone .settings-row-desc {
     color: rgba(255, 180, 180, 0.72);
 }
 
 .danger-button,
 .danger-button:hover {
-    background-image: linear-gradient(180deg, #dc5a5a 0%, #8f1f1f 100%);
+    background-image: linear-gradient(135deg, #dc5a5a 0%, #8f1f1f 100%);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.22),
         0 0.7px 2.7px -1.2px rgba(143, 31, 31, 0.4),
@@ -1850,7 +2726,7 @@ body:has(.account-main) .site-header:not(.is-open) {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    margin-top: -3.25rem;
+    margin-top: -2.25rem;
 }
 
 @media (max-width: 640px) {
@@ -1936,7 +2812,7 @@ html:has(body .auth-split) {
     background: #fff;
 }
 
-/* Cream subpages (About, Events, Sponsors, Socials, Terms, Privacy) start on
+/* Cream subpages (About, Events, Sponsors, Team, Terms, Privacy) start on
    the cream page background, so the overscroll bounce should be cream rather
    than the global midnight canvas. */
 html:has(body .subpage) {
@@ -2530,7 +3406,7 @@ html:has(body .subpage) {
 }
 
 .wallet-badge img {
-    height: 2.25rem;
+    height: 2.55rem;
     width: auto;
     /* drop-shadow follows the badge's rounded silhouette, not a box */
     filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
@@ -3096,7 +3972,7 @@ html:has(body .subpage) {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 1.75rem;
-    padding: 3rem;
+    padding: 3.5rem;
     box-shadow:
         0 1px 2px rgba(16, 24, 48, 0.04),
         0 24px 60px -28px rgba(16, 24, 48, 0.18);

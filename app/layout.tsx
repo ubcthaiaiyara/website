@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Link from "next/link";
+import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
@@ -92,8 +93,20 @@ export default function RootLayout({
         <html
             lang="en"
             className={`${openRunde.variable} ${lastik.variable}`}
+            // The beforeInteractive theme script may add `account-theme-light`
+            // to <html> before hydration; suppress the resulting className
+            // mismatch on this element only (not its subtree).
+            suppressHydrationWarning
         >
             <body>
+                {/* Apply the saved account-page light/dark choice before
+                    hydration so it doesn't flash the default dark theme. The
+                    class is scoped in CSS to :has(.account-main), so it's a
+                    no-op on every other page. Targets <html> since <body> may
+                    not exist yet when a beforeInteractive script runs. */}
+                <Script id="account-theme-init" strategy="beforeInteractive">
+                    {`try{if(localStorage.getItem('account-theme')==='light'){document.documentElement.classList.add('account-theme-light')}}catch(e){}`}
+                </Script>
                 <SiteHeader />
                 <div className="page-body">{children}</div>
                 <footer className="site-footer">
@@ -120,14 +133,17 @@ export default function RootLayout({
                                 <h4>Explore</h4>
                                 <Link href="/about">About</Link>
                                 <Link href="/events">Events</Link>
+                                <Link href="/team">Team</Link>
                                 <Link href="/sponsors">Sponsors</Link>
-                                <Link href="/contact">Socials</Link>
                             </nav>
 
                             <nav className="footer-col">
                                 <h4>Socials</h4>
                                 <a href="https://www.instagram.com/ubcthaiaiyara">
                                     Instagram
+                                </a>
+                                <a href="https://www.facebook.com/ubcthai.aiyara.9">
+                                    Facebook
                                 </a>
                                 <a href="https://www.tiktok.com/@ubc.thaiaiyara">
                                     TikTok

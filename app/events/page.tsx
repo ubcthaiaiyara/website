@@ -50,10 +50,16 @@ export default function EventsPage() {
                     </p>
 
                     <p>
-                        Follow our{" "}
-                        <Link href="/contact">socials</Link> for dates and
-                        details, or become a member to get event reminders and
-                        RSVP in a tap.
+                        Follow us on{" "}
+                        <a
+                            href="https://www.instagram.com/ubcthaiaiyara"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Instagram
+                        </a>{" "}
+                        for dates and details, or become a member to get event
+                        reminders and RSVP in a tap.
                     </p>
 
                     <Link className="button" href="/join">
