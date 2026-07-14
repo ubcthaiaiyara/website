@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SponsorshipBook from "../components/SponsorshipBook";
 
 export const metadata: Metadata = {
     title: "Sponsors",
@@ -8,75 +9,92 @@ export const metadata: Metadata = {
 
 const tiers = [
     {
-        name: "Presenting Partner",
-        blurb: "Our headline partnership.",
-        benefits: [
-            "Top billing logo at every event, on banners and on stage",
-            "A dedicated feature across our social channels",
-            "A booth or table at our signature festivals",
-            "Logo and link on our website",
-            "A thank you to our whole community",
-        ],
+        name: "Diamond",
+        desc: "Our headline partnership, with top billing, a dedicated social feature, and a booth at our signature festivals.",
     },
     {
-        name: "Festival Sponsor",
-        blurb: "Front and center at our biggest celebrations.",
-        benefits: [
-            "Logo at our major festivals, like Songkran and Loy Krathong",
-            "A shoutout on our social channels",
-            "Logo and link on our website",
-        ],
+        name: "Gold",
+        desc: "Strong visibility at our major festivals, across social media, and on our website throughout the year.",
     },
     {
-        name: "Community Supporter",
-        blurb: "Help us keep the community thriving.",
-        benefits: [
-            "Logo and link on our website",
-            "A mention on our event banners",
-        ],
+        name: "Silver",
+        desc: "A meaningful way to reach our community through event recognition, social mentions, and a website feature.",
     },
 ];
 
-// Current partners (from the club's existing sponsor list). The logo squares
-// use initials as placeholders until real logos are added.
-const partners = [
+type Partner = {
+    id: string;
+    name: string;
+    logo?: string;
+};
+
+const partnerTiers: { name: string; partners: Partner[] }[] = [
     {
-        logo: "OSO",
-        name: "OSO Hair Salon",
-        perk: "10% off all services for Aiyara members.",
+        name: "Diamond",
+        partners: [
+            {
+                id: "diamond-1",
+                name: "Diamond sponsor",
+            },
+        ],
     },
     {
-        logo: "KFT",
-        name: "Kung Fu Tea",
-        perk: "15% off all drinks with your membership card.",
+        name: "Gold",
+        partners: [
+            {
+                id: "gold-1",
+                name: "Gold sponsor",
+            },
+            {
+                id: "gold-2",
+                name: "Gold sponsor",
+            },
+        ],
     },
     {
-        logo: "LGH",
-        name: "Lemongrass House",
-        perk: "Buy one get one free on all products with your membership card.",
-    },
-    {
-        logo: "GFC",
-        name: "Grounds for Coffee",
-        perk: "Fresh buns for members on an event basis.",
-    },
-    {
-        logo: "ST",
-        name: "Sala Thai",
-        perk: "15% off food and drinks at this longtime downtown Vancouver Thai restaurant.",
-    },
-    {
-        logo: "SH",
-        name: "StorageHotel",
-        perk: "10% off your first month of storage with the code UBCTHAI.",
+        name: "Silver",
+        partners: [
+            {
+                id: "silver-1",
+                name: "Silver sponsor",
+            },
+            {
+                id: "silver-2",
+                name: "Silver sponsor",
+            },
+            {
+                id: "silver-3",
+                name: "Silver sponsor",
+            },
+        ],
     },
 ];
 
 const reasons = [
-    "Reach a large, engaged, and diverse student community at UBC.",
-    "Put your brand front and center at cultural festivals and socials throughout the year.",
-    "Grow your presence across our website, social media, and event materials.",
-    "Support Thai culture and a student community that has felt like home for over a decade.",
+    {
+        number: "1",
+        title: "Meet an engaged campus community",
+        description:
+            "Connect with a large, diverse group of UBC students who show up for culture, friendship, and new experiences.",
+    },
+    {
+        number: "2",
+        title: "Show up where it matters",
+        description:
+            "Put your brand at the centre of our festivals, socials, and the moments our members remember together.",
+    },
+    {
+        number: "3",
+        title: "Keep the conversation going",
+        description:
+            "Grow your presence through our website, social channels, and thoughtfully designed event materials.",
+    },
+    {
+        number: "4",
+        title: "Invest in a living culture",
+        description:
+            "Help a student community that has felt like home for more than a decade share Thai culture at UBC.",
+    },
 ];
 
 export default function SponsorsPage() {
@@ -85,91 +103,187 @@ export default function SponsorsPage() {
             <section className="section">
                 <span className="section-label">Sponsors</span>
                 <h2>Partner with us.</h2>
-                <div className="page-prose">
-                    <p className="lead-p">
-                        UBC Thai Aiyara is a student run cultural club, and our
-                        partners help us host the events that bring the community
-                        together. Sponsoring us puts your brand in front of an
-                        engaged student audience while supporting Thai culture at
-                        UBC.
-                    </p>
-                </div>
-
-                <div className="sponsor-stats">
-                    <div className="sponsor-stat">
-                        <span className="sponsor-stat-value">10+</span>
-                        <span className="sponsor-stat-label">Years running</span>
-                    </div>
-                    <div className="sponsor-stat">
-                        <span className="sponsor-stat-value">150+</span>
-                        <span className="sponsor-stat-label">Active members</span>
-                    </div>
-                    <div className="sponsor-stat">
-                        <span className="sponsor-stat-value">20+</span>
-                        <span className="sponsor-stat-label">Events a year</span>
-                    </div>
-                </div>
-
-                <div className="page-prose">
-                    <h3>Why sponsor us</h3>
-                    <ul>
-                        {reasons.map((r) => (
-                            <li key={r}>{r}</li>
-                        ))}
-                    </ul>
-
-                    <h3>Sponsorship tiers</h3>
-                </div>
-
-                <div className="faq-list tier-accordion">
-                    {tiers.map((tier) => (
-                        <details key={tier.name} className="faq-item">
-                            <summary>
-                                <span>{tier.name}</span>
-                                <span className="faq-icon" aria-hidden="true" />
-                            </summary>
-                            <div className="faq-answer">
-                                <p className="tier-blurb">{tier.blurb}</p>
-                                <ul className="tier-benefits">
-                                    {tier.benefits.map((b) => (
-                                        <li key={b}>{b}</li>
-                                    ))}
-                                </ul>
+                <div className="sponsor-package-layout">
+                    <div className="insight-panel sponsor-package-panel">
+                        <div className="insight-left">
+                            <p className="insight-copy sponsor-package-copy">
+                                UBC Thai Aiyara is a student run cultural club,
+                                and our partners help us host the events that
+                                bring the community together. Sponsoring us puts
+                                your brand in front of an engaged student
+                                audience while supporting Thai culture at UBC.
+                            </p>
+                            <div className="sponsor-stats">
+                                <div className="sponsor-stat">
+                                    <span className="sponsor-stat-value">
+                                        10+
+                                    </span>
+                                    <span className="sponsor-stat-label">
+                                        Years running
+                                    </span>
+                                </div>
+                                <div className="sponsor-stat">
+                                    <span className="sponsor-stat-value">
+                                        150+
+                                    </span>
+                                    <span className="sponsor-stat-label">
+                                        Active members
+                                    </span>
+                                </div>
+                                <div className="sponsor-stat">
+                                    <span className="sponsor-stat-value">
+                                        20+
+                                    </span>
+                                    <span className="sponsor-stat-label">
+                                        Events a year
+                                    </span>
+                                </div>
                             </div>
-                        </details>
-                    ))}
-                </div>
-
-                <div className="page-prose">
-                    <p>
-                        Looking for something custom, or want to contribute gifts
-                        in kind? We would love to tailor a package that fits.
-                    </p>
-
-                    <h3>Current partners</h3>
-                </div>
-
-                <div className="sponsor-grid">
-                    {partners.map((s) => (
-                        <div key={s.name} className="sponsor-card">
-                            <div className="sponsor-logo">{s.logo}</div>
-                            <h3>{s.name}</h3>
-                            <p>{s.perk}</p>
                         </div>
-                    ))}
+                    </div>
+
+                    <div className="insight-visual sponsor-package-visual">
+                        {/* Replace this link once the final sponsorship PDF is
+                            added to public/. */}
+                        <div className="sponsor-package-stage">
+                            <SponsorshipBook />
+                            <a
+                                className="button button-sm sponsor-package-download"
+                                href="/sponsorship-package.pdf"
+                                download
+                            >
+                                Download the package
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 4v11" />
+                                    <path d="M7 12l5 5 5-5" />
+                                    <path d="M5 20h14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="page-prose">
-                    <h3>Become a sponsor</h3>
-                    <p>
-                        Interested in supporting UBC Thai Aiyara? Reach out at{" "}
-                        <a href="mailto:contact@ubcthaiaiyara.com">
-                            contact@ubcthaiaiyara.com
-                        </a>{" "}
-                        and we will share our sponsorship package and find the
-                        right fit together.
+                <section className="sponsor-why win-section">
+                    <span className="section-label">Why sponsor us</span>
+                    <h2>Be part of the moments that bring us together.</h2>
+                    <p className="sponsor-section-intro">
+                        A partnership with Aiyara is a chance to build genuine
+                        connections with students while making space for Thai
+                        culture to thrive at UBC.
                     </p>
-                </div>
+                    <div className="win-grid sponsor-reason-grid">
+                        {reasons.map((reason) => (
+                            <article key={reason.number} className="win-card">
+                                <div className="win-visual sponsor-reason-visual">
+                                    <span>{reason.number}</span>
+                                </div>
+                                <div className="win-body">
+                                    <h3>{reason.title}</h3>
+                                    <p>{reason.description}</p>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="sponsor-tiers">
+                    <div className="sponsor-section-heading">
+                        <span className="section-label">Sponsorship tiers</span>
+                        <h2>A partnership that fits your goals.</h2>
+                        <p>
+                            Choose a starting point, or let&apos;s shape a
+                            custom package around the impact you want to make.
+                        </p>
+                    </div>
+                    <div className="float-grid sponsor-tier-grid">
+                        {tiers.map((tier) => (
+                            <article key={tier.name} className="sponsor-tier-card">
+                                <h3>{tier.name}</h3>
+                                <p>{tier.desc}</p>
+                                <a
+                                    className="tier-more"
+                                    href="mailto:contact@ubcthaiaiyara.com"
+                                >
+                                    Explore this tier
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17 17 7" />
+                                        <path d="M8 7h9v9" />
+                                    </svg>
+                                </a>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="sponsor-partners">
+                    <div className="sponsor-section-heading">
+                        <span className="section-label">Current partners</span>
+                        <h2>Good company, shared values.</h2>
+                        <p>
+                            We are grateful to the local businesses that help
+                            make our community possible.
+                        </p>
+                    </div>
+                    <div className="sponsor-logo-grid">
+                        {partnerTiers.flatMap((tier) =>
+                            tier.partners.map((partner) => (
+                                <article
+                                    key={partner.id}
+                                    className="sponsor-logo-card"
+                                >
+                                    <span
+                                        className={`sponsor-tier-badge sponsor-tier-badge-${tier.name.toLowerCase()}`}
+                                        title={`${tier.name} sponsor`}
+                                    >
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <circle cx="12" cy="8" r="7" />
+                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                                        </svg>
+                                    </span>
+                                    {partner.logo ? (
+                                        <img
+                                            className="sponsor-logo-img"
+                                            src={partner.logo}
+                                            alt={`${partner.name} logo`}
+                                        />
+                                    ) : (
+                                        <div className="sponsor-logo">
+                                            {partner.name}
+                                        </div>
+                                    )}
+                                </article>
+                            )),
+                        )}
+                    </div>
+                </section>
+
+                <section className="sponsor-contact-panel">
+                    <div className="sponsor-contact-copy">
+                        <h2>Become part of our story.</h2>
+                        <p>
+                            Sponsor UBC Thai Aiyara and help bring Thai culture
+                            to campus.
+                        </p>
+                        <div className="sponsor-contact-actions">
+                            <a
+                                className="sponsor-contact-cta"
+                                href="mailto:contact@ubcthaiaiyara.com"
+                            >
+                                Get in touch
+                            </a>
+                            <a
+                                className="sponsor-contact-secondary"
+                                href="/sponsorship-package.pdf"
+                                download
+                            >
+                                View sponsorship package
+                            </a>
+                        </div>
+                    </div>
+                </section>
             </section>
         </main>
     );
