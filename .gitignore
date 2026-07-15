@@ -25,3 +25,6 @@ yarn-error.log*
 .env*.local
 .vercel
 .env*
+
+# Apple MapKit private key (.p8) — never commit
+*.p8
