@@ -402,6 +402,49 @@ p {
     font-size: 0.85rem;
 }
 
+/* CTA arrow reveal (after photon.codes' "Apply Now"): the primary purple
+   button keeps just its label at rest and slides an arrow in from the right on
+   hover, while the flex centering shifts the label left to make room. Applies
+   to every primary .button, but not the white .button-ghost secondary. */
+.button:not(.button-ghost)::after,
+.insight-cta::after {
+    content: "→";
+    display: inline-block;
+    max-width: 0;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateX(-3px);
+    font-size: 1.05em;
+    line-height: 1;
+    transition:
+        max-width 0.32s cubic-bezier(0.3, 0, 0.2, 1),
+        margin-left 0.32s cubic-bezier(0.3, 0, 0.2, 1),
+        transform 0.32s cubic-bezier(0.3, 0, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+.button:not(.button-ghost):hover::after,
+.insight-cta:hover::after {
+    max-width: 1.4em;
+    margin-left: 0.45em;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* The header CTAs ("Join Now" / "My account") stay plain — no arrow reveal. */
+.nav-actions .button::after {
+    content: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .button:not(.button-ghost)::after,
+    .insight-cta::after {
+        transition: opacity 0.2s ease;
+        transform: none;
+    }
+}
+
 /* ---------- Header / nav ---------- */
 /* ---------- Site header ---------- */
 /* Fixed bar, transparent over the hero (light content) and frosted once the
@@ -1927,6 +1970,11 @@ body:has(.hero) .voices-heading > .section-label svg {
     white-space: nowrap;
 }
 
+/* This CTA shows a static download icon instead of the shared "→" arrow. */
+.button.sponsor-package-download::after {
+    content: none;
+}
+
 .sponsorship-book-3d:active {
     cursor: grabbing;
 }
@@ -2185,19 +2233,46 @@ body:has(.hero) .voices-heading > .section-label svg {
    light. */
 .account-main {
     max-width: var(--max);
-    padding-top: 8rem;
+    /* 7rem lines the title up with the other subpages (their .subpage 4.5rem +
+       .section 2.5rem). */
+    padding-top: 7rem;
     padding-bottom: 6rem;
 }
 
+/* Matches the events "Our events." title: serif, same size and tracking. */
 .auth-main h1.account-page-title {
-    margin: 0 0 1.25rem;
-    padding-bottom: 0.5rem;
-    font-family: var(--font-sans), sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem);
+    /* 2rem below matches the title→lead gap on the other subpages (their h2's
+       1.5rem margin collapses with the following .page-prose's 2rem top). */
+    margin: 0 0 2rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3.25rem);
     font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
     color: #fff;
+}
+
+/* Lead paragraph under the title, mirroring the events page intro. */
+.account-lead {
+    margin: 0 0 2.5rem;
+    max-width: 44rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+html.account-theme-light:has(.account-main) .account-lead {
+    color: var(--muted-strong);
+}
+
+/* The "Account" eyebrow reuses .section-label; lighten it on the dark
+   account canvas (the light theme keeps the default muted tone). */
+body:has(.account-main) .section-label {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+html.account-theme-light:has(.account-main) .section-label {
+    color: var(--muted);
 }
 
 body:has(.account-main) .page-body {
@@ -2224,9 +2299,10 @@ body:has(.account-main) .site-header:not(.is-open) {
 /* Left category nav + right content panel. */
 .account {
     display: grid;
-    /* Left nav matches the width of the "My account" title above it. */
-    grid-template-columns: 16rem 1fr;
-    gap: 3rem;
+    /* Sidebar width shared with the events filter rail so the two pages line
+       up. */
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 4.5rem;
     align-items: start;
 }
 
@@ -2241,35 +2317,43 @@ body:has(.account-main) .site-header:not(.is-open) {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.35rem;
     padding: 0;
-    border-radius: 0.95rem;
     background: transparent;
 }
 
+/* Solid-indigo sliding highlight, matching the events filter rail. On the
+   midnight (dark) canvas the deep --accent indigo would blend into the
+   background, so a lighter brand indigo is used there (see the dark override
+   below); on the cream (light) canvas the deep indigo stands out. */
 .account-tab-indicator {
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.6rem;
+    background: #4f548c;
     transition:
-        transform 0.22s ease,
-        width 0.22s ease,
-        height 0.22s ease;
+        transform 0.3s cubic-bezier(0.3, 0, 0.2, 1),
+        width 0.3s cubic-bezier(0.3, 0, 0.2, 1),
+        height 0.3s cubic-bezier(0.3, 0, 0.2, 1);
     pointer-events: none;
+}
+
+html.account-theme-light:has(.account-main) .account-tab-indicator {
+    background: var(--accent);
 }
 
 .account-tab {
     position: relative;
     z-index: 1;
     text-align: left;
-    padding: 0.55rem 0.85rem;
+    padding: 0.5rem 0.85rem;
     border: none;
-    border-radius: 0.8rem;
+    border-radius: 0.6rem;
     background: none;
     font: inherit;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition:
@@ -2315,7 +2399,7 @@ body:has(.account-main) .site-header:not(.is-open) {
 
 .settings-section-title {
     font-family: var(--font-sans), sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: -0.01em;
     margin: 0 0 0.5rem;
@@ -2510,6 +2594,27 @@ body:has(.account-main) .site-header:not(.is-open) {
     font-size: 0.75rem;
 }
 
+/* Purple "Beta" tag — distinct from the green "Connected" status. */
+.settings-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid rgba(163, 138, 224, 0.4);
+    border-radius: 999px;
+    background: rgba(163, 138, 224, 0.16);
+    color: #c2b0ec;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+html.account-theme-light:has(.account-main) .settings-badge {
+    color: #6b4aa0;
+    background: rgba(107, 74, 160, 0.12);
+    border-color: rgba(107, 74, 160, 0.35);
+}
+
 .danger-zone .settings-section-title,
 .danger-zone .settings-row-name {
     color: #ffb4b4;
@@ -2602,22 +2707,33 @@ html.account-theme-light:has(.account-main) .account-nav {
     background: var(--paper);
 }
 
-html.account-theme-light:has(.account-main) .account-tab {
+/* Rail legend: lighten on the dark canvas, default muted in light. */
+body:has(.account-main) .account-nav .rail-legend {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+html.account-theme-light:has(.account-main) .account-nav .rail-legend {
     color: var(--muted);
 }
 
-html.account-theme-light:has(.account-main) .account-tab:hover,
-html.account-theme-light:has(.account-main) .account-tab.is-active {
-    color: var(--fg);
+html.account-theme-light:has(.account-main) .account-tab {
+    color: var(--muted-strong);
 }
 
 html.account-theme-light:has(.account-main) .account-tab:hover {
-    background: rgba(0, 0, 0, 0.04);
+    color: var(--fg);
+    background: rgba(28, 38, 68, 0.06);
 }
 
-html.account-theme-light:has(.account-main) .account-tab-indicator {
-    background: rgba(0, 0, 0, 0.06);
+/* The active tab label must stay white over the indigo indicator; without
+   this the higher-specificity light .account-tab rule above would repaint it
+   muted and blend it into the pill. */
+html.account-theme-light:has(.account-main) .account-tab.is-active {
+    color: #fff;
 }
+
+/* The active tab keeps its cream label over the indigo indicator, which stays
+   indigo in both themes so the rail matches the events filters. */
 
 html.account-theme-light:has(.account-main) .account-nav-foot,
 html.account-theme-light:has(.account-main) .settings-subsection {
@@ -3752,6 +3868,834 @@ html:has(body .subpage) {
 .event-card p {
     margin: 0;
     color: var(--muted);
+}
+
+/* ---------- Events page (/events) ---------- */
+/* Full-width two-column grid of poster-style cards: a saturated brand-tone
+   panel carries the event details, floating over a decorative gradient "art"
+   backdrop that peeks out on the right — an homage to city event calendars. */
+/* The intro paragraph runs the full content width on /events (the shared
+   .page-prose measure is meant for long-form subpages). */
+.events-intro {
+    max-width: none;
+}
+
+.events-layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 4.5rem;
+    align-items: start;
+    margin-top: 2.5rem;
+}
+
+.events-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.event-filter-group {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.event-filter-options {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* Shared active highlight that slides between the options (positioned via
+   inline transform measured off the active button). */
+.event-filter-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--accent);
+    border-radius: 0.6rem;
+    pointer-events: none;
+    transition:
+        transform 0.3s cubic-bezier(0.3, 0, 0.2, 1),
+        width 0.3s cubic-bezier(0.3, 0, 0.2, 1),
+        height 0.3s cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-filter-indicator {
+        transition: none;
+    }
+}
+
+/* Shared uppercase eyebrow labelling a sidebar rail group — used by both the
+   events filters and the account settings nav so the two rails read alike. */
+.rail-legend {
+    display: block;
+    padding: 0;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+/* The sliding indicator paints the active fill; buttons stay clear and sit
+   above it so their labels read over the indigo. */
+.event-filter-option {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid transparent;
+    border-radius: 0.6rem;
+    background: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted-strong);
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.event-filter-option:hover {
+    background: rgba(28, 38, 68, 0.06);
+    color: var(--fg);
+}
+
+.event-filter-option.is-active,
+.event-filter-option.is-active:hover {
+    background: transparent;
+    border-color: transparent;
+    color: #fffbec;
+    font-weight: 600;
+}
+
+.event-filter-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: rgba(28, 38, 68, 0.08);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+}
+
+.event-filter-option.is-active .event-filter-count {
+    color: #fffbec;
+    background: rgba(255, 251, 236, 0.18);
+}
+
+.event-group-heading {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 3rem 0 1.25rem;
+}
+
+/* Inside the two-column layout the results column sets its own rhythm: no
+   extra top gap on the first group heading. */
+.events-results .event-group-heading:first-child {
+    margin-top: 0.25rem;
+}
+
+/* "See more" reveals the rest of the list. Styled as a full-width empty "next
+   card" slot so it matches the card column and reads as expanding the stack,
+   rather than a small pill floating in the whitespace. */
+.event-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1.75rem;
+    padding: 1.15rem;
+    border: 1.5px dashed var(--border);
+    border-radius: 1.25rem;
+    background: transparent;
+    color: var(--muted-strong);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.event-more:hover {
+    background: rgba(28, 38, 68, 0.03);
+    border-color: rgba(28, 38, 68, 0.3);
+    color: var(--fg);
+}
+
+.event-more svg {
+    transition: transform 0.2s ease;
+}
+
+.event-more:hover svg {
+    transform: translateY(2px);
+}
+
+.subpage .section:has(.events-layout) {
+    padding-bottom: 4rem;
+}
+
+/* Cards revealed by "See more" fade and slide up (staggered via an inline
+   animation-delay). `backwards` applies the hidden start state before the
+   delay elapses; no forwards fill, so the hover lift transform still works
+   once the animation finishes. */
+@keyframes event-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.event-tile-reveal {
+    animation: event-reveal 0.45s cubic-bezier(0.3, 0, 0.2, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-tile-reveal {
+        animation: none;
+    }
+}
+
+.event-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+}
+
+/* Destination-Vancouver-style poster rows: a saturated brand-tone panel
+   carrying just the essentials (date, title, venue) over a gradient art
+   backdrop that peeks out on the right. The whole card links to the event's
+   own page. */
+.event-tile {
+    position: relative;
+    display: flex;
+    border-radius: 1.25rem;
+    padding: 0.75rem;
+    overflow: hidden;
+    isolation: isolate;
+    text-decoration: none;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 16px 40px -16px rgba(16, 24, 48, 0.28);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.event-tile:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 24px 48px -16px rgba(16, 24, 48, 0.32);
+}
+
+/* The gradient backdrop filling the whole card behind the panel; the tone
+   class picks the gradient. */
+.event-tile-art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.event-tile-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+    min-height: 12.5rem;
+    width: min(calc(100% - 5rem), 30rem);
+    border-radius: 0.85rem;
+    padding: 1.75rem 1.6rem 1.6rem;
+    color: #fffbec;
+}
+
+.event-tile-title {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+}
+
+/* Big tear-sheet date: oversized day, stacked month/year, then the time. */
+.event-tile-date {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.event-tile-day {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 0.9;
+}
+
+.event-tile-monthyear {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.event-tile-time {
+    margin-left: auto;
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+/* Secondary details are muted so the title and the big day number carry the
+   card; a dimmed cream keeps them legible over the brand-tone panel. */
+.event-tile-monthyear,
+.event-tile-time,
+.event-tile-where,
+.event-tile-cta {
+    color: rgba(255, 251, 236, 0.66);
+}
+
+.event-tile-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.event-tile-where {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.event-tile-where svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.event-tile-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.event-tile-cta svg {
+    transition: transform 0.2s ease;
+}
+
+.event-tile:hover .event-tile-cta svg {
+    transform: translateX(3px);
+}
+
+/* Panel fills matching each art tone. */
+.event-panel-0 {
+    background: linear-gradient(160deg, #232c52 0%, #171f3d 100%);
+}
+
+.event-panel-1 {
+    background: linear-gradient(160deg, #45406b 0%, #302c50 100%);
+}
+
+.event-panel-2 {
+    background: linear-gradient(160deg, #513457 0%, #382342 100%);
+}
+
+.event-panel-3 {
+    background: linear-gradient(160deg, #1f3a4d 0%, #142835 100%);
+}
+
+/* Decorative gradient art also used as the detail-page poster; the tone
+   class picks the gradient. */
+.event-art {
+    display: block;
+    flex-shrink: 0;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 0.7rem;
+}
+
+/* Brand-family tone gradients cycled across events. */
+.event-tone-0 {
+    background:
+        radial-gradient(90% 120% at 80% 15%, rgba(255, 251, 236, 0.5), transparent 55%),
+        linear-gradient(135deg, #4f548c 0%, #2d315d 60%, #1c2644 100%);
+}
+
+.event-tone-1 {
+    background:
+        radial-gradient(100% 130% at 85% 80%, rgba(255, 214, 170, 0.55), transparent 55%),
+        linear-gradient(150deg, #8b8fc0 0%, #5b5f98 55%, #45406b 100%);
+}
+
+.event-tone-2 {
+    background:
+        radial-gradient(95% 120% at 78% 20%, rgba(255, 251, 236, 0.45), transparent 55%),
+        linear-gradient(140deg, #8f6a96 0%, #6b4a74 55%, #513457 100%);
+}
+
+.event-tone-3 {
+    background:
+        radial-gradient(100% 130% at 82% 75%, rgba(255, 251, 236, 0.5), transparent 55%),
+        linear-gradient(145deg, #5f88a0 0%, #35586f 55%, #1f3a4d 100%);
+}
+
+/* Past cards: same silhouette, quieter presence — washed-out panel and
+   backdrop so the upcoming rows carry the colour. */
+.event-tile-past {
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.04),
+        0 10px 28px -14px rgba(16, 24, 48, 0.18);
+}
+
+.event-tile-past .event-tile-art {
+    filter: grayscale(0.75) opacity(0.75);
+}
+
+.event-tile-past .event-tile-panel {
+    background: linear-gradient(160deg, #4c4a59 0%, #363441 100%);
+}
+
+/* ----- Event detail page (/events/[slug]), Luma-style: poster on the left,
+   facts + calendar actions + about section on the right. ----- */
+.event-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted-strong);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.event-back:hover {
+    color: var(--fg);
+}
+
+.event-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
+    margin-top: 2rem;
+}
+
+.event-detail-poster {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 1.25rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 16px 40px -16px rgba(16, 24, 48, 0.28);
+}
+
+.event-detail-category {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+
+/* Right column fills the poster's height and spreads its three blocks
+   (title, facts, actions) symmetrically from top to bottom. */
+.event-detail-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-self: stretch;
+    gap: 1.25rem;
+    min-width: 0;
+}
+
+.event-detail-head {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-detail-info h2 {
+    margin: 0;
+}
+
+.event-detail-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Luma-style fact rows: a small bordered tile (mini calendar / map pin)
+   beside two lines of text. */
+.event-fact {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.event-fact-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: #fff;
+    color: var(--muted-strong);
+    overflow: hidden;
+}
+
+.event-fact-calendar span:first-child {
+    width: 100%;
+    text-align: center;
+    padding: 0.12rem 0;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fffbec;
+    background: var(--accent);
+}
+
+.event-fact-calendar span:last-child {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.event-fact-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.event-fact-text strong {
+    font-size: 0.95rem;
+    color: var(--fg);
+}
+
+.event-fact-text > span {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.event-fact-text a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(28, 38, 68, 0.35);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.event-fact-text a:hover {
+    text-decoration-color: var(--accent);
+}
+
+.event-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* Buttons in this row carry an inline icon (chevron / wallet / QR). */
+.event-detail-actions .button svg {
+    flex-shrink: 0;
+}
+
+.event-detail-actions .button {
+    gap: 0.4rem;
+}
+
+/* Calendar split-button: primary trigger opens a menu of calendar targets. */
+.event-cal-dropdown {
+    position: relative;
+    display: inline-flex;
+}
+
+/* The trigger uses its chevron instead of the shared "→" arrow reveal. */
+.button.event-cal-trigger::after {
+    content: none;
+}
+
+.event-cal-trigger svg {
+    transition: transform 0.2s ease;
+}
+
+.event-cal-dropdown.is-open .event-cal-trigger svg {
+    transform: rotate(180deg);
+}
+
+.event-cal-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 12rem;
+    padding: 0.4rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.85rem;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 48, 0.05),
+        0 16px 40px -16px rgba(16, 24, 48, 0.28);
+    transform-origin: top left;
+    animation: event-cal-menu-in 0.16s ease both;
+}
+
+@keyframes event-cal-menu-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .event-cal-menu {
+        animation: none;
+    }
+}
+
+.event-cal-menu a {
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.55rem;
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.event-cal-menu a:hover {
+    background: rgba(28, 38, 68, 0.06);
+}
+
+.event-ended {
+    margin: 0;
+    color: var(--muted-strong);
+    font-size: 0.95rem;
+}
+
+.event-ended a {
+    color: var(--fg);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(28, 38, 68, 0.35);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.event-ended a:hover {
+    text-decoration-color: var(--accent);
+}
+
+/* Collapsible description below the poster/details row (native <details>). */
+.event-desc {
+    margin-top: 2.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.event-desc-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    list-style: none;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.15s ease;
+}
+
+/* Hide the default disclosure triangle across engines. */
+.event-desc-summary::-webkit-details-marker {
+    display: none;
+}
+
+.event-desc-summary:hover {
+    color: var(--fg);
+}
+
+.event-desc-chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.event-desc[open] .event-desc-chevron {
+    transform: rotate(180deg);
+}
+
+.event-about {
+    margin: 0.85rem 0 0;
+    max-width: 40rem;
+    color: var(--muted-strong);
+    line-height: 1.7;
+}
+
+/* Embedded MapKit JS map of the venue. */
+.event-map-section {
+    margin-top: 2.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.event-map-label {
+    display: block;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.event-map {
+    width: 100%;
+    height: 20rem;
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    background: #e9e4dc;
+}
+
+/* Link-out card shown when MapKit isn't configured or fails to load. */
+.event-map-fallback {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    height: auto;
+    min-height: 9rem;
+    padding: 1.5rem;
+    background: var(--card);
+    text-decoration: none;
+}
+
+.event-map-fallback-name {
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.event-map-fallback-address {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.event-map-fallback-cta {
+    margin-top: 0.6rem;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+@media (max-width: 860px) {
+    .event-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+
+    /* Wide, shorter banner once the poster stacks above the details. */
+    .event-detail-poster {
+        aspect-ratio: 16 / 7;
+    }
+}
+
+.event-list-empty {
+    margin: 0;
+    max-width: 44rem;
+    color: var(--muted-strong);
+    line-height: 1.7;
+}
+
+/* Stack the layout on tablets and below: filters become horizontal pill rows
+   above the cards instead of a sticky rail. */
+@media (max-width: 900px) {
+    .events-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .events-filters {
+        gap: 1rem;
+    }
+
+    .event-filter-options {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .events-filters .rail-legend {
+        margin-bottom: 0.35rem;
+    }
+
+    .event-filter-option {
+        width: auto;
+        padding: 0.4rem 0.8rem;
+        border-color: var(--border);
+        background: #fff;
+    }
+}
+
+@media (max-width: 560px) {
+    .event-tile {
+        padding: 0.6rem;
+    }
+
+    /* Panel fills the card on phones; the art survives as a thin frame. */
+    .event-tile-panel {
+        width: 100%;
+        padding: 1.2rem 1.3rem 1.15rem;
+    }
+
+    .event-tile-day {
+        font-size: 2rem;
+    }
 }
 
 .culture-section .win-intro {
