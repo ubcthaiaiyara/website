@@ -45,11 +45,17 @@ const lastik = localFont({
     variable: "--font-serif",
     display: "swap",
     src: [
-        { path: "./fonts/Lastik-Regular.woff2", weight: "400", style: "normal" },
+        {
+            path: "./fonts/Lastik-Regular.woff2",
+            weight: "400",
+            style: "normal",
+        },
     ],
 });
 
-const description = "Home for UBC Thai Aiyara members.";
+const description =
+    "UBC Thai Aiyara is the Thai student club at the University of British Columbia, a home away from home celebrating Thai culture, festivals, and friends.";
+const siteTitle = "UBC Thai Aiyara — Thai Culture, Festivals & Community";
 const isMaintenance = process.env.SITE_MODE === "maintenance";
 
 export const metadata: Metadata = {
@@ -57,7 +63,7 @@ export const metadata: Metadata = {
         process.env.NEXT_PUBLIC_SITE_URL ?? "https://ubcthaiaiyara.com",
     ),
     title: {
-        default: "UBC Thai Aiyara",
+        default: siteTitle,
         template: "%s · UBC Thai Aiyara",
     },
     description,
@@ -65,14 +71,14 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         siteName: "UBC Thai Aiyara",
-        title: "UBC Thai Aiyara",
+        title: siteTitle,
         description,
         url: "/",
         locale: "en_CA",
     },
     twitter: {
         card: "summary_large_image",
-        title: "UBC Thai Aiyara",
+        title: siteTitle,
         description,
     },
 };
