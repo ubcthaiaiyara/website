@@ -21,8 +21,8 @@ type Props = {
 const TABS = [
     { id: "membership", label: "Membership" },
     { id: "account", label: "Profile" },
-    { id: "security", label: "Security" },
     { id: "appearance", label: "Appearance" },
+    { id: "security", label: "Sign-In & Security" },
 ] as const;
 
 type AccountTheme = "light" | "dark";
@@ -96,6 +96,12 @@ export default function AccountView(props: Props) {
         width: 0,
         height: 0,
     });
+    const tabEnteredRef = useRef(false);
+    const tabRafRef = useRef<number | undefined>(undefined);
+    // Gate the indicator's first paint until it's measured, so it mounts fresh
+    // at the collapsed position (only its width then animates) rather than
+    // transitioning diagonally from the initial 0,0 corner.
+    const [tabMeasured, setTabMeasured] = useState(false);
     // Light/dark theme for the account page. Persisted per-device in
     // localStorage and applied via a class on <html> the account CSS keys off.
     // A beforeInteractive script in the root layout applies it pre-hydration to
@@ -103,13 +109,13 @@ export default function AccountView(props: Props) {
     // initial render (the toggle only shows on the Appearance tab and the card
     // SSRs a theme-independent placeholder), so this can't mismatch hydration.
     const [theme, setTheme] = useState<AccountTheme>(() => {
-        if (typeof window === "undefined") return "dark";
+        if (typeof window === "undefined") return "light";
         try {
-            return localStorage.getItem("account-theme") === "light"
-                ? "light"
-                : "dark";
+            return localStorage.getItem("account-theme") === "dark"
+                ? "dark"
+                : "light";
         } catch {
-            return "dark";
+            return "light";
         }
     });
 
@@ -348,11 +354,28 @@ export default function AccountView(props: Props) {
 
             const tabsRect = tabs.getBoundingClientRect();
             const activeRect = activeTab.getBoundingClientRect();
-            setTabIndicator({
+            const full = {
                 x: activeRect.left - tabsRect.left,
                 y: activeRect.top - tabsRect.top,
                 width: activeRect.width,
                 height: activeRect.height,
+            };
+
+            if (tabEnteredRef.current) {
+                setTabIndicator(full);
+                return;
+            }
+            // First appearance (page load): render the pill collapsed at the
+            // active tab's left edge, then expand it to full width on the next
+            // frame so it wipes in left-to-right via the CSS transition.
+            setTabIndicator({ ...full, width: 0 });
+            setTabMeasured(true);
+            if (tabRafRef.current !== undefined) {
+                cancelAnimationFrame(tabRafRef.current);
+            }
+            tabRafRef.current = requestAnimationFrame(() => {
+                tabEnteredRef.current = true;
+                setTabIndicator(full);
             });
         };
 
@@ -375,22 +398,28 @@ export default function AccountView(props: Props) {
         return () => {
             resizeObserver?.disconnect();
             window.removeEventListener("resize", updateIndicator);
+            if (tabRafRef.current !== undefined) {
+                cancelAnimationFrame(tabRafRef.current);
+            }
         };
     }, [tab]);
 
     return (
         <div className="account">
             <aside className="account-nav">
+                <span className="rail-legend">Settings</span>
                 <div className="account-tabs" ref={tabsRef}>
-                    <span
-                        className="account-tab-indicator"
-                        aria-hidden="true"
-                        style={{
-                            width: tabIndicator.width,
-                            height: tabIndicator.height,
-                            transform: `translate(${tabIndicator.x}px, ${tabIndicator.y}px)`,
-                        }}
-                    />
+                    {tabMeasured && (
+                        <span
+                            className="account-tab-indicator"
+                            aria-hidden="true"
+                            style={{
+                                width: tabIndicator.width,
+                                height: tabIndicator.height,
+                                transform: `translate(${tabIndicator.x}px, ${tabIndicator.y}px)`,
+                            }}
+                        />
+                    )}
                     {TABS.map((t) => (
                         <button
                             key={t.id}
@@ -973,7 +1002,12 @@ export default function AccountView(props: Props) {
 
                         <div className="settings-rows">
                             <div className="settings-row">
-                                <span className="settings-row-name">Theme</span>
+                                <span className="settings-row-heading">
+                                    <span className="settings-row-name">
+                                        Theme
+                                    </span>
+                                    <span className="settings-badge">Beta</span>
+                                </span>
                                 <div className="settings-row-control">
                                     <div
                                         className={`account-theme-toggle${theme === "dark" ? " is-dark" : " is-light"}`}

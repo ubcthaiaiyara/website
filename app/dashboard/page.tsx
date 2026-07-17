@@ -38,7 +38,12 @@ export default async function DashboardPage() {
 
   return (
     <main className="auth-main account-main">
+      <span className="section-label">Account</span>
       <h1 className="account-page-title">My account</h1>
+      <p className="account-lead">
+        Manage your membership details, update your profile, and control how
+        you sign in.
+      </p>
       <AccountView
         name={member.name}
         email={member.email}
