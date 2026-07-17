@@ -37,7 +37,7 @@ export const EVENTS: ClubEvent[] = [
         category: "festival",
         title: "Loy Krathong",
         description:
-            "A gentle evening of floating krathong, candlelight, and reflection, celebrating one of the most beautiful traditions in Thailand. Krathong-making supplies provided — just bring yourself.",
+            "A gentle evening of floating krathong, candlelight, and reflection, celebrating one of the most beautiful traditions in Thailand. Krathong-making supplies provided, so just bring yourself.",
         start: "2026-11-24T18:00",
         end: "2026-11-24T21:00",
         location: {
@@ -50,7 +50,7 @@ export const EVENTS: ClubEvent[] = [
         category: "social",
         title: "Welcome Back Social",
         description:
-            "Kick off the school year with Thai snacks, games, and new friends. Open to everyone — members, new students, and the Thai-curious alike.",
+            "Kick off the school year with Thai snacks, games, and new friends. Open to everyone: members, new students, and the Thai-curious alike.",
         start: "2026-09-18T18:30",
         end: "2026-09-18T21:00",
         location: {
@@ -115,7 +115,7 @@ export const EVENTS: ClubEvent[] = [
         category: "festival",
         title: "Loy Krathong",
         description:
-            "An evening of floating krathong, candlelight, and reflection by the water — our take on one of Thailand's most beautiful traditions.",
+            "An evening of floating krathong, candlelight, and reflection by the water, our take on one of Thailand's most beautiful traditions.",
         start: "2025-11-05T18:00",
         end: "2025-11-05T21:00",
         location: {
