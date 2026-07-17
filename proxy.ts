@@ -26,6 +26,10 @@ export function proxy(request: NextRequest) {
 export const config = {
     // Run on page routes only: skip API routes, Next internals, and any path
     // with a file extension (public assets like the wordmark, fonts, robots,
-    // sitemap, favicon).
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+    // sitemap, favicon). Also skip the metadata image routes as they have no
+    // file extension, so without this they'd be rewritten to the maintenance
+    // HTML and social crawlers would get a non-image for og:image/twitter:image.
+    matcher: [
+        "/((?!api|_next/static|_next/image|favicon.ico|opengraph-image|twitter-image|.*\\..*).*)",
+    ],
 };

@@ -29,9 +29,20 @@ export async function generateMetadata({
     const { slug } = await params;
     const event = getEvent(slug);
     if (!event) return { title: "Event not found" };
+    const d = formatEventParts(event);
+    // Lead with the date/venue so the snippet reads as an event listing.
+    const description = `${d.weekday}, ${d.month} ${d.day}, ${d.year} at ${event.location.name}. ${event.description}`;
+    const title = `${event.title} · UBC Thai Aiyara`;
     return {
         title: event.title,
-        description: event.description,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "article",
+            url: `/events/${event.slug}`,
+        },
+        twitter: { title, description },
     };
 }
 

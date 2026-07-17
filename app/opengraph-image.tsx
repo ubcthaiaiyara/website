@@ -7,7 +7,7 @@ import { join } from "node:path";
 // the site: the maintenance/hero midnight gradient, the white wordmark, and the
 // Lastik serif heading with a soft light sheen.
 export const alt =
-    "UBC Thai Aiyara — a home away from home for Thai students & friends at UBC.";
+    "UBC Thai Aiyara: a home away from home for Thai students & friends at UBC.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
